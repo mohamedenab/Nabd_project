@@ -4,6 +4,9 @@ import com.example.nabd.dtos.JwtAuthnResponse;
 import com.example.nabd.dtos.LoginDto;
 import com.example.nabd.dtos.RegisterDto;
 import com.example.nabd.service.IAuthService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -18,19 +21,36 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Slf4j
 @RequestMapping("/api/v1/auth")
+@Tag(
+        name = "CREUD REST APIs For Customer "
+)
 public class AuthController {
     private final IAuthService authService;
 
     public AuthController(IAuthService authService) {
         this.authService = authService;
     }
-
+    @Operation(
+            summary = "Login function "
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Http status 200 OK"
+    )
     @PostMapping("/login")
     public ResponseEntity<JwtAuthnResponse> loginFun(@Valid @RequestBody LoginDto loginDto){
         JwtAuthnResponse  jwtAuthnResponse = authService.login(loginDto);
         log.info("user "+loginDto.getEmail()+"is logged in");
         return ResponseEntity.ok(jwtAuthnResponse);
     }
+    @Operation(
+            summary = "Add new User",
+            description = " Create User and save into database"
+    )
+    @ApiResponse(
+            responseCode = "201",
+            description = "Http status 201 CREATED"
+    )
     @PostMapping(value = {"signup" , "register"})
     public ResponseEntity<JwtAuthnResponse> registerFun(@Valid @RequestBody RegisterDto registerDto){
         JwtAuthnResponse  jwtAuthnResponse=authService.Signup(registerDto);
