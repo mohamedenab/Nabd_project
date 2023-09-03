@@ -4,6 +4,7 @@ import com.example.nabd.exception.NabdAPIExeption;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -12,9 +13,10 @@ import java.security.Key;
 import java.util.Date;
 
 @Component
+@Slf4j
 public class JwtTokenProvider {
-    @Value("$JWT_SECRET_KEY")
-    private String jwtSecret ;
+//    @Value("$JWT_SECRET_KEY")
+    private String jwtSecret =  "931949128c37ce0092f6eb8fc450f6e844f19103c6c626683437e76cef3bd855";
     private int jwtExpiratioData = 604800000;
     public String generateToken(String email){
         Date currentDate = new Date();
@@ -28,6 +30,7 @@ public class JwtTokenProvider {
         return token;
     }
     private Key key(){
+        log.info(jwtSecret);
         return Keys.hmacShaKeyFor(
                 Decoders.BASE64.decode(jwtSecret)
         );
