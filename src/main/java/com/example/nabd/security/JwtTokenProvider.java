@@ -30,7 +30,6 @@ public class JwtTokenProvider {
         return token;
     }
     private Key key(){
-        log.info(jwtSecret);
         return Keys.hmacShaKeyFor(
                 Decoders.BASE64.decode(jwtSecret)
         );

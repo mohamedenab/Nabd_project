@@ -1,7 +1,8 @@
 package com.example.nabd.dtos;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
 
 public class UserDto {
     @NotEmpty(message = "User name can't be empty")

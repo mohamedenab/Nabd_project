@@ -1,12 +1,15 @@
 package com.example.nabd.dtos;
 
 import com.example.nabd.enums.Roles;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.*;
 
 @Getter
 @Setter
@@ -19,9 +22,8 @@ public class RegisterDto {
     @Email(message = "Please provide a valid email address")
     private String email;
     @NotEmpty(message = "User password can't be empty")
-    @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d)[a-zA-Z\\d]{4,}$",
-            message = "Password must have at least 4 characters with letters and numbers")
-    private String Password;
+    @Size(min = 4 ,message = "Password must have more than 4 characters")
+    private String password;
     @NotNull(message = "User type must be specified")
     private Roles roles;
     private String phoneNumber;
