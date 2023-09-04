@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RequestMapping("/api/v1/auth")
 @Tag(
-        name = "CREUD REST APIs For Customer "
+        name = "authenticator api  "
 )
 public class AuthController {
     private final IAuthService authService;
