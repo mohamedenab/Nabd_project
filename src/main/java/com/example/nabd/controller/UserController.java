@@ -1,11 +1,12 @@
 package com.example.nabd.controller;
 
-import com.example.nabd.dtos.UsersResponse;
+import com.example.nabd.dtos.BasisResponse;
 import com.example.nabd.service.IUserService;
 import com.example.nabd.utility.AppConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,12 +33,12 @@ public class UserController {
             description = "Http status 200 OK"
     )
     @GetMapping
-    public UsersResponse getUsers(
+    public ResponseEntity<BasisResponse> getUsers(
             @RequestParam(value = "pageNo",defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,required = false) int pageNo,
             @RequestParam(value = "pageSize",defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
             @RequestParam(value = "sortBy" ,defaultValue = AppConstants.DEFAULT_SORT_BY , required = false) String sortBy ,
             @RequestParam(value = "filter" ,required = false) String filter
     ){
-        return userService.getUsers(pageNo,pageSize,sortBy,filter);
+        return ResponseEntity.ok(userService.getUsers(pageNo,pageSize,sortBy,filter));
     }
 }

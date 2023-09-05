@@ -1,5 +1,6 @@
 package com.example.nabd.controller;
 
+import com.example.nabd.dtos.BasisResponse;
 import com.example.nabd.dtos.JwtAuthnResponse;
 import com.example.nabd.dtos.LoginDto;
 import com.example.nabd.dtos.RegisterDto;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Date;
 
 
 @RestController
@@ -38,10 +41,12 @@ public class AuthController {
             description = "Http status 200 OK"
     )
     @PostMapping("/login")
-    public ResponseEntity<JwtAuthnResponse> loginFun(@Valid @RequestBody LoginDto loginDto){
+    public ResponseEntity<BasisResponse> loginFun(@Valid @RequestBody LoginDto loginDto){
         JwtAuthnResponse  jwtAuthnResponse = authService.login(loginDto);
         log.info("user "+loginDto.getEmail()+"is logged in");
-        return ResponseEntity.ok(jwtAuthnResponse);
+        BasisResponse basisResponse = BasisResponse.builder().data(jwtAuthnResponse)
+                .timestamp(new Date()).status("Success").build();
+        return ResponseEntity.ok(basisResponse);
     }
     @Operation(
             summary = "Add new User",
@@ -52,9 +57,11 @@ public class AuthController {
             description = "Http status 201 CREATED"
     )
     @PostMapping(value = {"signup" , "register"})
-    public ResponseEntity<JwtAuthnResponse> registerFun(@Valid @RequestBody RegisterDto registerDto){
+    public ResponseEntity<BasisResponse> registerFun(@Valid @RequestBody RegisterDto registerDto){
         JwtAuthnResponse  jwtAuthnResponse=authService.Signup(registerDto);
         log.info("user "+registerDto.getEmail()+"is register to our system");
-        return new ResponseEntity<>(jwtAuthnResponse, HttpStatus.CREATED);
+        BasisResponse basisResponse = BasisResponse.builder().data(jwtAuthnResponse)
+                .timestamp(new Date()).status("Success").build();
+        return new ResponseEntity<>(basisResponse, HttpStatus.CREATED);
     }
 }

@@ -4,6 +4,7 @@ import com.example.nabd.dtos.ErrorDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -34,6 +35,12 @@ public class GlobalExceptionHandler {
         log.error("error happend: {}, {}", exception.getMessage() , exception.getStackTrace());
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
+//    @ExceptionHandler(AuthenticationException.class)
+//    public ResponseEntity<ErrorDetails> handelNabdAPIException(NabdAPIExeption exception , WebRequest webRequest){
+//        ErrorDetails errorDetails = new ErrorDetails(new Date() , exception.getMessage(), webRequest.getDescription(false));
+//        log.error("error happend: {}, {}", exception.getMessage() , exception.getStackTrace());
+//        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+//    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handelValidationException(MethodArgumentNotValidException exception , WebRequest webRequest){
