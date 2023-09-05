@@ -3,6 +3,8 @@ package com.example.nabd.dtos;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.Date;
 @Getter
 @Setter
@@ -10,7 +12,7 @@ import java.util.Date;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BasisResponse {
     private Object data;
-    private Date timestamp;
+    private String timestamp;
     private String status;
     private Integer pageNo;
     private Integer pageSize;
