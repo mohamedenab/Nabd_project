@@ -22,7 +22,7 @@ services:
       MYSQL_USER: root
       MYSQL_PASSWORD: root
       MYSQL_PORT: 3306
-      MYSQL_DATABASE: books
+      MYSQL_DATABASE: nabd
   prometheus:
     image: prom/prometheus:latest
     volumes:
