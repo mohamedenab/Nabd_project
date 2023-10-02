@@ -1,17 +1,16 @@
 package com.example.nabd.controller;
 
 import com.example.nabd.dtos.BasisResponse;
+import com.example.nabd.dtos.RegisterDto;
 import com.example.nabd.service.IUserService;
 import com.example.nabd.utility.AppConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -43,4 +42,15 @@ public class UserController {
     ){
         return ResponseEntity.ok(userService.getUsers(pageNo,pageSize,sortBy,filter));
     }
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_SU')")
+    public  ResponseEntity<BasisResponse> editeUser(@PathVariable Long id , @RequestBody RegisterDto registerDto){
+        return new ResponseEntity<>(userService.updateUser(id,registerDto),HttpStatus.OK);
+    }
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_SU')")
+    public ResponseEntity<String> deleteUser(@PathVariable(name = "id") Long id){
+        return new ResponseEntity<>(userService.deleteUser(id), HttpStatus.OK);
+    }
+
 }

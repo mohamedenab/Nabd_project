@@ -4,6 +4,10 @@ import com.example.nabd.dtos.BasisResponse;
 import com.example.nabd.dtos.LocationDto;
 
 public interface ILocationsService {
-    BasisResponse getLocation(int pageNo, int pageSize, String sortBy);
+    BasisResponse getLocations(int pageNo, int pageSize, String sortBy);
     BasisResponse createLocation(LocationDto locationDto);
+    String DeleteLocation(Long id);
+    BasisResponse getUserRelatedToLocation(Long id);
+    BasisResponse getLocation(Long locationId ,String pageNo,String pageSize,String sortBy,String filter);
+    BasisResponse updateLocation(Long id ,LocationDto locationDto);
 }

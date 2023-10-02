@@ -9,6 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class LocationDto {
+    private Long id;
     @NotEmpty(message = "Location name cant be empty")
     private String locationName;
 }

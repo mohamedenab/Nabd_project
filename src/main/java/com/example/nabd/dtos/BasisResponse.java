@@ -19,6 +19,5 @@ public class BasisResponse {
     private Long totalElements;
     private Integer totalPage;
     private Boolean last;
-    private String amr;
 
 }

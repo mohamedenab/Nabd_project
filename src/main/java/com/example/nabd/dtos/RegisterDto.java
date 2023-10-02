@@ -9,6 +9,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.w3c.dom.stylesheets.LinkStyle;
+
+import java.util.List;
 
 
 @Getter
@@ -27,4 +30,5 @@ public class RegisterDto {
     @NotNull(message = "User type must be specified")
     private Roles roles;
     private String phoneNumber;
+    private List<Long> locationListId;
 }

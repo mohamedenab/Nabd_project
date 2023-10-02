@@ -39,7 +39,7 @@ public class LocationController {
             @RequestParam(value = "pageSize",defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
             @RequestParam(value = "sortBy" ,defaultValue = "locationName" , required = false) String sortBy
     ){
-        return ResponseEntity.ok(locationsService.getLocation(pageNo, pageSize, sortBy));
+        return ResponseEntity.ok(locationsService.getLocations(pageNo, pageSize, sortBy));
     }
     @PostMapping
     @PreAuthorize("hasRole('ROLE_SU')")
@@ -54,5 +54,22 @@ public class LocationController {
     )
     public ResponseEntity<BasisResponse> createLocation(@Valid @RequestBody LocationDto locationDto){
         return new ResponseEntity<>(locationsService.createLocation(locationDto), HttpStatus.CREATED);
+    }
+    @GetMapping("/{id}/users")
+    public ResponseEntity<BasisResponse> getUsers(@PathVariable(name = "id") Long locationId){
+        return ResponseEntity.ok(locationsService.getUserRelatedToLocation(locationId));
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_SU')")
+    public ResponseEntity<BasisResponse> updateLocation(
+            @PathVariable(name = "id") Long locationId,
+            @RequestBody LocationDto locationDto){
+        return ResponseEntity.ok(locationsService.updateLocation(locationId,locationDto));
+    }
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_SU')")
+    public ResponseEntity<String> deleteLocation(@PathVariable(name = "id") Long id){
+        return ResponseEntity.ok(locationsService.DeleteLocation(id));
     }
 }
