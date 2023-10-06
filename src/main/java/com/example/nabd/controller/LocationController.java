@@ -55,9 +55,15 @@ public class LocationController {
     public ResponseEntity<BasisResponse> createLocation(@Valid @RequestBody LocationDto locationDto){
         return new ResponseEntity<>(locationsService.createLocation(locationDto), HttpStatus.CREATED);
     }
-    @GetMapping("/{id}/users")
-    public ResponseEntity<BasisResponse> getUsers(@PathVariable(name = "id") Long locationId){
-        return ResponseEntity.ok(locationsService.getUserRelatedToLocation(locationId));
+    @GetMapping("/{id}/patients")
+    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")
+    public ResponseEntity<BasisResponse> getPatients(
+            @PathVariable(name = "id") Long locationId ,
+            @RequestParam(value = "pageNo",defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,required = false) int pageNo,
+            @RequestParam(value = "pageSize",defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+            @RequestParam(value = "sortBy" ,defaultValue = "name" , required = false) String sortBy
+    ){
+        return ResponseEntity.ok(locationsService.getPatientRelatedToLocation(locationId,pageNo,pageSize,sortBy));
     }
     @GetMapping("/{from}/{to}")
     @PreAuthorize("hasRole('ROLE_SU')")

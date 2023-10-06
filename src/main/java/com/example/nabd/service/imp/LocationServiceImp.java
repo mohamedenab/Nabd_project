@@ -2,6 +2,7 @@ package com.example.nabd.service.imp;
 
 import com.example.nabd.dtos.BasisResponse;
 import com.example.nabd.dtos.LocationDto;
+import com.example.nabd.dtos.PatientDto;
 import com.example.nabd.dtos.UserDto;
 import com.example.nabd.entity.Locations;
 import com.example.nabd.entity.Patient;
@@ -80,19 +81,16 @@ public class LocationServiceImp implements ILocationsService {
     }
 
     @Override
-    public BasisResponse getUserRelatedToLocation(Long id) {
+    public BasisResponse getPatientRelatedToLocation(Long id ,int pageNo, int pageSize, String sortBy) {
+        Sort sort = Sort.by(sortBy);
+        Pageable pageable = PageRequest.of(pageNo,pageSize,sort);
         Locations locations = locationsRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Location","id",id));
-        List<UserDto> userDtolist = locations.getUsers().stream().map(user -> UserDto.builder()
-                .name(user.getName()).phoneNumber(user.getPhoneNumber())
-                .email(user.getEmail()).id(user.getId()).build()).toList();
-        return basisResponseMapper.createBasisResponse(userDtolist);
-    }
-
-    @Override
-    public BasisResponse getLocation(Long locationId, String pageNo, String pageSize, String sortBy, String filter) {
-//        Locations locations = locationsRepo.findById(locationId).orElseThrow(() -> new ResourceNotFoundException("Location","id",id));
-//
-        return null;
+        Page<Patient> patientList = patientRepo.findByLocations(locations , pageable);
+        List<Patient> patients = patientList.getContent();
+        List<PatientDto> patientDtoList = patients.stream().map(patient -> PatientDto.builder()
+                .name(patient.getName()).mobileNumbers(patient.getMobileNumbers())
+                .id(patient.getId()).build()).toList();
+        return basisResponseMapper.createBasisResponseForPatient(patientDtoList,pageNo,patientList);
     }
 
     @Override
