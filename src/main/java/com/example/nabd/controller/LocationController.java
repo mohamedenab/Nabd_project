@@ -59,7 +59,12 @@ public class LocationController {
     public ResponseEntity<BasisResponse> getUsers(@PathVariable(name = "id") Long locationId){
         return ResponseEntity.ok(locationsService.getUserRelatedToLocation(locationId));
     }
-
+    @GetMapping("/{from}/{to}")
+    @PreAuthorize("hasRole('ROLE_SU')")
+    public ResponseEntity<BasisResponse> convertPatientsFromLocationToAnother(
+            @PathVariable(name = "from") Long from , @PathVariable(name = "to") Long to){
+        return ResponseEntity.ok(locationsService.convertPatientLocationToAnother(from,to));
+    }
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_SU')")
     public ResponseEntity<BasisResponse> updateLocation(

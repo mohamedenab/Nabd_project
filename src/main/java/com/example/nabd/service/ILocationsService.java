@@ -10,4 +10,5 @@ public interface ILocationsService {
     BasisResponse getUserRelatedToLocation(Long id);
     BasisResponse getLocation(Long locationId ,String pageNo,String pageSize,String sortBy,String filter);
     BasisResponse updateLocation(Long id ,LocationDto locationDto);
+    BasisResponse convertPatientLocationToAnother(Long from , Long to);
 }
