@@ -4,6 +4,8 @@ import com.example.nabd.enums.Insurance;
 import com.example.nabd.enums.MaritalStatus;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
 import java.util.List;
 @Entity
 @Getter
@@ -47,4 +49,9 @@ public class Patient {
     @ManyToOne
     @JoinColumn(name = "specialization_id")
     private Specialization specialization;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "patient_medicine",
+            joinColumns = @JoinColumn(name = "patient_id"),
+            inverseJoinColumns = @JoinColumn(name = "medicine_id"))
+    private List<Medicine> medicines = new ArrayList<>();
 }
