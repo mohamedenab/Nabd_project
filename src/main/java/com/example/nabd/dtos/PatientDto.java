@@ -1,9 +1,8 @@
 package com.example.nabd.dtos;
 
+import com.example.nabd.enums.Insurance;
 import com.example.nabd.enums.MaritalStatus;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -18,9 +17,12 @@ public class PatientDto {
     private Long id;
     @NotEmpty(message = "Patient name can't be empty")
     private String name;
+    private String nameOfParent;
     @NotEmpty(message = "Patient NationalID can't be empty")
     private String nationalID;
     @NotNull(message = "numberOfFamilyMembers can't be empty")
+    @Min(value = 0)
+    @Max(value = 15)
     private int numberOfFamilyMembers;
     private String nationalIDForParent;
     private MaritalStatus maritalStatus;
@@ -34,7 +36,8 @@ public class PatientDto {
     private String periodOfDiscovery;
     private String dateOfBeginningOfDecision;
     private String dateOfHelp;
-    private boolean thereInsurance;
+    private String discoveryDetailsWithImageLink;
+    private Insurance thereInsurance;
     private Long locationsId;
     private Long SpecializationId;
 

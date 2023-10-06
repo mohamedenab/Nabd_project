@@ -6,4 +6,6 @@ import com.example.nabd.dtos.PatientDto;
 public interface IPatientService {
     BasisResponse createPatient(PatientDto patientDto);
     BasisResponse getPatient(int pageNo, int pageSize, String sortBy,  String filterType , String filterValue);
+    BasisResponse updatePatient(Long id ,PatientDto patientDto);
+    String deletePatient(Long id);
 }

@@ -3,6 +3,7 @@ package com.example.nabd.service.imp;
 import com.example.nabd.dtos.BasisResponse;
 import com.example.nabd.dtos.PatientDto;
 import com.example.nabd.entity.Patient;
+import com.example.nabd.exception.ResourceNotFoundException;
 import com.example.nabd.mapper.BasisResponseMapper;
 import com.example.nabd.repository.PatientRepo;
 import com.example.nabd.service.IPatientService;
@@ -51,6 +52,23 @@ public class PatientServiceImp implements IPatientService {
         List<PatientDto> patientDtoList = patientList.stream().map(this::mapToDto).toList();
         return basisResponseMapper.createBasisResponseForPatient(patientDtoList,pageNo,patients);
     }
+
+    @Override
+    public BasisResponse updatePatient(Long id, PatientDto patientDto) {
+        Patient patient = patientRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Patient" , "id",id));
+        Patient toSave = mapToEntity(patientDto);
+        toSave.setId(patient.getId());
+        patientRepo.save(toSave);
+        return basisResponseMapper.createBasisResponse(mapToDto(toSave));
+    }
+
+    @Override
+    public String deletePatient(Long id) {
+        Patient patient = patientRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Patient" , "id",id));
+        patientRepo.delete(patient);
+        return "Patient delete successfully";
+    }
+
     private List<PatientDto> getPatientFilter( String filterType , String filterValue , List<Patient> patientList){
         switch (filterType) {
             case "name" -> {

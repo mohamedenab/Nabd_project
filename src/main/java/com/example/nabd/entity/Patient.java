@@ -1,5 +1,6 @@
 package com.example.nabd.entity;
 
+import com.example.nabd.enums.Insurance;
 import com.example.nabd.enums.MaritalStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -16,6 +17,7 @@ public class Patient {
     private Long id;
     @Column(nullable = false)
     private String name;
+    private String nameOfParent;
     @Column(nullable = false)
     private String nationalID;
     @Column(nullable = false)
@@ -36,7 +38,9 @@ public class Patient {
     private String periodOfDiscovery;
     private String dateOfBeginningOfDecision;
     private String dateOfHelp;
-    private boolean thereInsurance;
+    private String discoveryDetailsWithImageLink;
+    @Enumerated(EnumType.STRING)
+    private Insurance thereInsurance;
     @ManyToOne
     @JoinColumn(name = "location_id")
     private Locations locations;
