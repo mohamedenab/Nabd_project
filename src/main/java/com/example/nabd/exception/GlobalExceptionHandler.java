@@ -62,6 +62,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({Exception.class,IOException.class})
     public ResponseEntity<ErrorDetails> Exception(Exception exception , WebRequest webRequest){
         log.error("error happened: {}, {}", exception.getMessage() , exception.getStackTrace());
+
         ErrorDetails errorDetails = new ErrorDetails(new Date() , exception.getMessage(), webRequest.getDescription(false), "fail");
         return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
