@@ -52,7 +52,8 @@ public class UserServiceImp implements IUserService {
         }
         List<UserDto> userDtolist = userList.stream().map(user -> UserDto.builder()
                 .name(user.getName()).phoneNumber(user.getPhoneNumber())
-                .email(user.getEmail()).id(user.getId()).build()).toList();
+                .email(user.getEmail()).id(user.getId()).roles(user.getRoles())
+                .locationsList(user.getLocations()).build()).toList();
         return basisResponseMapper.createBasisResponseForUser(userDtolist,pageNo,users);
     }
 
