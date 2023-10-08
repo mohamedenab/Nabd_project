@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 @OpenAPIDefinition(
 		info = @Info(
-				title = "Spring Boot Nabd system Rest APIs",
+				title = "Spring Boot Nabd System Rest APIs",
 				version = "v1.0"
 		)
 )

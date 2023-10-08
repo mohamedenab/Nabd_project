@@ -2,6 +2,7 @@ package com.example.nabd.dtos;
 
 
 import com.example.nabd.entity.Locations;
+import com.example.nabd.enums.Roles;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
@@ -22,5 +23,6 @@ public class UserDto {
     @Email(message = "Please provide a valid email address")
     private String email;
     String phoneNumber;
+    Roles roles;
     List<Locations> locationsList;
 }
