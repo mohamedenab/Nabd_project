@@ -75,7 +75,7 @@ public class LocationController {
     @PreAuthorize("hasRole('ROLE_SU')")
     public ResponseEntity<BasisResponse> updateLocation(
             @PathVariable(name = "id") Long locationId,
-            @RequestBody LocationDto locationDto){
+            @Valid @RequestBody LocationDto locationDto){
         return ResponseEntity.ok(locationsService.updateLocation(locationId,locationDto));
     }
     @DeleteMapping("/{id}")

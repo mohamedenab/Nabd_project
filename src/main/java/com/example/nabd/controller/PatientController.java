@@ -52,7 +52,7 @@ public class PatientController {
     @PreAuthorize("hasRole('ROLE_SU')")
     public ResponseEntity<BasisResponse> updatePatient(
             @PathVariable(name = "id") Long id,
-            @RequestBody PatientDto patientDto ){
+            @Valid @RequestBody PatientDto patientDto ){
         return  ResponseEntity.ok(patientService.updatePatient(id,patientDto));
     }
     @DeleteMapping("/{id}")

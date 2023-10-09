@@ -3,6 +3,7 @@ package com.example.nabd.controller;
 import com.example.nabd.dtos.BasisResponse;
 import com.example.nabd.dtos.SpecializationDto;
 import com.example.nabd.service.ISpecializationService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,7 @@ public class SpecializationController {
     }
 
     @PostMapping
-    public ResponseEntity<BasisResponse> createSpecialization(@RequestBody SpecializationDto specializationDto){
+    public ResponseEntity<BasisResponse> createSpecialization(@Valid  @RequestBody SpecializationDto specializationDto){
         return new ResponseEntity<>(specializationService.createSpecialization(specializationDto) , HttpStatus.CREATED);
     }
     @GetMapping
