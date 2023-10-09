@@ -44,11 +44,9 @@ public class MedicineServiceImp implements IMedicineService {
 
     @Override
     public BasisResponse getMedicine(int pageNo, int pageSize, String sortBy, String filter) {
-        Sort sort = Sort.by(sortBy);
-        Pageable pageable = PageRequest.of(pageNo,pageSize,sort);
-        Page<Medicine> medicines = medicineRepo.findAll(pageable);
-        List<Medicine> medicineslist = medicines.getContent();
         if (filter!=null){
+            System.out.println(filter);
+            List<Medicine>medicineslist = medicineRepo.findAll();
             List<Medicine> medicineFilterList = medicineslist.stream().filter(medicine ->
                     medicine.getNameInEng().startsWith(filter)).toList();
             List<MedicineDto> medicineDtoList = medicineFilterList.stream().map(medicine -> MedicineDto.builder()
@@ -59,6 +57,10 @@ public class MedicineServiceImp implements IMedicineService {
                     .build()).toList();
             return basisResponseMapper.createBasisResponse(medicineDtoList);
         }
+        Sort sort = Sort.by(sortBy);
+        Pageable pageable = PageRequest.of(pageNo,pageSize,sort);
+        Page<Medicine> medicines = medicineRepo.findAll(pageable);
+        List<Medicine> medicineslist = medicines.getContent();
         List<MedicineDto> medicineDtoList = medicineslist.stream().map(medicine -> MedicineDto.builder().
                 price(medicine.getPrice()).nameInEng(medicine.getNameInEng())
                 .nameInArb(medicine.getNameInArb()).numberOfPastilleInEachBox(medicine.getNumberOfPastilleInEachBox())
