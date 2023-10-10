@@ -1,5 +1,6 @@
 package com.example.nabd.controller;
 
+import com.example.nabd.dtos.AddMedicineDto;
 import com.example.nabd.dtos.BasisResponse;
 import com.example.nabd.dtos.PatientDto;
 import com.example.nabd.service.IPatientService;
@@ -47,6 +48,28 @@ public class PatientController {
             @RequestParam(value = "filterValue" , required = false) String filterValue
     ){
         return ResponseEntity.ok(patientService.getPatient(pageNo,pageSize,sortBy,filterType,filterValue));
+    }
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")
+    public ResponseEntity<BasisResponse> getPatientMedicine(@PathVariable(name = "id") Long id){
+        return ResponseEntity.ok(patientService.getPatientMedicine(id));
+
+    }
+    @GetMapping("/all/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")
+    public ResponseEntity<BasisResponse> getAllPatientMedicine(@PathVariable(name = "id") Long id){
+        return ResponseEntity.ok(patientService.getAllPatientMedicine(id));
+
+    }
+    @GetMapping("/{patientID}/{medicineId}")
+    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")
+    public ResponseEntity<BasisResponse> addMedicineToPatient(
+            @PathVariable(name = "patientID") Long patientId,
+            @PathVariable(name = "medicineId") Long medicineId,
+            @Valid @RequestBody AddMedicineDto addMedicineDto){
+        System.out.println(addMedicineDto.getStartIn());
+        return ResponseEntity.ok(patientService.addMedicine(medicineId,patientId,addMedicineDto));
+
     }
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_SU')")

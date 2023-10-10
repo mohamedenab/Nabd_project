@@ -1,29 +1,40 @@
 package com.example.nabd.service.imp;
 
-import com.example.nabd.dtos.BasisResponse;
-import com.example.nabd.dtos.PatientDto;
+import com.example.nabd.dtos.*;
+import com.example.nabd.entity.Medicine;
 import com.example.nabd.entity.Patient;
+import com.example.nabd.entity.Patient_Medicine;
+import com.example.nabd.exception.NabdAPIExeption;
 import com.example.nabd.exception.ResourceNotFoundException;
 import com.example.nabd.mapper.BasisResponseMapper;
+import com.example.nabd.repository.MedicineRepo;
 import com.example.nabd.repository.PatientRepo;
+import com.example.nabd.repository.Patient_MedicineRepo;
 import com.example.nabd.service.IPatientService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 @Service
 public class PatientServiceImp implements IPatientService {
     private final ModelMapper modelMapper;
     private final PatientRepo patientRepo;
+    private final MedicineRepo medicineRepo;
+    private final Patient_MedicineRepo patientMedicineRepo;
     private final BasisResponseMapper basisResponseMapper = new BasisResponseMapper();
 
-    public PatientServiceImp(ModelMapper modelMapper, PatientRepo patientRepo) {
+    public PatientServiceImp(ModelMapper modelMapper, PatientRepo patientRepo, MedicineRepo medicineRepo, Patient_MedicineRepo patientMedicineRepo) {
         this.modelMapper = modelMapper;
         this.patientRepo = patientRepo;
+        this.medicineRepo = medicineRepo;
+        this.patientMedicineRepo = patientMedicineRepo;
     }
 
     PatientDto mapToDto(Patient patient){
@@ -54,12 +65,80 @@ public class PatientServiceImp implements IPatientService {
     }
 
     @Override
+    public BasisResponse getPatientMedicine(Long id) {
+        Patient patient = patientRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Patient" , "id",id));
+        Date date = new Date();
+        List<Medicine> medicineList = new ArrayList<>();
+        for (Patient_Medicine patientMedicine:
+                patient.getPatientMedicines()) {
+            Medicine medicine = patientMedicine.getMedicine();
+            Patient_Medicine patientMedicine1 = patientMedicineRepo.findByPatientAndMedicine(patient,medicine);
+            System.out.println(patientMedicine1.getMonth().contains(date.getMonth()+1));
+            System.out.println(patientMedicine1.getStartIn().after(date));
+            if (patientMedicine1.getMonth().contains(date.getMonth()+1)&&patientMedicine1.getStartIn().before(date)){
+                medicineList.add(patientMedicine.getMedicine());
+            }
+
+        }
+        List<MedicineDto> medicineDtoList = medicineList.stream().map(medicine ->
+                MedicineDto.builder().id(medicine.getId()).price(medicine.getPrice()).nameInEng(medicine.getNameInEng())
+                        .nameInArb(medicine.getNameInArb()).numberOfPastilleInEachBox(medicine.getNumberOfPastilleInEachBox())
+                        .activeSubstance(medicine.getActiveSubstance())
+                        .numberOfPatientTakeIt(medicine.getNumberOfPatientTakeIt()).medicineStatus(medicine.getMedicineStatus())
+                        .build()).toList();
+        return basisResponseMapper.createBasisResponse(medicineDtoList);
+    }
+
+    @Override
+    public BasisResponse getAllPatientMedicine(Long id) {
+        Patient patient = patientRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Patient" , "id",id));
+        List<Medicine> medicineList = new ArrayList<>();
+        for (Patient_Medicine patientMedicine:
+                patient.getPatientMedicines()) {
+            medicineList.add(patientMedicine.getMedicine());
+        }
+        List<MedicineDto> medicineDtoList = medicineList.stream().map(medicine ->
+                MedicineDto.builder().id(medicine.getId()).price(medicine.getPrice()).nameInEng(medicine.getNameInEng())
+                        .nameInArb(medicine.getNameInArb()).numberOfPastilleInEachBox(medicine.getNumberOfPastilleInEachBox())
+                        .activeSubstance(medicine.getActiveSubstance())
+                        .numberOfPatientTakeIt(medicine.getNumberOfPatientTakeIt()).medicineStatus(medicine.getMedicineStatus())
+                        .build()).toList();
+        return basisResponseMapper.createBasisResponse(medicineDtoList);
+    }
+
+    @Override
     public BasisResponse updatePatient(Long id, PatientDto patientDto) {
         Patient patient = patientRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Patient" , "id",id));
         Patient toSave = mapToEntity(patientDto);
         toSave.setId(patient.getId());
         patientRepo.save(toSave);
         return basisResponseMapper.createBasisResponse(mapToDto(toSave));
+    }
+
+    @Override
+    public BasisResponse addMedicine(Long medicineId, Long patientId , AddMedicineDto addMedicineDto) {
+        Patient patient = patientRepo.findById(patientId).orElseThrow(
+                ()-> new ResourceNotFoundException("Patient" , "id",patientId));
+        Medicine medicine = medicineRepo.findById(medicineId).orElseThrow(
+                ()-> new ResourceNotFoundException("Medicine" , "id",medicineId));
+        Patient_Medicine patientMedicineCheck= patientMedicineRepo.findByPatientAndMedicine(patient,medicine);
+        if (patientMedicineCheck!=null){
+            throw new NabdAPIExeption("Medicine is already exist" , HttpStatus.BAD_REQUEST);
+        }
+        System.out.println(addMedicineDto.getStartIn().getMonth());
+        medicine.setNumberOfPatientTakeIt(medicine.getNumberOfPatientTakeIt()+1);
+        medicineRepo.save(medicine);
+        Patient_Medicine patientMedicine = Patient_Medicine.builder().medicine(medicine)
+                .patient(patient).numberPastille(addMedicineDto.getNumberPastille())
+                .startIn(addMedicineDto.getStartIn()).specialization(addMedicineDto.getSpecialization())
+                .numberBox(addMedicineDto.getNumberBox())
+                .month(setArrayOfMonths(addMedicineDto.getStartIn().getMonth()+1,addMedicineDto.getRepetition())).build();
+        patientMedicineRepo.save(patientMedicine);
+        PatientMedicineDto patientMedicineDto = PatientMedicineDto.builder()
+                .arrayOfMonths(patientMedicine.getMonth()).numberBox(patientMedicine.getNumberBox())
+                .numberPastille(patientMedicine.getNumberPastille()).Repetition(patientMedicine.getRepetition())
+                .build();
+        return basisResponseMapper.createBasisResponse(patientMedicineDto);
     }
 
     @Override
@@ -81,12 +160,12 @@ public class PatientServiceImp implements IPatientService {
                         patient -> patient.getNumberOfFamilyMembers() == Integer.parseInt(filterValue)).toList();
                 return patients.stream().map(this::mapToDto).toList();
             }
-            case "locations" -> {
+            case "locationsId" -> {
                 List<Patient> patients = patientList.stream().filter(
                         patient -> patient.getLocations().getLocationName().equals(filterValue)).toList();
                 return patients.stream().map(this::mapToDto).toList();
             }
-            case "specialization" -> {
+            case "SpecializationId" -> {
                 List<Patient> patients = patientList.stream().filter(
                         patient -> patient.getSpecialization().getName().equals(filterValue)).toList();
                 return patients.stream().map(this::mapToDto).toList();
@@ -95,5 +174,20 @@ public class PatientServiceImp implements IPatientService {
                 return null;
             }
         }
+    }
+    private List<Integer> setArrayOfMonths(int startIn , int repetition){
+        List<Integer> months = new ArrayList<>();
+        months.add(startIn);
+        int temp = startIn;
+        while (temp<12){
+            temp+=repetition;
+            months.add(temp);
+        }
+        temp=startIn;
+        while (temp>1){
+            temp-=repetition;
+            months.add(temp);
+        }
+        return months;
     }
 }

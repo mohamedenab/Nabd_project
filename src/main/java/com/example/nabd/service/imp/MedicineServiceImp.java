@@ -2,13 +2,14 @@ package com.example.nabd.service.imp;
 
 import com.example.nabd.dtos.BasisResponse;
 import com.example.nabd.dtos.MedicineDto;
-import com.example.nabd.dtos.UserDto;
 import com.example.nabd.entity.Medicine;
-import com.example.nabd.entity.User;
+import com.example.nabd.entity.Patient;
+import com.example.nabd.entity.Patient_Medicine;
 import com.example.nabd.enums.MedicineStatus;
-import com.example.nabd.enums.Roles;
+import com.example.nabd.exception.ResourceNotFoundException;
 import com.example.nabd.mapper.BasisResponseMapper;
 import com.example.nabd.repository.MedicineRepo;
+import com.example.nabd.repository.Patient_MedicineRepo;
 import com.example.nabd.service.IMedicineService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,11 +22,13 @@ import java.util.List;
 @Service
 public class MedicineServiceImp implements IMedicineService {
     private final MedicineRepo medicineRepo;
+    private final Patient_MedicineRepo patientMedicineRepo;
     private final BasisResponseMapper basisResponseMapper = new BasisResponseMapper();
 
 
-    public MedicineServiceImp(MedicineRepo medicineRepo) {
+    public MedicineServiceImp(MedicineRepo medicineRepo, Patient_MedicineRepo patientMedicineRepo) {
         this.medicineRepo = medicineRepo;
+        this.patientMedicineRepo = patientMedicineRepo;
     }
 
     @Override
@@ -71,9 +74,42 @@ public class MedicineServiceImp implements IMedicineService {
     }
 
     @Override
+    public BasisResponse replaceMedicineWithAnother(Long firstId, Long secondId) {
+        Medicine fist = medicineRepo.findById(firstId).orElseThrow(
+                ()-> new ResourceNotFoundException("Medicine","Id",firstId));
+        Medicine second = medicineRepo.findById(secondId).orElseThrow(
+                ()-> new ResourceNotFoundException("Medicine","Id",secondId));
+        for (Patient_Medicine patientMedicine :
+                fist.getPatientMedicines()) {
+            if (!cheakHaveTheSameMedicine(patientMedicine.getPatient(),second)){
+                patientMedicine.setMedicine(second);
+                second.setNumberOfPatientTakeIt(second.getNumberOfPatientTakeIt()+1);
+                patientMedicineRepo.save(patientMedicine);
+            }else {
+                fist.setNumberOfPatientTakeIt(fist.getNumberOfPatientTakeIt()-1);
+                patientMedicineRepo.delete(patientMedicine);
+            }
+        }
+        MedicineDto medicineDto=MedicineDto.builder().
+                price(second.getPrice()).nameInEng(second.getNameInEng())
+                .nameInArb(second.getNameInArb()).numberOfPastilleInEachBox(second.getNumberOfPastilleInEachBox())
+                .activeSubstance(second.getActiveSubstance())
+                .numberOfPatientTakeIt(second.getNumberOfPatientTakeIt()).medicineStatus(second.getMedicineStatus())
+                .build();
+        return basisResponseMapper.createBasisResponse(medicineDto);
+    }
+
+    @Override
     public String delete(String name) {
         Medicine medicine = medicineRepo.findByNameInEng(name);
         medicineRepo.delete(medicine);
         return "medicine delete successfully";
+    }
+    private boolean cheakHaveTheSameMedicine(Patient patient, Medicine medicine){
+        for (Patient_Medicine p:
+             patient.getPatientMedicines()) {
+            if (p.getMedicine().getNameInEng().equals(medicine.getNameInEng())) return true;
+        }
+        return false;
     }
 }

@@ -38,6 +38,13 @@ public class MedicineController {
     ){
         return ResponseEntity.ok(medicineService.getMedicine(pageNo,pageSize,sortBy,filter));
     }
+    @GetMapping("/{firstId}/{secondId}")
+    @PreAuthorize("hasRole('ROLE_SU')")
+    public ResponseEntity<BasisResponse> replaceMedicineWithAnother(
+            @PathVariable(name = "firstId") Long firstId,@PathVariable(name = "secondId") Long secondId){
+        return ResponseEntity.ok(medicineService.replaceMedicineWithAnother(firstId,secondId));
+
+    }
     @DeleteMapping("/{name}")
     @PreAuthorize("hasRole('ROLE_SU')")
     public ResponseEntity<String> deleteMedicineByName(@PathVariable(name = "name") String medicineName){

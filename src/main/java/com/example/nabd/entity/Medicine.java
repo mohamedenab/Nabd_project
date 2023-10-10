@@ -30,6 +30,8 @@ public class Medicine {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private MedicineStatus medicineStatus;
-    @ManyToMany(mappedBy = "medicines", fetch = FetchType.LAZY)
-    private List<Patient> patients = new ArrayList<>();
+//    @ManyToMany(mappedBy = "medicines", fetch = FetchType.LAZY)
+//    private List<Patient> patients = new ArrayList<>();
+    @OneToMany(mappedBy = "medicine",fetch = FetchType.LAZY)
+    private List<Patient_Medicine> patientMedicines;
 }

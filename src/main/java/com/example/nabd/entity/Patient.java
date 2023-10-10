@@ -49,9 +49,11 @@ public class Patient {
     @ManyToOne
     @JoinColumn(name = "specialization_id")
     private Specialization specialization;
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "patient_medicine",
-            joinColumns = @JoinColumn(name = "patient_id"),
-            inverseJoinColumns = @JoinColumn(name = "medicine_id"))
-    private List<Medicine> medicines = new ArrayList<>();
+//    @ManyToMany(fetch = FetchType.LAZY)
+//    @JoinTable(name = "patient_medicine",
+//            joinColumns = @JoinColumn(name = "patient_id"),
+//            inverseJoinColumns = @JoinColumn(name = "medicine_id"))
+//    private List<Medicine> medicines = new ArrayList<>();
+    @OneToMany(mappedBy = "patient",fetch = FetchType.LAZY)
+    private List<Patient_Medicine> patientMedicines;
 }
