@@ -61,7 +61,7 @@ public class PatientController {
         return ResponseEntity.ok(patientService.getAllPatientMedicine(id));
 
     }
-    @GetMapping("/{patientID}/{medicineId}")
+    @GetMapping("/{patientID}/medicine/{medicineId}")
     @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")
     public ResponseEntity<BasisResponse> addMedicineToPatient(
             @PathVariable(name = "patientID") Long patientId,

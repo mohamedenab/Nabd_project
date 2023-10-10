@@ -2,31 +2,40 @@ package com.example.nabd.service.imp;
 
 import com.example.nabd.dtos.BasisResponse;
 import com.example.nabd.dtos.MedicineDto;
+import com.example.nabd.dtos.PatientDto;
 import com.example.nabd.entity.Medicine;
 import com.example.nabd.entity.Patient;
 import com.example.nabd.entity.Patient_Medicine;
 import com.example.nabd.enums.MedicineStatus;
+import com.example.nabd.exception.NabdAPIExeption;
 import com.example.nabd.exception.ResourceNotFoundException;
 import com.example.nabd.mapper.BasisResponseMapper;
 import com.example.nabd.repository.MedicineRepo;
 import com.example.nabd.repository.Patient_MedicineRepo;
 import com.example.nabd.service.IMedicineService;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class MedicineServiceImp implements IMedicineService {
+    private final ModelMapper modelMapper;
     private final MedicineRepo medicineRepo;
     private final Patient_MedicineRepo patientMedicineRepo;
     private final BasisResponseMapper basisResponseMapper = new BasisResponseMapper();
+    PatientDto mapToDto(Patient patient){
+        return modelMapper.map(patient,PatientDto.class);
+    }
 
 
-    public MedicineServiceImp(MedicineRepo medicineRepo, Patient_MedicineRepo patientMedicineRepo) {
+    public MedicineServiceImp(ModelMapper modelMapper, MedicineRepo medicineRepo, Patient_MedicineRepo patientMedicineRepo) {
+        this.modelMapper = modelMapper;
         this.medicineRepo = medicineRepo;
         this.patientMedicineRepo = patientMedicineRepo;
     }
@@ -74,6 +83,15 @@ public class MedicineServiceImp implements IMedicineService {
     }
 
     @Override
+    public BasisResponse getPatientMedicine(Long id) {
+        Medicine fist = medicineRepo.findById(id).orElseThrow(
+                ()-> new ResourceNotFoundException("Medicine","Id",id));
+        List<Patient> patients = fist.getPatientMedicines().stream().map(Patient_Medicine::getPatient).toList();
+        List<PatientDto> patientDtoList = patients.stream().map(this::mapToDto).toList();
+        return basisResponseMapper.createBasisResponse(patientDtoList);
+    }
+
+    @Override
     public BasisResponse replaceMedicineWithAnother(Long firstId, Long secondId) {
         Medicine fist = medicineRepo.findById(firstId).orElseThrow(
                 ()-> new ResourceNotFoundException("Medicine","Id",firstId));
@@ -100,8 +118,13 @@ public class MedicineServiceImp implements IMedicineService {
     }
 
     @Override
-    public String delete(String name) {
-        Medicine medicine = medicineRepo.findByNameInEng(name);
+    public String delete(Long id) {
+        Medicine medicine = medicineRepo.findById(id).orElseThrow(
+                ()-> new ResourceNotFoundException("Medicine","Id",id));
+        if (medicine==null)
+            throw  new NabdAPIExeption("no medicine with this name" , HttpStatus.BAD_REQUEST);
+        if (medicine.getPatientMedicines().size()>0)
+            throw  new NabdAPIExeption("There are patients who take this medicine" , HttpStatus.BAD_REQUEST);
         medicineRepo.delete(medicine);
         return "medicine delete successfully";
     }
