@@ -1,6 +1,6 @@
 package com.example.nabd.enums;
 
 public enum MedicineStatus {
-    Updated ,
-    NotUpdated
+    UPDATED ,
+    NOT_UPDATED
 }

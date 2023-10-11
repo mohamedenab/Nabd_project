@@ -1,7 +1,7 @@
 package com.example.nabd.enums;
 
 public enum Insurance {
-    None,
-    StateInsurance,
-    StateExpense
+    NONE,
+    STATE_INSURANCE,
+    STATE_EXPENSE
 }
