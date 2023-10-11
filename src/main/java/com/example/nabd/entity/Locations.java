@@ -20,6 +20,6 @@ public class Locations {
     private String locationName;
     @ManyToMany(mappedBy = "locations", fetch = FetchType.LAZY)
     private List<User> users = new ArrayList<>();
-    @OneToMany(mappedBy = "patients", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "locations", fetch = FetchType.LAZY)
     private List<Patient> patient = new ArrayList<>();
 }

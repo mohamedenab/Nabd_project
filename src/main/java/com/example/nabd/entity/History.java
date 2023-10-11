@@ -30,6 +30,6 @@ public class History {
     private HistoryType historyType;
     @ManyToOne
     @JoinColumn(name = "patient_id" , nullable = false)
-    private Patient patient;
+    private Patient patientH;
 
 }

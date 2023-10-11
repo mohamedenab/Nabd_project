@@ -36,9 +36,9 @@ public class HistoryService implements IHistoryService {
         Patient patient = patientRepo.findById(patientId).orElseThrow(
                 ()-> new ResourceNotFoundException("Patient" , "id",patientId));
         History history = History.builder().comment(historyDto.getComment())
-                .link(historyDto.getLink()).patient(patient).historyType(historyDto.getHistoryType()).build();
+                .link(historyDto.getLink()).patientH(patient).historyType(historyDto.getHistoryType()).build();
         History historySaved= historyRepo.save(history);
-        HistoryDto historyDtoToSend = HistoryDto.builder().patientDto(mapToDto(historySaved.getPatient()))
+        HistoryDto historyDtoToSend = HistoryDto.builder().patientDto(mapToDto(historySaved.getPatientH()))
                 .id(historySaved.getId()).comment(historySaved.getComment())
                 .link(historySaved.getLink()).historyType(historySaved.getHistoryType()).build();
         return basisResponseMapper.createBasisResponse(historyDtoToSend);
@@ -53,7 +53,7 @@ public class HistoryService implements IHistoryService {
         history.setLink(historyDto.getLink());
         history.setUpdatedAt(new Date());
         History historySaved = historyRepo.save(history);
-        HistoryDto historyDtoToSend = HistoryDto.builder().patientDto(mapToDto(historySaved.getPatient()))
+        HistoryDto historyDtoToSend = HistoryDto.builder().patientDto(mapToDto(historySaved.getPatientH()))
                 .id(historySaved.getId()).comment(historySaved.getComment())
                 .link(historySaved.getLink()).historyType(historySaved.getHistoryType()).build();
         return basisResponseMapper.createBasisResponse(historyDtoToSend);
@@ -63,10 +63,10 @@ public class HistoryService implements IHistoryService {
     public BasisResponse getHistoryById(Long id) {
         History history = historyRepo.findById(id).orElseThrow(
                 ()-> new ResourceNotFoundException("History" , "id",id));
-        HistoryDto historyDtoToSend = HistoryDto.builder().patientDto(mapToDto(history.getPatient()))
+        HistoryDto historyDtoToSend = HistoryDto.builder().patientDto(mapToDto(history.getPatientH()))
                 .id(history.getId()).comment(history.getComment())
                 .link(history.getLink()).historyType(history.getHistoryType())
-                .patientDto(mapToDto(history.getPatient())).build();
+                .patientDto(mapToDto(history.getPatientH())).build();
         return basisResponseMapper.createBasisResponse(historyDtoToSend);
     }
 
