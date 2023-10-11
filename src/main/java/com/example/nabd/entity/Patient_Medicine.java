@@ -32,4 +32,5 @@ public class Patient_Medicine {
     int numberPastille;
     int Repetition;
     Date startIn;
+    String notes;
 }

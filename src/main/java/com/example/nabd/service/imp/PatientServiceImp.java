@@ -1,6 +1,7 @@
 package com.example.nabd.service.imp;
 
 import com.example.nabd.dtos.*;
+import com.example.nabd.entity.History;
 import com.example.nabd.entity.Medicine;
 import com.example.nabd.entity.Patient;
 import com.example.nabd.entity.Patient_Medicine;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 @Service
 public class PatientServiceImp implements IPatientService {
     private final ModelMapper modelMapper;
@@ -87,6 +89,16 @@ public class PatientServiceImp implements IPatientService {
                         .numberOfPatientTakeIt(medicine.getNumberOfPatientTakeIt()).medicineStatus(medicine.getMedicineStatus())
                         .build()).toList();
         return basisResponseMapper.createBasisResponse(medicineDtoList);
+    }
+
+    @Override
+    public BasisResponse getPatientHistory(Long id) {
+        Patient patient = patientRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Patient" , "id",id));
+        List<History> histories = patient.getHistories();
+        List<HistoryDto> historyDtos = histories.stream().map(history ->
+                HistoryDto.builder().historyType(history.getHistoryType()).comment(history.getComment())
+                        .link(history.getLink()).id(history.getId()).build()).toList();
+        return basisResponseMapper.createBasisResponse(historyDtos);
     }
 
     @Override

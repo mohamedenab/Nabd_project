@@ -68,10 +68,10 @@ public class UploadServiceImp implements UploadService {
                 if (medicine!=null){
                     medicine.setNameInEng(nameInEng);
                     medicine.setPrice(price);
-                    medicine.setMedicineStatus(MedicineStatus.Updated);
+                    medicine.setMedicineStatus(MedicineStatus.UPDATED);
                     medicines.add(medicine);
                 }else {
-                    medicine = Medicine.builder().medicineStatus(MedicineStatus.Updated)
+                    medicine = Medicine.builder().medicineStatus(MedicineStatus.UPDATED)
                             .activeSubstance(activeSubstance).price(price)
                             .nameInEng(nameInEng).nameInArb(nameInArabic)
                             .numberOfPastilleInEachBox(numberOfPastilleInEachBox.intValue()).build();
@@ -108,7 +108,7 @@ public class UploadServiceImp implements UploadService {
     private void makeAllMedicineNotUpdated(){
         List<Medicine> medicines = medicineRepo.findAll();
         for (Medicine medicine:medicines) {
-            medicine.setMedicineStatus(MedicineStatus.NotUpdated);
+            medicine.setMedicineStatus(MedicineStatus.NOT_UPDATED);
             medicineRepo.save(medicine);
         }
     }

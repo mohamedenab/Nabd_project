@@ -56,4 +56,6 @@ public class Patient {
 //    private List<Medicine> medicines = new ArrayList<>();
     @OneToMany(mappedBy = "patient",fetch = FetchType.LAZY)
     private List<Patient_Medicine> patientMedicines;
+    @OneToMany(mappedBy = "patients", fetch = FetchType.LAZY)
+    private List<History> histories = new ArrayList<>();
 }

@@ -1,5 +1,6 @@
 package com.example.nabd.dtos;
 
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -22,4 +23,5 @@ public class AddMedicineDto {
     int repetition;
     @NotNull(message = "startIn is empty")
     Date startIn;
+    String notes;
 }

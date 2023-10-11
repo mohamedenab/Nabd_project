@@ -49,13 +49,17 @@ public class PatientController {
     ){
         return ResponseEntity.ok(patientService.getPatient(pageNo,pageSize,sortBy,filterType,filterValue));
     }
-    @GetMapping("/{id}")
+    @GetMapping("/{id}/medicine")
     @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")
     public ResponseEntity<BasisResponse> getPatientMedicine(@PathVariable(name = "id") Long id){
         return ResponseEntity.ok(patientService.getPatientMedicine(id));
-
     }
-    @GetMapping("/all/{id}")
+    @GetMapping("/{id}/history")
+    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")
+    public ResponseEntity<BasisResponse> getPatientHistory(@PathVariable(name = "id") Long id){
+        return ResponseEntity.ok(patientService.getPatientHistory(id));
+    }
+    @GetMapping("/{id}/medicine/all")
     @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")
     public ResponseEntity<BasisResponse> getAllPatientMedicine(@PathVariable(name = "id") Long id){
         return ResponseEntity.ok(patientService.getAllPatientMedicine(id));

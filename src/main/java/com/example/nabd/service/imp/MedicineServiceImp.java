@@ -42,12 +42,12 @@ public class MedicineServiceImp implements IMedicineService {
 
     @Override
     public BasisResponse create(MedicineDto medicineDto) {
-        Medicine medicine = Medicine.builder().medicineStatus(MedicineStatus.Updated)
+        Medicine medicine = Medicine.builder().medicineStatus(MedicineStatus.UPDATED)
                 .price(medicineDto.getPrice()).nameInEng(medicineDto.getNameInEng())
                 .nameInArb(medicineDto.getNameInArb()).numberOfPastilleInEachBox(medicineDto.getNumberOfPastilleInEachBox())
                 .activeSubstance(medicineDto.getActiveSubstance()).build();
         Medicine savedMedicine = medicineRepo.save(medicine);
-        MedicineDto medicineDto1 =MedicineDto.builder().medicineStatus(MedicineStatus.Updated)
+        MedicineDto medicineDto1 =MedicineDto.builder().medicineStatus(MedicineStatus.UPDATED)
                 .price(savedMedicine.getPrice()).nameInEng(savedMedicine.getNameInEng())
                 .nameInArb(savedMedicine.getNameInArb()).numberOfPastilleInEachBox(savedMedicine.getNumberOfPastilleInEachBox())
                 .activeSubstance(savedMedicine.getActiveSubstance()).build();
