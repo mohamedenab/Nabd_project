@@ -9,7 +9,7 @@ public interface IPatientService {
     BasisResponse getPatient(int pageNo, int pageSize, String sortBy,  String filterType , String filterValue);
     BasisResponse getPatientById(Long id);
     BasisResponse getPatientMedicine(Long id);
-    BasisResponse getPatientHistory(Long id);
+    BasisResponse getPatientHistory(Long id , int year , int month);
     BasisResponse getAllPatientMedicine(Long id);
 
     BasisResponse updatePatient(Long id ,PatientDto patientDto);

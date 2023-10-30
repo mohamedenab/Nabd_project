@@ -108,7 +108,7 @@ public class LocationServiceImp implements ILocationsService {
         Locations locationsTo = locationsRepo.findById(to).orElseThrow(() -> new ResourceNotFoundException("Location","id",to));
         List<Patient> patientsFrom = locationsFrom.getPatient();
         for (Patient pa :patientsFrom) {
-            pa.setLocations(locationsTo);
+            pa.setLocationId(locationsTo);
             patientRepo.save(pa);
         }
         locationsTo = locationsRepo.findById(to).orElseThrow(() -> new ResourceNotFoundException("Location","id",to));

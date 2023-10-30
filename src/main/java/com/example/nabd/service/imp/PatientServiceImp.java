@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class PatientServiceImp implements IPatientService {
@@ -97,10 +96,23 @@ public class PatientServiceImp implements IPatientService {
     }
 
     @Override
-    public BasisResponse getPatientHistory(Long id) {
+    public BasisResponse getPatientHistory(Long id, int year , int month) {
         Patient patient = patientRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Patient" , "id",id));
         List<History> histories = patient.getHistories();
-        List<HistoryDto> historyDtos = histories.stream().map(history ->
+        List<HistoryDto> historyDtos = new ArrayList<>();
+        if (year!=0 && month != 0){
+            for (History history:
+                 histories) {
+                if (history.getStartDate().getMonth()==month
+                        &&history.getStartDate().getYear()==year){
+                    HistoryDto historyDto = HistoryDto.builder().historyType(history.getHistoryType()).comment(history.getComment())
+                            .link(history.getLink()).id(history.getId()).build();
+                    historyDtos.add(historyDto);
+                }
+            }
+            return basisResponseMapper.createBasisResponse(historyDtos);
+        }
+        historyDtos = histories.stream().map(history ->
                 HistoryDto.builder().historyType(history.getHistoryType()).comment(history.getComment())
                         .link(history.getLink()).id(history.getId()).build()).toList();
         return basisResponseMapper.createBasisResponse(historyDtos);

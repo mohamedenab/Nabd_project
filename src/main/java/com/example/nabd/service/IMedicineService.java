@@ -9,5 +9,6 @@ public interface IMedicineService {
     BasisResponse getMedicine(int pageNo, int pageSize, String sortBy,  String filter);
     BasisResponse getPatientMedicine(Long id);
     BasisResponse replaceMedicineWithAnother(Long firstId , Long secondId );
+    String removeMedicineFromPatient(Long medicineId , Long patentId);
     String delete(Long name);
 }

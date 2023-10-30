@@ -11,6 +11,7 @@ import com.example.nabd.exception.NabdAPIExeption;
 import com.example.nabd.exception.ResourceNotFoundException;
 import com.example.nabd.mapper.BasisResponseMapper;
 import com.example.nabd.repository.MedicineRepo;
+import com.example.nabd.repository.PatientRepo;
 import com.example.nabd.repository.Patient_MedicineRepo;
 import com.example.nabd.service.IMedicineService;
 import org.modelmapper.ModelMapper;
@@ -27,6 +28,7 @@ import java.util.List;
 public class MedicineServiceImp implements IMedicineService {
     private final ModelMapper modelMapper;
     private final MedicineRepo medicineRepo;
+    private final PatientRepo patientRepo;
     private final Patient_MedicineRepo patientMedicineRepo;
     private final BasisResponseMapper basisResponseMapper = new BasisResponseMapper();
     PatientDto mapToDto(Patient patient){
@@ -34,9 +36,10 @@ public class MedicineServiceImp implements IMedicineService {
     }
 
 
-    public MedicineServiceImp(ModelMapper modelMapper, MedicineRepo medicineRepo, Patient_MedicineRepo patientMedicineRepo) {
+    public MedicineServiceImp(ModelMapper modelMapper, MedicineRepo medicineRepo, PatientRepo patientRepo, Patient_MedicineRepo patientMedicineRepo) {
         this.modelMapper = modelMapper;
         this.medicineRepo = medicineRepo;
+        this.patientRepo = patientRepo;
         this.patientMedicineRepo = patientMedicineRepo;
     }
 
@@ -115,6 +118,17 @@ public class MedicineServiceImp implements IMedicineService {
                 .numberOfPatientTakeIt(second.getNumberOfPatientTakeIt()).medicineStatus(second.getMedicineStatus())
                 .build();
         return basisResponseMapper.createBasisResponse(medicineDto);
+    }
+
+    @Override
+    public String removeMedicineFromPatient(Long medicineId, Long patientId) {
+        Patient patient = patientRepo.findById(patientId).orElseThrow(
+                ()-> new ResourceNotFoundException("Patient" , "id",patientId));
+        Medicine medicine = medicineRepo.findById(medicineId).orElseThrow(
+                ()-> new ResourceNotFoundException("Medicine" , "id",medicineId));
+        Patient_Medicine patientMedicineCheck= patientMedicineRepo.findByPatientAndMedicine(patient,medicine);
+        patientMedicineRepo.delete(patientMedicineCheck);
+        return "Medicine deleted form patient successfully";
     }
 
     @Override

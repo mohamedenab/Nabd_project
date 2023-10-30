@@ -89,8 +89,11 @@ public class PatientController {
             responseCode = "200",
             description = "Http status 200 Create"
     )
-    public ResponseEntity<BasisResponse> getPatientHistory(@PathVariable(name = "id") Long id){
-        return ResponseEntity.ok(patientService.getPatientHistory(id));
+    public ResponseEntity<BasisResponse> getPatientHistory(
+            @PathVariable(name = "id") Long id ,
+            @RequestParam(name = "year") int year,
+            @RequestParam(name = "month") int month){
+        return ResponseEntity.ok(patientService.getPatientHistory(id,year,month));
     }
     @GetMapping("/{id}/medicine/all")
     @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")

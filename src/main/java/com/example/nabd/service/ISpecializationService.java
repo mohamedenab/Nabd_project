@@ -8,5 +8,6 @@ public interface ISpecializationService {
     BasisResponse createSpecialization(SpecializationDto specializationDto);
     BasisResponse getSpecializations();
     BasisResponse updateSpecialization(Long id , SpecializationDto specializationDto);
+    String deleteMedicineBySpecialization(Long medicineId , Long specializationId);
     String deleteSpecialization(Long id);
 }

@@ -50,6 +50,13 @@ public class MedicineController {
         return ResponseEntity.ok(medicineService.replaceMedicineWithAnother(firstId,secondId));
 
     }
+    @DeleteMapping("/{medicineId}/patient/{patientId}")
+    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU')")
+    public ResponseEntity<String> deleteMedicineFromPatient(
+            @PathVariable(name = "medicineId") Long medicineId,
+            @PathVariable(name = "patientId") Long patientId){
+        return ResponseEntity.ok(medicineService.removeMedicineFromPatient(medicineId,patientId));
+    }
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasRole('ROLE_SU')")
     public ResponseEntity<String> deleteMedicineByName(@PathVariable(name = "id") Long medicineid){
