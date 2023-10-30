@@ -40,6 +40,13 @@ public class PatientController {
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")
+    @Operation(
+            summary = "get Patient "
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Http status 200 Create"
+    )
     public ResponseEntity<BasisResponse> getPatient(
             @RequestParam(value = "pageNo",defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,required = false) int pageNo,
             @RequestParam(value = "pageSize",defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
@@ -49,24 +56,64 @@ public class PatientController {
     ){
         return ResponseEntity.ok(patientService.getPatient(pageNo,pageSize,sortBy,filterType,filterValue));
     }
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")
+    @Operation(
+            summary = "get Patient by id"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Http status 200 Create"
+    )
+    public ResponseEntity<BasisResponse> getPatientById(@PathVariable(name = "id") Long id){
+        return ResponseEntity.ok(patientService.getPatientById(id));
+    }
     @GetMapping("/{id}/medicine")
     @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")
+    @Operation(
+            summary = "get Patient medicine"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Http status 200 Create"
+    )
     public ResponseEntity<BasisResponse> getPatientMedicine(@PathVariable(name = "id") Long id){
         return ResponseEntity.ok(patientService.getPatientMedicine(id));
     }
     @GetMapping("/{id}/history")
     @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")
+    @Operation(
+            summary = "get Patient history"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Http status 200 Create"
+    )
     public ResponseEntity<BasisResponse> getPatientHistory(@PathVariable(name = "id") Long id){
         return ResponseEntity.ok(patientService.getPatientHistory(id));
     }
     @GetMapping("/{id}/medicine/all")
     @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")
+    @Operation(
+            summary = "get Patient all medicine"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Http status 200 Create"
+    )
     public ResponseEntity<BasisResponse> getAllPatientMedicine(@PathVariable(name = "id") Long id){
         return ResponseEntity.ok(patientService.getAllPatientMedicine(id));
 
     }
-    @GetMapping("/{patientID}/medicine/{medicineId}")
+    @PostMapping("/{patientID}/medicine/{medicineId}")
     @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")
+    @Operation(
+            summary = "add Patient medicine"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Http status 200 Create"
+    )
     public ResponseEntity<BasisResponse> addMedicineToPatient(
             @PathVariable(name = "patientID") Long patientId,
             @PathVariable(name = "medicineId") Long medicineId,
@@ -77,13 +124,39 @@ public class PatientController {
     }
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_SU')")
+    @Operation(
+            summary = "update Patient"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Http status 200 Create"
+    )
     public ResponseEntity<BasisResponse> updatePatient(
             @PathVariable(name = "id") Long id,
             @Valid @RequestBody PatientDto patientDto ){
         return  ResponseEntity.ok(patientService.updatePatient(id,patientDto));
     }
+    @PutMapping("/deactivate/{id}")
+    @PreAuthorize("hasRole('ROLE_SU')")
+    @Operation(
+            summary = "deactivate patient"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Http status 200 Create"
+    )
+    public ResponseEntity<String> deactivatePatient(@PathVariable(name = "id") Long id){
+        return ResponseEntity.ok(patientService.deactivatePatient(id));
+    }
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_SU')")
+    @Operation(
+            summary = "delete Patient"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Http status 200 Create"
+    )
     public ResponseEntity<String> deletePatient(@PathVariable(name = "id") Long id){
         return  ResponseEntity.ok(patientService.deletePatient(id));
     }

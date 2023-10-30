@@ -18,6 +18,8 @@ public class Specialization {
     private Long id;
     @Column(nullable = false)
     private String name;
-    @OneToMany(mappedBy = "specialization", fetch = FetchType.LAZY,cascade = CascadeType.ALL, orphanRemoval = true)
+//    @OneToMany(mappedBy = "specialization", fetch = FetchType.LAZY,cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Patient> patient = new ArrayList<>();
+    @ManyToMany(mappedBy = "specializations", fetch = FetchType.LAZY)
     private List<Patient> patient = new ArrayList<>();
 }

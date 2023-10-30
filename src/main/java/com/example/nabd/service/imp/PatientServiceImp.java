@@ -1,10 +1,7 @@
 package com.example.nabd.service.imp;
 
 import com.example.nabd.dtos.*;
-import com.example.nabd.entity.History;
-import com.example.nabd.entity.Medicine;
-import com.example.nabd.entity.Patient;
-import com.example.nabd.entity.Patient_Medicine;
+import com.example.nabd.entity.*;
 import com.example.nabd.exception.NabdAPIExeption;
 import com.example.nabd.exception.ResourceNotFoundException;
 import com.example.nabd.mapper.BasisResponseMapper;
@@ -23,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PatientServiceImp implements IPatientService {
@@ -64,6 +62,13 @@ public class PatientServiceImp implements IPatientService {
         }
         List<PatientDto> patientDtoList = patientList.stream().map(this::mapToDto).toList();
         return basisResponseMapper.createBasisResponseForPatient(patientDtoList,pageNo,patients);
+    }
+
+    @Override
+    public BasisResponse getPatientById(Long id) {
+        Patient patient = patientRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Patient" , "id",id));
+        PatientDto patientDto= mapToDto(patient);
+        return basisResponseMapper.createBasisResponse(patientDto);
     }
 
     @Override
@@ -157,7 +162,15 @@ public class PatientServiceImp implements IPatientService {
     public String deletePatient(Long id) {
         Patient patient = patientRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Patient" , "id",id));
         patientRepo.delete(patient);
-        return "Patient delete successfully";
+        return "Patient deleted successfully";
+    }
+
+    @Override
+    public String deactivatePatient(Long id) {
+        Patient patient = patientRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Patient" , "id",id));
+        patient.setActive(false);
+        patientRepo.save(patient);
+        return "Patient deactivated successfully";
     }
 
     private List<PatientDto> getPatientFilter( String filterType , String filterValue , List<Patient> patientList){
@@ -174,12 +187,21 @@ public class PatientServiceImp implements IPatientService {
             }
             case "locationsId" -> {
                 List<Patient> patients = patientList.stream().filter(
-                        patient -> patient.getLocations().getLocationName().equals(filterValue)).toList();
+                        patient -> patient.getLocationId().getLocationName().equals(filterValue)).toList();
                 return patients.stream().map(this::mapToDto).toList();
             }
             case "SpecializationId" -> {
-                List<Patient> patients = patientList.stream().filter(
-                        patient -> patient.getSpecialization().getName().equals(filterValue)).toList();
+                List<Patient> patients = new ArrayList<>();
+                for (Patient patient:
+                     patientList) {
+                    for (Specialization spe:
+                         patient.getSpecializations()) {
+                        if (spe.getName().equals(filterValue)){
+                            patients.add(patient);
+                            break;
+                        }
+                    }
+                }
                 return patients.stream().map(this::mapToDto).toList();
             }
             default -> {

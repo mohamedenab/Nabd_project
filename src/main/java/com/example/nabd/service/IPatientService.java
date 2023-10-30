@@ -7,6 +7,7 @@ import com.example.nabd.dtos.PatientDto;
 public interface IPatientService {
     BasisResponse createPatient(PatientDto patientDto);
     BasisResponse getPatient(int pageNo, int pageSize, String sortBy,  String filterType , String filterValue);
+    BasisResponse getPatientById(Long id);
     BasisResponse getPatientMedicine(Long id);
     BasisResponse getPatientHistory(Long id);
     BasisResponse getAllPatientMedicine(Long id);
@@ -14,4 +15,5 @@ public interface IPatientService {
     BasisResponse updatePatient(Long id ,PatientDto patientDto);
     BasisResponse addMedicine(Long medicineId , Long patientId , AddMedicineDto addMedicineDto);
     String deletePatient(Long id);
+    String deactivatePatient(Long id);
 }

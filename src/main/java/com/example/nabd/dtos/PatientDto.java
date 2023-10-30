@@ -39,6 +39,7 @@ public class PatientDto {
     private String discoveryDetailsWithImageLink;
     private Insurance thereInsurance;
     private Long locationsId;
-    private Long SpecializationId;
+    private List<Long> specializations;
+    private boolean active;
 
 }

@@ -41,14 +41,20 @@ public class Patient {
     private String dateOfBeginningOfDecision;
     private String dateOfHelp;
     private String discoveryDetailsWithImageLink;
+    private boolean active = true;
     @Enumerated(EnumType.STRING)
     private Insurance thereInsurance;
     @ManyToOne
     @JoinColumn(name = "location_id")
-    private Locations locations;
-    @ManyToOne
-    @JoinColumn(name = "specialization_id")
-    private Specialization specialization;
+    private Locations locationId;
+//    @ManyToOne
+//    @JoinColumn(name = "specialization_id")
+//    private Specialization specialization;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "patient_specialization",
+            joinColumns = @JoinColumn(name = "patient_id"),
+            inverseJoinColumns = @JoinColumn(name = "specialization_id"))
+    List<Specialization> specializations = new ArrayList<>();
 //    @ManyToMany(fetch = FetchType.LAZY)
 //    @JoinTable(name = "patient_medicine",
 //            joinColumns = @JoinColumn(name = "patient_id"),

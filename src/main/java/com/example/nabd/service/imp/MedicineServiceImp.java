@@ -60,7 +60,7 @@ public class MedicineServiceImp implements IMedicineService {
             System.out.println(filter);
             List<Medicine>medicineslist = medicineRepo.findAll();
             List<Medicine> medicineFilterList = medicineslist.stream().filter(medicine ->
-                    medicine.getNameInEng().startsWith(filter)).toList();
+                    medicine.getNameInEng().contains(filter)).toList();
             List<MedicineDto> medicineDtoList = medicineFilterList.stream().map(medicine -> MedicineDto.builder()
                     .price(medicine.getPrice()).nameInEng(medicine.getNameInEng())
                     .nameInArb(medicine.getNameInArb()).numberOfPastilleInEachBox(medicine.getNumberOfPastilleInEachBox())
