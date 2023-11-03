@@ -10,11 +10,11 @@ import com.example.nabd.enums.MedicineStatus;
 import com.example.nabd.exception.NabdAPIExeption;
 import com.example.nabd.exception.ResourceNotFoundException;
 import com.example.nabd.mapper.BasisResponseMapper;
+import com.example.nabd.mapper.PatientMapper;
 import com.example.nabd.repository.MedicineRepo;
 import com.example.nabd.repository.PatientRepo;
 import com.example.nabd.repository.Patient_MedicineRepo;
 import com.example.nabd.service.IMedicineService;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,21 +26,18 @@ import java.util.List;
 
 @Service
 public class MedicineServiceImp implements IMedicineService {
-    private final ModelMapper modelMapper;
     private final MedicineRepo medicineRepo;
     private final PatientRepo patientRepo;
     private final Patient_MedicineRepo patientMedicineRepo;
+    private final PatientMapper patientMapper;
     private final BasisResponseMapper basisResponseMapper = new BasisResponseMapper();
-    PatientDto mapToDto(Patient patient){
-        return modelMapper.map(patient,PatientDto.class);
-    }
 
 
-    public MedicineServiceImp(ModelMapper modelMapper, MedicineRepo medicineRepo, PatientRepo patientRepo, Patient_MedicineRepo patientMedicineRepo) {
-        this.modelMapper = modelMapper;
+    public MedicineServiceImp(MedicineRepo medicineRepo, PatientRepo patientRepo, Patient_MedicineRepo patientMedicineRepo, PatientMapper patientMapper) {
         this.medicineRepo = medicineRepo;
         this.patientRepo = patientRepo;
         this.patientMedicineRepo = patientMedicineRepo;
+        this.patientMapper = patientMapper;
     }
 
     @Override
@@ -90,7 +87,7 @@ public class MedicineServiceImp implements IMedicineService {
         Medicine fist = medicineRepo.findById(id).orElseThrow(
                 ()-> new ResourceNotFoundException("Medicine","Id",id));
         List<Patient> patients = fist.getPatientMedicines().stream().map(Patient_Medicine::getPatient).toList();
-        List<PatientDto> patientDtoList = patients.stream().map(this::mapToDto).toList();
+        List<PatientDto> patientDtoList = patients.stream().map(patientMapper::EntityToDto).toList();
         return basisResponseMapper.createBasisResponse(patientDtoList);
     }
 

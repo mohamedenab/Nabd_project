@@ -2,15 +2,14 @@ package com.example.nabd.service.imp;
 
 import com.example.nabd.dtos.BasisResponse;
 import com.example.nabd.dtos.HistoryDto;
-import com.example.nabd.dtos.PatientDto;
 import com.example.nabd.entity.History;
 import com.example.nabd.entity.Patient;
 import com.example.nabd.exception.ResourceNotFoundException;
 import com.example.nabd.mapper.BasisResponseMapper;
+import com.example.nabd.mapper.PatientMapper;
 import com.example.nabd.repository.HistoryRepo;
 import com.example.nabd.repository.PatientRepo;
 import com.example.nabd.service.IHistoryService;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -19,16 +18,13 @@ import java.util.Date;
 public class HistoryService implements IHistoryService {
     private final PatientRepo patientRepo;
     private final HistoryRepo historyRepo;
-    private final ModelMapper modelMapper;
+    private final PatientMapper patientMapper;
     private final BasisResponseMapper basisResponseMapper = new BasisResponseMapper();
 
-    public HistoryService(PatientRepo patientRepo, HistoryRepo historyRepo, ModelMapper modelMapper) {
+    public HistoryService(PatientRepo patientRepo, HistoryRepo historyRepo, PatientMapper patientMapper) {
         this.patientRepo = patientRepo;
         this.historyRepo = historyRepo;
-        this.modelMapper = modelMapper;
-    }
-    PatientDto mapToDto(Patient patient){
-        return modelMapper.map(patient,PatientDto.class);
+        this.patientMapper = patientMapper;
     }
 
     @Override
@@ -38,7 +34,7 @@ public class HistoryService implements IHistoryService {
         History history = History.builder().comment(historyDto.getComment())
                 .link(historyDto.getLink()).patientH(patient).historyType(historyDto.getHistoryType()).build();
         History historySaved= historyRepo.save(history);
-        HistoryDto historyDtoToSend = HistoryDto.builder().patientDto(mapToDto(historySaved.getPatientH()))
+        HistoryDto historyDtoToSend = HistoryDto.builder().patientDto(patientMapper.EntityToDto(historySaved.getPatientH()))
                 .id(historySaved.getId()).comment(historySaved.getComment())
                 .link(historySaved.getLink()).historyType(historySaved.getHistoryType()).build();
         return basisResponseMapper.createBasisResponse(historyDtoToSend);
@@ -53,7 +49,7 @@ public class HistoryService implements IHistoryService {
         history.setLink(historyDto.getLink());
         history.setUpdatedAt(new Date());
         History historySaved = historyRepo.save(history);
-        HistoryDto historyDtoToSend = HistoryDto.builder().patientDto(mapToDto(historySaved.getPatientH()))
+        HistoryDto historyDtoToSend = HistoryDto.builder().patientDto(patientMapper.EntityToDto(historySaved.getPatientH()))
                 .id(historySaved.getId()).comment(historySaved.getComment())
                 .link(historySaved.getLink()).historyType(historySaved.getHistoryType()).build();
         return basisResponseMapper.createBasisResponse(historyDtoToSend);
@@ -63,10 +59,10 @@ public class HistoryService implements IHistoryService {
     public BasisResponse getHistoryById(Long id) {
         History history = historyRepo.findById(id).orElseThrow(
                 ()-> new ResourceNotFoundException("History" , "id",id));
-        HistoryDto historyDtoToSend = HistoryDto.builder().patientDto(mapToDto(history.getPatientH()))
+        HistoryDto historyDtoToSend = HistoryDto.builder().patientDto(patientMapper.EntityToDto(history.getPatientH()))
                 .id(history.getId()).comment(history.getComment())
                 .link(history.getLink()).historyType(history.getHistoryType())
-                .patientDto(mapToDto(history.getPatientH())).build();
+                .patientDto(patientMapper.EntityToDto(history.getPatientH())).build();
         return basisResponseMapper.createBasisResponse(historyDtoToSend);
     }
 

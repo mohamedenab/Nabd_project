@@ -5,6 +5,7 @@ import com.example.nabd.entity.*;
 import com.example.nabd.exception.NabdAPIExeption;
 import com.example.nabd.exception.ResourceNotFoundException;
 import com.example.nabd.mapper.BasisResponseMapper;
+import com.example.nabd.mapper.PatientMapper;
 import com.example.nabd.repository.MedicineRepo;
 import com.example.nabd.repository.PatientRepo;
 import com.example.nabd.repository.Patient_MedicineRepo;
@@ -27,26 +28,22 @@ public class PatientServiceImp implements IPatientService {
     private final PatientRepo patientRepo;
     private final MedicineRepo medicineRepo;
     private final Patient_MedicineRepo patientMedicineRepo;
+    private final PatientMapper patientMapper;
     private final BasisResponseMapper basisResponseMapper = new BasisResponseMapper();
 
-    public PatientServiceImp(ModelMapper modelMapper, PatientRepo patientRepo, MedicineRepo medicineRepo, Patient_MedicineRepo patientMedicineRepo) {
+    public PatientServiceImp(ModelMapper modelMapper, PatientRepo patientRepo, MedicineRepo medicineRepo, Patient_MedicineRepo patientMedicineRepo, PatientMapper patientMapper) {
         this.modelMapper = modelMapper;
         this.patientRepo = patientRepo;
         this.medicineRepo = medicineRepo;
         this.patientMedicineRepo = patientMedicineRepo;
+        this.patientMapper = patientMapper;
     }
 
-    PatientDto mapToDto(Patient patient){
-        return modelMapper.map(patient,PatientDto.class);
-    }
-    Patient mapToEntity(PatientDto patientDto){
-        return modelMapper.map(patientDto,Patient.class);
-    }
     @Override
     public BasisResponse createPatient(PatientDto patientDto) {
-        Patient patient = mapToEntity(patientDto);
+        Patient patient = patientMapper.DtoToEntity(patientDto);
         Patient savedPatient= patientRepo.save(patient);
-        return basisResponseMapper.createBasisResponse(mapToDto(savedPatient));
+        return basisResponseMapper.createBasisResponse(patientMapper.EntityToDto(savedPatient));
     }
 
     @Override
@@ -59,14 +56,14 @@ public class PatientServiceImp implements IPatientService {
             return basisResponseMapper.createBasisResponseForPatient(
                     getPatientFilter(filterType,filterValue,patientList),pageNo,patients);
         }
-        List<PatientDto> patientDtoList = patientList.stream().map(this::mapToDto).toList();
+        List<PatientDto> patientDtoList = patientList.stream().map(patientMapper::EntityToDto).toList();
         return basisResponseMapper.createBasisResponseForPatient(patientDtoList,pageNo,patients);
     }
 
     @Override
     public BasisResponse getPatientById(Long id) {
         Patient patient = patientRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Patient" , "id",id));
-        PatientDto patientDto= mapToDto(patient);
+        PatientDto patientDto= patientMapper.EntityToDto(patient);
         return basisResponseMapper.createBasisResponse(patientDto);
     }
 
@@ -138,10 +135,10 @@ public class PatientServiceImp implements IPatientService {
     @Override
     public BasisResponse updatePatient(Long id, PatientDto patientDto) {
         Patient patient = patientRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Patient" , "id",id));
-        Patient toSave = mapToEntity(patientDto);
+        Patient toSave = patientMapper.DtoToEntity(patientDto);
         toSave.setId(patient.getId());
         patientRepo.save(toSave);
-        return basisResponseMapper.createBasisResponse(mapToDto(toSave));
+        return basisResponseMapper.createBasisResponse(patientMapper.EntityToDto(toSave));
     }
 
     @Override
@@ -190,17 +187,17 @@ public class PatientServiceImp implements IPatientService {
             case "name" -> {
                 List<Patient> patients = patientList.stream().filter(
                         patient -> patient.getName().equals(filterValue)).toList();
-                return patients.stream().map(this::mapToDto).toList();
+                return patients.stream().map(patientMapper::EntityToDto).toList();
             }
             case "numberOfFamilyMembers" -> {
                 List<Patient> patients = patientList.stream().filter(
                         patient -> patient.getNumberOfFamilyMembers() == Integer.parseInt(filterValue)).toList();
-                return patients.stream().map(this::mapToDto).toList();
+                return patients.stream().map(patientMapper::EntityToDto).toList();
             }
             case "locationsId" -> {
                 List<Patient> patients = patientList.stream().filter(
                         patient -> patient.getLocationId().getLocationName().equals(filterValue)).toList();
-                return patients.stream().map(this::mapToDto).toList();
+                return patients.stream().map(patientMapper::EntityToDto).toList();
             }
             case "SpecializationId" -> {
                 List<Patient> patients = new ArrayList<>();
@@ -214,7 +211,7 @@ public class PatientServiceImp implements IPatientService {
                         }
                     }
                 }
-                return patients.stream().map(this::mapToDto).toList();
+                return patients.stream().map(patientMapper::EntityToDto).toList();
             }
             default -> {
                 return null;

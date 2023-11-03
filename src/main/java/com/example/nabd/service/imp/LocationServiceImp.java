@@ -85,7 +85,7 @@ public class LocationServiceImp implements ILocationsService {
         Sort sort = Sort.by(sortBy);
         Pageable pageable = PageRequest.of(pageNo,pageSize,sort);
         Locations locations = locationsRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Location","id",id));
-        Page<Patient> patientList = patientRepo.findByLocations(locations , pageable);
+        Page<Patient> patientList = patientRepo.findByLocationId(locations , pageable);
         List<Patient> patients = patientList.getContent();
         List<PatientDto> patientDtoList = patients.stream().map(patient -> PatientDto.builder()
                 .name(patient.getName()).mobileNumbers(patient.getMobileNumbers())
