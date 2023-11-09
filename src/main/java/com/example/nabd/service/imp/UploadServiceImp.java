@@ -33,16 +33,16 @@ public class UploadServiceImp implements UploadService {
             int ii=0;
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
-                if (row.equals(" ")){
-                    break;
-                }
+//                if (row){
+//                    break;
+//                }
                 List<String> rowData = new ArrayList<>();
                 Iterator<Cell> cellIterator = row.cellIterator();
                 int index = 0;
                 while (cellIterator.hasNext()) {
                     Cell cell = cellIterator.next();
                     String cellValue = getCellValueAsString(cell );
-                    if (cellValue.equals(" ")){
+                    if (cellValue.isEmpty()){
                         break;
                     }
                     rowData.add(cellValue);
