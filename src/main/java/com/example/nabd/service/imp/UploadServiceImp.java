@@ -33,18 +33,12 @@ public class UploadServiceImp implements UploadService {
             int ii=0;
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
-//                if (row){
-//                    break;
-//                }
                 List<String> rowData = new ArrayList<>();
                 Iterator<Cell> cellIterator = row.cellIterator();
                 int index = 0;
                 while (cellIterator.hasNext()) {
                     Cell cell = cellIterator.next();
                     String cellValue = getCellValueAsString(cell );
-                    if (cellValue.isEmpty()){
-                        break;
-                    }
                     rowData.add(cellValue);
                     if (index==2||index==3){
                         if (!isDouble(cellValue)&&ii>0){
@@ -60,7 +54,7 @@ public class UploadServiceImp implements UploadService {
             int i =0;
             for (List<String> row: rows) {
                 i++;
-                if (row.size()<4) break;
+                if (row.size()<4) continue;
                 String nameInEng = row.get(0);
                 String nameInArabic = row.get(1);
                 Double price = Double.valueOf(row.get(2));
