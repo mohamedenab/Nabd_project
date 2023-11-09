@@ -60,7 +60,7 @@ public class UploadServiceImp implements UploadService {
             int i =0;
             for (List<String> row: rows) {
                 i++;
-                if (row.get(0).isEmpty()||row.get(1).isEmpty()||row.get(2).isEmpty()||row.get(3).isEmpty()) break;
+                if (row.size()<4) break;
                 String nameInEng = row.get(0);
                 String nameInArabic = row.get(1);
                 Double price = Double.valueOf(row.get(2));
