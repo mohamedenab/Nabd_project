@@ -51,7 +51,6 @@ public class UploadServiceImp implements UploadService {
                 rows.add(rowData);
                 ii++;
             }
-            System.out.println(rows.get(99).get(2));
             rows.remove(0);
             int i =0;
             for (List<String> row: rows) {
