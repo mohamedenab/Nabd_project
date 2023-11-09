@@ -42,6 +42,9 @@ public class UploadServiceImp implements UploadService {
                 while (cellIterator.hasNext()) {
                     Cell cell = cellIterator.next();
                     String cellValue = getCellValueAsString(cell );
+                    if (cellValue.equals(" ")){
+                        break;
+                    }
                     rowData.add(cellValue);
                     if (index==2||index==3){
                         if (!isDouble(cellValue)&&ii>0){
