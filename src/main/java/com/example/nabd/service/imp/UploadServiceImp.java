@@ -33,6 +33,9 @@ public class UploadServiceImp implements UploadService {
             int ii=0;
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
+                if (row.equals(" ")){
+                    break;
+                }
                 List<String> rowData = new ArrayList<>();
                 Iterator<Cell> cellIterator = row.cellIterator();
                 int index = 0;
@@ -40,7 +43,6 @@ public class UploadServiceImp implements UploadService {
                     Cell cell = cellIterator.next();
                     String cellValue = getCellValueAsString(cell );
                     rowData.add(cellValue);
-                    System.out.println(cellValue);
                     if (index==2||index==3){
                         if (!isDouble(cellValue)&&ii>0){
                             throw new NabdAPIExeption("format error"+" in row "+(ii-1),HttpStatus.BAD_REQUEST);
