@@ -69,16 +69,18 @@ public class UploadServiceImp implements UploadService {
                     medicine.setNameInEng(nameInEng);
                     medicine.setPrice(price);
                     medicine.setMedicineStatus(MedicineStatus.UPDATED);
+                    medicineRepo.save(medicine);
                     medicines.add(medicine);
                 }else {
                     medicine = Medicine.builder().medicineStatus(MedicineStatus.UPDATED)
                             .activeSubstance(activeSubstance).price(price)
                             .nameInEng(nameInEng).nameInArb(nameInArabic)
                             .numberOfPastilleInEachBox(numberOfPastilleInEachBox.intValue()).build();
+                    medicineRepo.save(medicine);
                     medicines.add(medicine);
                 }
             }
-            medicineRepo.saveAll(medicines);
+//            medicineRepo.saveAll(medicines);
         } catch (IOException e) {
             e.printStackTrace();
             return "Failed to upload the Excel file.";

@@ -29,7 +29,7 @@ public class Patient {
     @Enumerated(EnumType.STRING)
     private MaritalStatus maritalStatus;
     @ElementCollection
-    @CollectionTable(name = "user_phone_numbers", joinColumns = @JoinColumn(name = "user_id"))
+    @CollectionTable(name = "patient_phone_numbers", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "phone_number" ,nullable = false)
     private List<String> mobileNumbers;
     @Column(nullable = false)
