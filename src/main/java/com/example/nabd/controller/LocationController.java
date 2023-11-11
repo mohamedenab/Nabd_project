@@ -41,6 +41,7 @@ public class LocationController {
     ){
         return ResponseEntity.ok(locationsService.getLocations(pageNo, pageSize, sortBy));
     }
+
     @PostMapping
     @PreAuthorize("hasRole('ROLE_SU')")
     @Operation(
