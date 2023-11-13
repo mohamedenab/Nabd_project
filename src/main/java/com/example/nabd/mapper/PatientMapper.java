@@ -1,6 +1,8 @@
 package com.example.nabd.mapper;
 
+import com.example.nabd.dtos.LocationDto;
 import com.example.nabd.dtos.PatientDto;
+import com.example.nabd.dtos.SpecializationDto;
 import com.example.nabd.entity.Locations;
 import com.example.nabd.entity.Patient;
 import com.example.nabd.entity.Specialization;
@@ -40,9 +42,14 @@ public class PatientMapper {
     }
     public PatientDto EntityToDto(Patient patient){
         List<Long> specializationsList =new ArrayList<>();
+        List<SpecializationDto> specializationDtoList = new ArrayList<>();
+        LocationDto locationDto = LocationDto.builder().locationName(patient.getLocationId().getLocationName())
+                .id(patient.getLocationId().getId()).build();
         for (Specialization s:
              patient.getSpecializations()) {
             specializationsList.add(s.getId());
+            SpecializationDto specializationDto = SpecializationDto.builder().id(s.getId()).name(s.getName()).build();
+            specializationDtoList.add(specializationDto);
         }
         return PatientDto.builder().name(patient.getName()).nameOfParent(patient.getNameOfParent())
                 .nationalID(patient.getNationalID()).numberOfFamilyMembers(patient.getNumberOfFamilyMembers())
@@ -53,7 +60,8 @@ public class PatientMapper {
                 .dateOfBeginningOfDecision(patient.getDateOfBeginningOfDecision())
                 .dateOfHelp(patient.getDateOfHelp()).discoveryDetailsWithImageLink(patient.getDiscoveryDetailsWithImageLink())
                 .active(patient.isActive()).thereInsurance(patient.getThereInsurance())
-                .locationsId(patient.getLocationId().getId()).specializations(specializationsList).build();
+                .locationsId(patient.getLocationId().getId()).specializations(specializationsList)
+                .locationDto(locationDto).specializationDto(specializationDtoList).build();
 
     }
 }

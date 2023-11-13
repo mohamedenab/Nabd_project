@@ -1,5 +1,6 @@
 package com.example.nabd.dtos;
 
+import com.example.nabd.entity.Locations;
 import com.example.nabd.enums.Insurance;
 import com.example.nabd.enums.MaritalStatus;
 import jakarta.validation.constraints.*;
@@ -40,6 +41,8 @@ public class PatientDto {
     private Insurance thereInsurance;
     private Long locationsId;
     private List<Long> specializations;
+    private LocationDto locationDto;
+    private List<SpecializationDto> specializationDto;
     private boolean active;
 
 }

@@ -61,7 +61,7 @@ public class MedicineServiceImp implements IMedicineService {
             List<Medicine>medicineslist = medicineRepo.findAll();
             List<Medicine> medicineFilterList = medicineslist.stream().filter(medicine ->
                     medicine.getNameInEng().contains(filter)).toList();
-            List<MedicineDto> medicineDtoList = medicineFilterList.stream().map(medicine -> MedicineDto.builder()
+            List<MedicineDto> medicineDtoList = medicineFilterList.stream().map(medicine -> MedicineDto.builder().id(medicine.getId())
                     .price(medicine.getPrice()).nameInEng(medicine.getNameInEng())
                     .nameInArb(medicine.getNameInArb()).numberOfPastilleInEachBox(medicine.getNumberOfPastilleInEachBox())
                     .activeSubstance(medicine.getActiveSubstance())
@@ -73,8 +73,8 @@ public class MedicineServiceImp implements IMedicineService {
         Pageable pageable = PageRequest.of(pageNo,pageSize,sort);
         Page<Medicine> medicines = medicineRepo.findAll(pageable);
         List<Medicine> medicineslist = medicines.getContent();
-        List<MedicineDto> medicineDtoList = medicineslist.stream().map(medicine -> MedicineDto.builder().
-                price(medicine.getPrice()).nameInEng(medicine.getNameInEng())
+        List<MedicineDto> medicineDtoList = medicineslist.stream().map(medicine -> MedicineDto.builder().id(medicine.getId())
+                .price(medicine.getPrice()).nameInEng(medicine.getNameInEng())
                 .nameInArb(medicine.getNameInArb()).numberOfPastilleInEachBox(medicine.getNumberOfPastilleInEachBox())
                 .activeSubstance(medicine.getActiveSubstance())
                 .numberOfPatientTakeIt(medicine.getNumberOfPatientTakeIt()).medicineStatus(medicine.getMedicineStatus())

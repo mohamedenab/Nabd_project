@@ -28,10 +28,13 @@ public class HistoryService implements IHistoryService {
     }
 
     @Override
-    public BasisResponse addHistory(HistoryDto historyDto, Long patientId) {
+    public BasisResponse addHistory(HistoryDto historyDto, Long patientId, int year, int month) {
+        Date newDate= new Date() ;
+        newDate.setMonth(month);
+        newDate.setYear(year);
         Patient patient = patientRepo.findById(patientId).orElseThrow(
                 ()-> new ResourceNotFoundException("Patient" , "id",patientId));
-        History history = History.builder().comment(historyDto.getComment()).startDate(new Date()).updatedAt(new Date())
+        History history = History.builder().comment(historyDto.getComment()).startDate(newDate).updatedAt(newDate)
                 .link(historyDto.getLink()).patientH(patient).historyType(historyDto.getHistoryType()).build();
         History historySaved= historyRepo.save(history);
         HistoryDto historyDtoToSend = HistoryDto.builder().patientDto(patientMapper.EntityToDto(historySaved.getPatientH()))

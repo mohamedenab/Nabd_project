@@ -3,6 +3,7 @@ package com.example.nabd.controller;
 import com.example.nabd.dtos.BasisResponse;
 import com.example.nabd.dtos.HistoryDto;
 import com.example.nabd.service.IHistoryService;
+import com.example.nabd.utility.AppConstants;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +22,11 @@ public class HistoryController {
     @PostMapping("/patient/{id}")
     @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")
     public ResponseEntity<BasisResponse> createHistoryForUser(
-            @PathVariable(name = "id") Long id , @Valid @RequestBody HistoryDto historyDto){
-        return new ResponseEntity<>(historyService.addHistory(historyDto,id), HttpStatus.CREATED);
+            @PathVariable(name = "id") Long id , @Valid @RequestBody HistoryDto historyDto,
+            @RequestParam(value = "year") int year,
+            @RequestParam(value = "month") int month
+    ){
+        return new ResponseEntity<>(historyService.addHistory(historyDto,id,year,month), HttpStatus.CREATED);
     }
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")

@@ -11,7 +11,7 @@ public interface IPatientService {
     BasisResponse getPatientMedicine(Long id);
     BasisResponse getPatientHistory(Long id , int year , int month);
     BasisResponse getAllPatientMedicine(Long id);
-
+    BasisResponse getPatientDateHistory(Long id);
     BasisResponse updatePatient(Long id ,PatientDto patientDto);
     BasisResponse addMedicine(Long medicineId , Long patientId , AddMedicineDto addMedicineDto);
     String deletePatient(Long id);

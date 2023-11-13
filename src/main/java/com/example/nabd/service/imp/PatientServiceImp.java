@@ -6,6 +6,7 @@ import com.example.nabd.exception.NabdAPIExeption;
 import com.example.nabd.exception.ResourceNotFoundException;
 import com.example.nabd.mapper.BasisResponseMapper;
 import com.example.nabd.mapper.PatientMapper;
+import com.example.nabd.repository.HistoryRepo;
 import com.example.nabd.repository.MedicineRepo;
 import com.example.nabd.repository.PatientRepo;
 import com.example.nabd.repository.Patient_MedicineRepo;
@@ -29,14 +30,17 @@ public class PatientServiceImp implements IPatientService {
     private final MedicineRepo medicineRepo;
     private final Patient_MedicineRepo patientMedicineRepo;
     private final PatientMapper patientMapper;
+    private final HistoryRepo historyRepo;
     private final BasisResponseMapper basisResponseMapper = new BasisResponseMapper();
 
-    public PatientServiceImp(ModelMapper modelMapper, PatientRepo patientRepo, MedicineRepo medicineRepo, Patient_MedicineRepo patientMedicineRepo, PatientMapper patientMapper) {
+    public PatientServiceImp(ModelMapper modelMapper, PatientRepo patientRepo, MedicineRepo medicineRepo,
+                             Patient_MedicineRepo patientMedicineRepo, PatientMapper patientMapper, HistoryRepo historyRepo) {
         this.modelMapper = modelMapper;
         this.patientRepo = patientRepo;
         this.medicineRepo = medicineRepo;
         this.patientMedicineRepo = patientMedicineRepo;
         this.patientMapper = patientMapper;
+        this.historyRepo = historyRepo;
     }
 
     @Override
@@ -71,25 +75,18 @@ public class PatientServiceImp implements IPatientService {
     public BasisResponse getPatientMedicine(Long id) {
         Patient patient = patientRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Patient" , "id",id));
         Date date = new Date();
-        List<Medicine> medicineList = new ArrayList<>();
+        List<PatientMedicineDto> patientMedicinesDtos = new ArrayList<>();
         for (Patient_Medicine patientMedicine:
                 patient.getPatientMedicines()) {
-            Medicine medicine = patientMedicine.getMedicine();
-            Patient_Medicine patientMedicine1 = patientMedicineRepo.findByPatientAndMedicine(patient,medicine);
-            System.out.println(patientMedicine1.getMonth().contains(date.getMonth()+1));
-            System.out.println(patientMedicine1.getStartIn().after(date));
-            if (patientMedicine1.getMonth().contains(date.getMonth()+1)&&patientMedicine1.getStartIn().before(date)){
-                medicineList.add(patientMedicine.getMedicine());
+            if (patientMedicine.getMonth().contains(date.getMonth()+1)&&patientMedicine.getStartIn().before(date)){
+                PatientMedicineDto patientMedicineDto = PatientMedicineDto.builder().startIn(patientMedicine.getStartIn())
+                        .Repetition(patientMedicine.getRepetition()).note(patientMedicine.getNotes())
+                        .numberPastille(patientMedicine.getNumberPastille()).numberBox(patientMedicine.getNumberBox())
+                        .build();
+                patientMedicinesDtos.add(patientMedicineDto);
             }
-
         }
-        List<MedicineDto> medicineDtoList = medicineList.stream().map(medicine ->
-                MedicineDto.builder().id(medicine.getId()).price(medicine.getPrice()).nameInEng(medicine.getNameInEng())
-                        .nameInArb(medicine.getNameInArb()).numberOfPastilleInEachBox(medicine.getNumberOfPastilleInEachBox())
-                        .activeSubstance(medicine.getActiveSubstance())
-                        .numberOfPatientTakeIt(medicine.getNumberOfPatientTakeIt()).medicineStatus(medicine.getMedicineStatus())
-                        .build()).toList();
-        return basisResponseMapper.createBasisResponse(medicineDtoList);
+        return basisResponseMapper.createBasisResponse(patientMedicinesDtos);
     }
 
     @Override
@@ -130,6 +127,18 @@ public class PatientServiceImp implements IPatientService {
                         .numberOfPatientTakeIt(medicine.getNumberOfPatientTakeIt()).medicineStatus(medicine.getMedicineStatus())
                         .build()).toList();
         return basisResponseMapper.createBasisResponse(medicineDtoList);
+    }
+
+    @Override
+    public BasisResponse getPatientDateHistory(Long id) {
+        Patient patient = patientRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Patient" , "id",id));
+        List<History> patientHistories = patient.getHistories();
+        List<DateDto> dateDtos = new ArrayList<>();
+        for (History h: patientHistories) {
+            DateDto dateDto = DateDto.builder().year(h.getStartDate().getYear()).month(h.getStartDate().getMonth()).build();
+            dateDtos.add(dateDto);
+        }
+        return basisResponseMapper.createBasisResponse(dateDtos);
     }
 
     @Override

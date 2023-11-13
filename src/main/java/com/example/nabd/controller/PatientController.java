@@ -108,6 +108,11 @@ public class PatientController {
         return ResponseEntity.ok(patientService.getAllPatientMedicine(id));
 
     }
+    @GetMapping("/{id}/history/dates")
+    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")
+    public ResponseEntity<BasisResponse> getPatientDateOfHHistories(@PathVariable(name = "id") Long id){
+        return ResponseEntity.ok(patientService.getPatientDateHistory(id));
+    }
     @PostMapping("/{patientID}/medicine/{medicineId}")
     @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")
     @Operation(

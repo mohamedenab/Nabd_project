@@ -1,5 +1,9 @@
 package com.example.nabd.dtos;
 
+import com.example.nabd.enums.MedicineStatus;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -23,5 +27,6 @@ public class PatientMedicineDto {
     int Repetition;
     @NotNull(message = "startIn is empty")
     Date startIn;
+    String note;
     List<Integer> arrayOfMonths = new ArrayList<>();
 }
