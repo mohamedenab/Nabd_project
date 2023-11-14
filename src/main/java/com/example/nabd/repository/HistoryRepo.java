@@ -8,5 +8,5 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Repository
 public interface HistoryRepo extends JpaRepository<History,Long> {
-    History findByLocationPatientH(Patient patient);
+//    History findByLocationPatientH(Patient patient);
 }
