@@ -167,7 +167,8 @@ public class PatientServiceImp implements IPatientService {
                 .patient(patient).numberPastille(addMedicineDto.getNumberPastille())
                 .startIn(addMedicineDto.getStartIn()).specialization(addMedicineDto.getSpecialization())
                 .numberBox(addMedicineDto.getNumberBox())
-                .month(setArrayOfMonths(addMedicineDto.getStartIn().getMonth()+1,addMedicineDto.getRepetition())).build();
+                .month(setArrayOfMonths(addMedicineDto.getStartIn().getMonth()+1,addMedicineDto.getRepetition()))
+                .notes(addMedicineDto.getNotes()).build();
         patientMedicineRepo.save(patientMedicine);
         PatientMedicineDto patientMedicineDto = PatientMedicineDto.builder()
                 .arrayOfMonths(patientMedicine.getMonth()).numberBox(patientMedicine.getNumberBox())
