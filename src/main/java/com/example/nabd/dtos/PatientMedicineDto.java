@@ -17,6 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class PatientMedicineDto {
+    String medicineName;
     @NotNull
     Long specialization;
     @NotNull(message = "numberBox is empty")

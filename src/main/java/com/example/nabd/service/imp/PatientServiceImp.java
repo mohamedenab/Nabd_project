@@ -82,6 +82,7 @@ public class PatientServiceImp implements IPatientService {
                 PatientMedicineDto patientMedicineDto = PatientMedicineDto.builder().startIn(patientMedicine.getStartIn())
                         .Repetition(patientMedicine.getRepetition()).note(patientMedicine.getNotes())
                         .numberPastille(patientMedicine.getNumberPastille()).numberBox(patientMedicine.getNumberBox())
+                        .medicineName(patientMedicine.getMedicine().getNameInEng())
                         .build();
                 patientMedicinesDtos.add(patientMedicineDto);
             }
@@ -115,18 +116,19 @@ public class PatientServiceImp implements IPatientService {
     @Override
     public BasisResponse getAllPatientMedicine(Long id) {
         Patient patient = patientRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Patient" , "id",id));
-        List<Medicine> medicineList = new ArrayList<>();
+        Date date = new Date();
+        List<PatientMedicineDto> patientMedicinesDtos = new ArrayList<>();
         for (Patient_Medicine patientMedicine:
                 patient.getPatientMedicines()) {
-            medicineList.add(patientMedicine.getMedicine());
+            PatientMedicineDto patientMedicineDto = PatientMedicineDto.builder().startIn(patientMedicine.getStartIn())
+                    .Repetition(patientMedicine.getRepetition()).note(patientMedicine.getNotes())
+                    .numberPastille(patientMedicine.getNumberPastille()).numberBox(patientMedicine.getNumberBox())
+                    .medicineName(patientMedicine.getMedicine().getNameInEng())
+                    .build();
+            patientMedicinesDtos.add(patientMedicineDto);
+
         }
-        List<MedicineDto> medicineDtoList = medicineList.stream().map(medicine ->
-                MedicineDto.builder().id(medicine.getId()).price(medicine.getPrice()).nameInEng(medicine.getNameInEng())
-                        .nameInArb(medicine.getNameInArb()).numberOfPastilleInEachBox(medicine.getNumberOfPastilleInEachBox())
-                        .activeSubstance(medicine.getActiveSubstance())
-                        .numberOfPatientTakeIt(medicine.getNumberOfPatientTakeIt()).medicineStatus(medicine.getMedicineStatus())
-                        .build()).toList();
-        return basisResponseMapper.createBasisResponse(medicineDtoList);
+        return basisResponseMapper.createBasisResponse(patientMedicinesDtos);
     }
 
     @Override
