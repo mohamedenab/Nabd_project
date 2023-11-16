@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +24,8 @@ public class HistoryDto {
     private HistoryType historyType;
     private String comment;
     private String link;
+    private LocalDate startAt;
+    private LocalDate updatedAt;
     private PatientDto patientDto;
 
 }
