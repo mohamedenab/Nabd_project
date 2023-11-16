@@ -66,8 +66,8 @@ public class HistoryService implements IHistoryService {
         HistoryDto historyDtoToSend = HistoryDto.builder().patientDto(patientMapper.EntityToDto(history.getPatientH()))
                 .id(history.getId()).comment(history.getComment())
                 .link(history.getLink()).historyType(history.getHistoryType())
-                .patientDto(patientMapper.EntityToDto(history.getPatientH())).startAt(history.getStartDate())
-                .updatedAt(history.getUpdatedAt()).build();
+                .patientDto(patientMapper.EntityToDto(history.getPatientH())).startAt(history.getStartDate().toString())
+                .updatedAt(history.getUpdatedAt().toString()).build();
         return basisResponseMapper.createBasisResponse(historyDtoToSend);
     }
 

@@ -100,9 +100,12 @@ public class PatientServiceImp implements IPatientService {
                 if (history.getStartDate().getMonth().getValue()==month&&
                     history.getStartDate().getYear()==year){
                     HistoryDto historyDto = HistoryDto.builder().historyType(history.getHistoryType()).comment(history.getComment())
-                            .link(history.getLink()).id(history.getId()).startAt(history.getStartDate())
-                            .updatedAt(history.getUpdatedAt()).build();
+                            .link(history.getLink()).id(history.getId()).startAt(history.getStartDate().toString())
+                            .updatedAt(history.getUpdatedAt().toString()).build();
+                    System.out.println(historyDto.getStartAt());
+                    System.out.println(historyDto.getUpdatedAt());
                     historyDtos.add(historyDto);
+                    System.out.println(historyDtos.get(0));
                 }
             }
             return basisResponseMapper.createBasisResponse(historyDtos);

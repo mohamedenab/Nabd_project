@@ -24,8 +24,8 @@ public class HistoryDto {
     private HistoryType historyType;
     private String comment;
     private String link;
-    private LocalDate startAt;
-    private LocalDate updatedAt;
+    private String startAt;
+    private String updatedAt;
     private PatientDto patientDto;
 
 }
