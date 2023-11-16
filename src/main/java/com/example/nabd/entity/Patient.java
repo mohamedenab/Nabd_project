@@ -33,6 +33,7 @@ public class Patient {
     @Column(name = "phone_number" ,nullable = false)
     private List<String> mobileNumbers;
     @Column(nullable = false)
+    @Lob
     private String address;
     private String addressLink;
     private String volunteerName;
@@ -40,6 +41,7 @@ public class Patient {
     private String periodOfDiscovery;
     private String dateOfBeginningOfDecision;
     private String dateOfHelp;
+    @Lob
     private String discoveryDetailsWithImageLink;
     private boolean active = true;
     @Enumerated(EnumType.STRING)

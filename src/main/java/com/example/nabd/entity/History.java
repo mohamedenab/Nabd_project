@@ -23,6 +23,7 @@ public class History {
     private Date startDate= new Date();
     @Column(nullable = false)
     private Date updatedAt = new Date();
+    @Lob
     private String comment;
     private String link;
     @Column(nullable = false)
