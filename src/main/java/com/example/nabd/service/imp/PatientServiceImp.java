@@ -82,7 +82,7 @@ public class PatientServiceImp implements IPatientService {
                         .Repetition(patientMedicine.getRepetition()).note(patientMedicine.getNotes())
                         .numberPastille(patientMedicine.getNumberPastille()).numberBox(patientMedicine.getNumberBox())
                         .medicineName(patientMedicine.getMedicine().getNameInEng()).specializationName(specialization.getName())
-                        .build();
+                        .id(patientMedicine.getId()).build();
                 patientMedicinesDtos.add(patientMedicineDto);
             }
         }
@@ -129,7 +129,7 @@ public class PatientServiceImp implements IPatientService {
                     .Repetition(patientMedicine.getRepetition()).note(patientMedicine.getNotes())
                     .numberPastille(patientMedicine.getNumberPastille()).numberBox(patientMedicine.getNumberBox())
                     .medicineName(patientMedicine.getMedicine().getNameInEng()).specializationName(specialization.getName())
-                    .build();
+                    .id(patientMedicine.getId()).build();
             patientMedicinesDtos.add(patientMedicineDto);
 
         }

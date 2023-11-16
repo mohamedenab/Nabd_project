@@ -3,6 +3,7 @@ package com.example.nabd.controller;
 import com.example.nabd.dtos.AddMedicineDto;
 import com.example.nabd.dtos.BasisResponse;
 import com.example.nabd.dtos.PatientDto;
+import com.example.nabd.service.IPatientMedicineService;
 import com.example.nabd.service.IPatientService;
 import com.example.nabd.utility.AppConstants;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,9 +22,11 @@ import org.springframework.web.bind.annotation.*;
 )
 public class PatientController {
     private final IPatientService patientService;
+    private final IPatientMedicineService patientMedicineService;
 
-    public PatientController(IPatientService patientService) {
+    public PatientController(IPatientService patientService, IPatientMedicineService patientMedicineService) {
         this.patientService = patientService;
+        this.patientMedicineService = patientMedicineService;
     }
     @PostMapping
     @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")
@@ -130,6 +133,12 @@ public class PatientController {
         return ResponseEntity.ok(patientService.addMedicine(medicineId,patientId,addMedicineDto));
 
     }
+    @PutMapping("/medicine/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")
+    public ResponseEntity<BasisResponse> updateMedicineToPatient(@PathVariable(name = "id") Long id
+            , @Valid @RequestBody AddMedicineDto addMedicineDto){
+        return ResponseEntity.ok(patientMedicineService.update(id,addMedicineDto));
+    }
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_SU')")
     @Operation(
@@ -155,6 +164,11 @@ public class PatientController {
     )
     public ResponseEntity<String> deactivatePatient(@PathVariable(name = "id") Long id){
         return ResponseEntity.ok(patientService.deactivatePatient(id));
+    }
+    @DeleteMapping("/medicine/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU')")
+    public ResponseEntity<BasisResponse> deleteMedicineToPatient(@PathVariable(name = "id") Long id){
+        return ResponseEntity.ok(patientMedicineService.delete(id));
     }
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_SU')")

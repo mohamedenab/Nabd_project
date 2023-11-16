@@ -17,6 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class PatientMedicineDto {
+    Long id;
     String medicineName;
     @NotNull
     Long specialization;
