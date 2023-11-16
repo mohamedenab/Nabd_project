@@ -12,6 +12,7 @@ import com.example.nabd.repository.PatientRepo;
 import com.example.nabd.service.IHistoryService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Service
@@ -29,9 +30,7 @@ public class HistoryService implements IHistoryService {
 
     @Override
     public BasisResponse addHistory(HistoryDto historyDto, Long patientId, int year, int month) {
-        Date newDate= new Date() ;
-        newDate.setMonth(month);
-        newDate.setYear(year);
+        LocalDate newDate = LocalDate.of(year,month,1);
         Patient patient = patientRepo.findById(patientId).orElseThrow(
                 ()-> new ResourceNotFoundException("Patient" , "id",patientId));
         History history = History.builder().comment(historyDto.getComment()).startDate(newDate).updatedAt(newDate)
@@ -45,12 +44,14 @@ public class HistoryService implements IHistoryService {
 
     @Override
     public BasisResponse updateHistory(HistoryDto historyDto , Long historyId) {
+        Date date = new Date();
+        LocalDate newDate = LocalDate.of(date.getYear(),date.getMonth(),1);
         History history = historyRepo.findById(historyId).orElseThrow(
                 ()-> new ResourceNotFoundException("History" , "id",historyId));
         history.setHistoryType(historyDto.getHistoryType());
         history.setComment(historyDto.getComment());
         history.setLink(historyDto.getLink());
-        history.setUpdatedAt(new Date());
+        history.setUpdatedAt(newDate);
         History historySaved = historyRepo.save(history);
         HistoryDto historyDtoToSend = HistoryDto.builder().patientDto(patientMapper.EntityToDto(historySaved.getPatientH()))
                 .id(historySaved.getId()).comment(historySaved.getComment())

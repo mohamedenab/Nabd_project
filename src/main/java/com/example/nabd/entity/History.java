@@ -5,6 +5,7 @@ import com.example.nabd.enums.MaritalStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,9 +21,9 @@ public class History {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
-    private Date startDate= new Date();
+    private LocalDate startDate;
     @Column(nullable = false)
-    private Date updatedAt = new Date();
+    private LocalDate updatedAt;
     @Lob
     private String comment;
     private String link;

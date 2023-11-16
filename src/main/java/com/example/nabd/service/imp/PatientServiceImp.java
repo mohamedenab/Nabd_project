@@ -98,8 +98,8 @@ public class PatientServiceImp implements IPatientService {
         if (year!=0 && month != 0){
             for (History history:
                  histories) {
-                if (history.getStartDate().getMonth()==month
-                        &&history.getStartDate().getYear()==year){
+                if (history.getStartDate().getMonth().getValue()==month&&
+                    history.getStartDate().getYear()==year){
                     HistoryDto historyDto = HistoryDto.builder().historyType(history.getHistoryType()).comment(history.getComment())
                             .link(history.getLink()).id(history.getId()).build();
                     historyDtos.add(historyDto);
@@ -139,8 +139,8 @@ public class PatientServiceImp implements IPatientService {
         ArrayList<Integer> years = new ArrayList<>();
         ArrayList<Integer> months = new ArrayList<>();
         for (History h: patientHistories) {
-            years.add(h.getStartDate().getMonth());
-            months.add(h.getStartDate().getYear());
+            months.add(h.getStartDate().getMonth().getValue());
+            years.add(h.getStartDate().getYear());
         }
         dateDto.setMonth(months);
         dateDto.setYear(years);
