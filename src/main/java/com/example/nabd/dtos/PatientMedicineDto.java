@@ -29,5 +29,6 @@ public class PatientMedicineDto {
     @NotNull(message = "startIn is empty")
     Date startIn;
     String note;
+    String specializationName;
     List<Integer> arrayOfMonths = new ArrayList<>();
 }

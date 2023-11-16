@@ -6,10 +6,7 @@ import com.example.nabd.exception.NabdAPIExeption;
 import com.example.nabd.exception.ResourceNotFoundException;
 import com.example.nabd.mapper.BasisResponseMapper;
 import com.example.nabd.mapper.PatientMapper;
-import com.example.nabd.repository.HistoryRepo;
-import com.example.nabd.repository.MedicineRepo;
-import com.example.nabd.repository.PatientRepo;
-import com.example.nabd.repository.Patient_MedicineRepo;
+import com.example.nabd.repository.*;
 import com.example.nabd.service.IPatientService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -26,16 +23,18 @@ public class PatientServiceImp implements IPatientService {
     private final ModelMapper modelMapper;
     private final PatientRepo patientRepo;
     private final MedicineRepo medicineRepo;
+    private final SpecializationRepo specializationRepo;
     private final Patient_MedicineRepo patientMedicineRepo;
     private final PatientMapper patientMapper;
     private final HistoryRepo historyRepo;
     private final BasisResponseMapper basisResponseMapper = new BasisResponseMapper();
 
     public PatientServiceImp(ModelMapper modelMapper, PatientRepo patientRepo, MedicineRepo medicineRepo,
-                             Patient_MedicineRepo patientMedicineRepo, PatientMapper patientMapper, HistoryRepo historyRepo) {
+                             SpecializationRepo specializationRepo, Patient_MedicineRepo patientMedicineRepo, PatientMapper patientMapper, HistoryRepo historyRepo) {
         this.modelMapper = modelMapper;
         this.patientRepo = patientRepo;
         this.medicineRepo = medicineRepo;
+        this.specializationRepo = specializationRepo;
         this.patientMedicineRepo = patientMedicineRepo;
         this.patientMapper = patientMapper;
         this.historyRepo = historyRepo;
@@ -118,10 +117,12 @@ public class PatientServiceImp implements IPatientService {
         List<PatientMedicineDto> patientMedicinesDtos = new ArrayList<>();
         for (Patient_Medicine patientMedicine:
                 patient.getPatientMedicines()) {
+            Specialization specialization = specializationRepo.findById(patientMedicine.getSpecialization())
+                    .orElseThrow(()-> new ResourceNotFoundException("specialization" , "id",id));
             PatientMedicineDto patientMedicineDto = PatientMedicineDto.builder().startIn(patientMedicine.getStartIn())
                     .Repetition(patientMedicine.getRepetition()).note(patientMedicine.getNotes())
                     .numberPastille(patientMedicine.getNumberPastille()).numberBox(patientMedicine.getNumberBox())
-                    .medicineName(patientMedicine.getMedicine().getNameInEng())
+                    .medicineName(patientMedicine.getMedicine().getNameInEng()).specializationName(specialization.getName())
                     .build();
             patientMedicinesDtos.add(patientMedicineDto);
 
@@ -172,7 +173,7 @@ public class PatientServiceImp implements IPatientService {
                 .startIn(addMedicineDto.getStartIn()).specialization(addMedicineDto.getSpecialization())
                 .numberBox(addMedicineDto.getNumberBox())
                 .month(setArrayOfMonths(addMedicineDto.getStartIn().getMonth()+1,addMedicineDto.getRepetition()))
-                .notes(addMedicineDto.getNotes()).build();
+                .notes(addMedicineDto.getNotes()).Repetition(addMedicineDto.getRepetition()).build();
         patientMedicineRepo.save(patientMedicine);
         PatientMedicineDto patientMedicineDto = PatientMedicineDto.builder()
                 .arrayOfMonths(patientMedicine.getMonth()).numberBox(patientMedicine.getNumberBox())
