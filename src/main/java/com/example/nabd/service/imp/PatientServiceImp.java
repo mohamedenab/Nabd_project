@@ -19,9 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class PatientServiceImp implements IPatientService {
@@ -136,14 +134,14 @@ public class PatientServiceImp implements IPatientService {
         Patient patient = patientRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Patient" , "id",id));
         List<History> patientHistories = patient.getHistories();
         DateDto dateDto = new DateDto();
-        ArrayList<Integer> years = new ArrayList<>();
-        ArrayList<Integer> months = new ArrayList<>();
+        Set<Integer> years = new HashSet<>();
+        Set<Integer> months = new HashSet<>();
         for (History h: patientHistories) {
             months.add(h.getStartDate().getMonth().getValue());
             years.add(h.getStartDate().getYear());
         }
-        dateDto.setMonth(months);
-        dateDto.setYear(years);
+        dateDto.setMonth(months.stream().toList());
+        dateDto.setYear(years.stream().toList());
         return basisResponseMapper.createBasisResponse(dateDto);
     }
 
