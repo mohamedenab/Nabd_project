@@ -133,12 +133,16 @@ public class PatientServiceImp implements IPatientService {
     public BasisResponse getPatientDateHistory(Long id) {
         Patient patient = patientRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Patient" , "id",id));
         List<History> patientHistories = patient.getHistories();
-        List<DateDto> dateDtos = new ArrayList<>();
+        DateDto dateDto = new DateDto();
+        ArrayList<Integer> years = new ArrayList<>();
+        ArrayList<Integer> months = new ArrayList<>();
         for (History h: patientHistories) {
-            DateDto dateDto = DateDto.builder().year(h.getStartDate().getYear()).month(h.getStartDate().getMonth()).build();
-            dateDtos.add(dateDto);
+            years.add(h.getStartDate().getMonth());
+            months.add(h.getStartDate().getYear());
         }
-        return basisResponseMapper.createBasisResponse(dateDtos);
+        dateDto.setMonth(months);
+        dateDto.setYear(years);
+        return basisResponseMapper.createBasisResponse(dateDto);
     }
 
     @Override
