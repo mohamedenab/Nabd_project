@@ -8,6 +8,7 @@ import com.example.nabd.service.UploadService;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,7 +24,7 @@ public class UploadServiceImp implements UploadService {
         this.medicineRepo = medicineRepo;
     }
     @Override
-    public String uploadDataFromExcelFile(MultipartFile file) {
+    public ResponseEntity<Object> uploadDataFromExcelFile(MultipartFile file) {
         makeAllMedicineNotUpdated();
         List<List<String>> rows = new ArrayList<>();
         try (Workbook workbook = new XSSFWorkbook(file.getInputStream())) {
@@ -82,9 +83,9 @@ public class UploadServiceImp implements UploadService {
 //            medicineRepo.saveAll(medicines);
         } catch (IOException e) {
             e.printStackTrace();
-            return "Failed to upload the Excel file.";
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return "Excel file uploaded and saved successfully";
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     private String getCellValueAsString(Cell cell ) {

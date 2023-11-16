@@ -21,8 +21,8 @@ public class UploadController {
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_SU')")
-    public ResponseEntity<String> uploadData(@RequestParam("file") MultipartFile file){
-        return new ResponseEntity<>(uploadService.uploadDataFromExcelFile(file), HttpStatus.CREATED);
+    public ResponseEntity<Object> uploadData(@RequestParam("file") MultipartFile file){
+        return uploadService.uploadDataFromExcelFile(file);
     }
 
 }
