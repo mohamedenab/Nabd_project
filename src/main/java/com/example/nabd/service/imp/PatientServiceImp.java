@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -30,7 +31,8 @@ public class PatientServiceImp implements IPatientService {
     private final BasisResponseMapper basisResponseMapper = new BasisResponseMapper();
 
     public PatientServiceImp(ModelMapper modelMapper, PatientRepo patientRepo, MedicineRepo medicineRepo,
-                             SpecializationRepo specializationRepo, Patient_MedicineRepo patientMedicineRepo, PatientMapper patientMapper, HistoryRepo historyRepo) {
+            SpecializationRepo specializationRepo, Patient_MedicineRepo patientMedicineRepo,
+            PatientMapper patientMapper, HistoryRepo historyRepo) {
         this.modelMapper = modelMapper;
         this.patientRepo = patientRepo;
         this.medicineRepo = medicineRepo;
@@ -43,45 +45,48 @@ public class PatientServiceImp implements IPatientService {
     @Override
     public BasisResponse createPatient(PatientDto patientDto) {
         Patient patient = patientMapper.DtoToEntity(patientDto);
-        Patient savedPatient= patientRepo.save(patient);
+        Patient savedPatient = patientRepo.save(patient);
         return basisResponseMapper.createBasisResponse(patientMapper.EntityToDto(savedPatient));
     }
 
     @Override
-    public BasisResponse getPatient(int pageNo, int pageSize, String sortBy, String filterType , String filterValue) {
+    public BasisResponse getPatient(int pageNo, int pageSize, String sortBy, String filterType, String filterValue) {
         Sort sort = Sort.by(sortBy);
-        Pageable pageable = PageRequest.of(pageNo,pageSize,sort);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
         Page<Patient> patients = patientRepo.findAll(pageable);
         List<Patient> patientList = patients.getContent();
-        if (filterType!=null){
+        if (filterType != null) {
             return basisResponseMapper.createBasisResponseForPatient(
-                    getPatientFilter(filterType,filterValue,patientList),pageNo,patients);
+                    getPatientFilter(filterType, filterValue, patientList), pageNo, patients);
         }
         List<PatientDto> patientDtoList = patientList.stream().map(patientMapper::EntityToDto).toList();
-        return basisResponseMapper.createBasisResponseForPatient(patientDtoList,pageNo,patients);
+        return basisResponseMapper.createBasisResponseForPatient(patientDtoList, pageNo, patients);
     }
 
     @Override
     public BasisResponse getPatientById(Long id) {
-        Patient patient = patientRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Patient" , "id",id));
-        PatientDto patientDto= patientMapper.EntityToDto(patient);
+        Patient patient = patientRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Patient", "id", id));
+        PatientDto patientDto = patientMapper.EntityToDto(patient);
         return basisResponseMapper.createBasisResponse(patientDto);
     }
 
     @Override
     public BasisResponse getPatientMedicine(Long id) {
-        Patient patient = patientRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Patient" , "id",id));
+        Patient patient = patientRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Patient", "id", id));
         Date date = new Date();
         List<PatientMedicineDto> patientMedicinesDtos = new ArrayList<>();
-        for (Patient_Medicine patientMedicine:
-                patient.getPatientMedicines()) {
-            if (patientMedicine.getMonth().contains(date.getMonth()+1)&&patientMedicine.getStartIn().before(date)){
+        for (Patient_Medicine patientMedicine : patient.getPatientMedicines()) {
+            if (patientMedicine.getMonth().contains(date.getMonth() + 1) && patientMedicine.getStartIn().before(date)) {
                 Specialization specialization = specializationRepo.findById(patientMedicine.getSpecialization())
-                        .orElseThrow(()-> new ResourceNotFoundException("Specialization" , "id",id));
-                PatientMedicineDto patientMedicineDto = PatientMedicineDto.builder().startIn(patientMedicine.getStartIn())
+                        .orElseThrow(() -> new ResourceNotFoundException("Specialization", "id", id));
+                PatientMedicineDto patientMedicineDto = PatientMedicineDto.builder()
+                        .startIn(patientMedicine.getStartIn())
                         .Repetition(patientMedicine.getRepetition()).note(patientMedicine.getNotes())
                         .numberPastille(patientMedicine.getNumberPastille()).numberBox(patientMedicine.getNumberBox())
-                        .medicineName(patientMedicine.getMedicine().getNameInEng()).specializationName(specialization.getName())
+                        .medicineName(patientMedicine.getMedicine().getNameInEng())
+                        .specializationName(specialization.getName())
                         .id(patientMedicine.getId()).build();
                 patientMedicinesDtos.add(patientMedicineDto);
             }
@@ -90,16 +95,17 @@ public class PatientServiceImp implements IPatientService {
     }
 
     @Override
-    public BasisResponse getPatientHistory(Long id, int year , int month) {
-        Patient patient = patientRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Patient" , "id",id));
+    public BasisResponse getPatientHistory(Long id, int year, int month) {
+        Patient patient = patientRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Patient", "id", id));
         List<History> histories = patient.getHistories();
         List<HistoryDto> historyDtos = new ArrayList<>();
-        if (year!=0 && month != 0){
-            for (History history:
-                 histories) {
-                if (history.getStartDate().getMonth().getValue()==month&&
-                    history.getStartDate().getYear()==year){
-                    HistoryDto historyDto = HistoryDto.builder().historyType(history.getHistoryType()).comment(history.getComment())
+        if (year != 0 && month != 0) {
+            for (History history : histories) {
+                if (history.getStartDate().getMonth().getValue() == month &&
+                        history.getStartDate().getYear() == year) {
+                    HistoryDto historyDto = HistoryDto.builder().historyType(history.getHistoryType())
+                            .comment(history.getComment())
                             .link(history.getLink()).id(history.getId()).startAt(history.getStartDate().toString())
                             .updatedAt(history.getUpdatedAt().toString()).build();
                     System.out.println(historyDto.getStartAt());
@@ -110,25 +116,27 @@ public class PatientServiceImp implements IPatientService {
             }
             return basisResponseMapper.createBasisResponse(historyDtos);
         }
-        historyDtos = histories.stream().map(history ->
-                HistoryDto.builder().historyType(history.getHistoryType()).comment(history.getComment())
-                        .link(history.getLink()).id(history.getId()).build()).toList();
+        historyDtos = histories.stream()
+                .map(history -> HistoryDto.builder().historyType(history.getHistoryType()).comment(history.getComment())
+                        .link(history.getLink()).id(history.getId()).build())
+                .toList();
         return basisResponseMapper.createBasisResponse(historyDtos);
     }
 
     @Override
     public BasisResponse getAllPatientMedicine(Long id) {
-        Patient patient = patientRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Patient" , "id",id));
+        Patient patient = patientRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Patient", "id", id));
         Date date = new Date();
         List<PatientMedicineDto> patientMedicinesDtos = new ArrayList<>();
-        for (Patient_Medicine patientMedicine:
-                patient.getPatientMedicines()) {
+        for (Patient_Medicine patientMedicine : patient.getPatientMedicines()) {
             Specialization specialization = specializationRepo.findById(patientMedicine.getSpecialization())
-                    .orElseThrow(()-> new ResourceNotFoundException("specialization" , "id",id));
+                    .orElseThrow(() -> new ResourceNotFoundException("specialization", "id", id));
             PatientMedicineDto patientMedicineDto = PatientMedicineDto.builder().startIn(patientMedicine.getStartIn())
                     .Repetition(patientMedicine.getRepetition()).note(patientMedicine.getNotes())
                     .numberPastille(patientMedicine.getNumberPastille()).numberBox(patientMedicine.getNumberBox())
-                    .medicineName(patientMedicine.getMedicine().getNameInEng()).specializationName(specialization.getName())
+                    .medicineName(patientMedicine.getMedicine().getNameInEng())
+                    .specializationName(specialization.getName())
                     .id(patientMedicine.getId()).build();
             patientMedicinesDtos.add(patientMedicineDto);
 
@@ -138,12 +146,13 @@ public class PatientServiceImp implements IPatientService {
 
     @Override
     public BasisResponse getPatientDateHistory(Long id) {
-        Patient patient = patientRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Patient" , "id",id));
+        Patient patient = patientRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Patient", "id", id));
         List<History> patientHistories = patient.getHistories();
         DateDto dateDto = new DateDto();
         Set<Integer> years = new HashSet<>();
         Set<Integer> months = new HashSet<>();
-        for (History h: patientHistories) {
+        for (History h : patientHistories) {
             months.add(h.getStartDate().getMonth().getValue());
             years.add(h.getStartDate().getYear());
         }
@@ -154,7 +163,8 @@ public class PatientServiceImp implements IPatientService {
 
     @Override
     public BasisResponse updatePatient(Long id, PatientDto patientDto) {
-        Patient patient = patientRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Patient" , "id",id));
+        Patient patient = patientRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Patient", "id", id));
         Patient toSave = patientMapper.DtoToEntity(patientDto);
         toSave.setId(patient.getId());
         patientRepo.save(toSave);
@@ -162,23 +172,23 @@ public class PatientServiceImp implements IPatientService {
     }
 
     @Override
-    public BasisResponse addMedicine(Long medicineId, Long patientId , AddMedicineDto addMedicineDto) {
+    public BasisResponse addMedicine(Long medicineId, Long patientId, AddMedicineDto addMedicineDto) {
         Patient patient = patientRepo.findById(patientId).orElseThrow(
-                ()-> new ResourceNotFoundException("Patient" , "id",patientId));
+                () -> new ResourceNotFoundException("Patient", "id", patientId));
         Medicine medicine = medicineRepo.findById(medicineId).orElseThrow(
-                ()-> new ResourceNotFoundException("Medicine" , "id",medicineId));
-        Patient_Medicine patientMedicineCheck= patientMedicineRepo.findByPatientAndMedicine(patient,medicine);
-        if (patientMedicineCheck!=null){
-            throw new NabdAPIExeption("Medicine is already exist" , HttpStatus.BAD_REQUEST);
+                () -> new ResourceNotFoundException("Medicine", "id", medicineId));
+        Patient_Medicine patientMedicineCheck = patientMedicineRepo.findByPatientAndMedicine(patient, medicine);
+        if (patientMedicineCheck != null) {
+            throw new NabdAPIExeption("Medicine is already exist", HttpStatus.BAD_REQUEST);
         }
         System.out.println(addMedicineDto.getStartIn().getMonth());
-        medicine.setNumberOfPatientTakeIt(medicine.getNumberOfPatientTakeIt()+1);
+        medicine.setNumberOfPatientTakeIt(medicine.getNumberOfPatientTakeIt() + 1);
         medicineRepo.save(medicine);
         Patient_Medicine patientMedicine = Patient_Medicine.builder().medicine(medicine)
                 .patient(patient).numberPastille(addMedicineDto.getNumberPastille())
                 .startIn(addMedicineDto.getStartIn()).specialization(addMedicineDto.getSpecialization())
                 .numberBox(addMedicineDto.getNumberBox())
-                .month(setArrayOfMonths(addMedicineDto.getStartIn().getMonth()+1,addMedicineDto.getRepetition()))
+                .month(setArrayOfMonths(addMedicineDto.getStartIn().getMonth() + 1, addMedicineDto.getRepetition()))
                 .notes(addMedicineDto.getNotes()).Repetition(addMedicineDto.getRepetition()).build();
         patientMedicineRepo.save(patientMedicine);
         PatientMedicineDto patientMedicineDto = PatientMedicineDto.builder()
@@ -190,20 +200,22 @@ public class PatientServiceImp implements IPatientService {
 
     @Override
     public String deletePatient(Long id) {
-        Patient patient = patientRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Patient" , "id",id));
+        Patient patient = patientRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Patient", "id", id));
         patientRepo.delete(patient);
         return "Patient deleted successfully";
     }
 
     @Override
-    public String deactivatePatient(Long id) {
-        Patient patient = patientRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Patient" , "id",id));
+    public ResponseEntity<Object> deactivatePatient(Long id) {
+        Patient patient = patientRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Patient", "id", id));
         patient.setActive(false);
         patientRepo.save(patient);
-        return "Patient deactivated successfully";
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    private List<PatientDto> getPatientFilter( String filterType , String filterValue , List<Patient> patientList){
+    private List<PatientDto> getPatientFilter(String filterType, String filterValue, List<Patient> patientList) {
         switch (filterType) {
             case "name" -> {
                 List<Patient> patients = patientList.stream().filter(
@@ -222,11 +234,9 @@ public class PatientServiceImp implements IPatientService {
             }
             case "SpecializationId" -> {
                 List<Patient> patients = new ArrayList<>();
-                for (Patient patient:
-                     patientList) {
-                    for (Specialization spe:
-                         patient.getSpecializations()) {
-                        if (spe.getName().equals(filterValue)){
+                for (Patient patient : patientList) {
+                    for (Specialization spe : patient.getSpecializations()) {
+                        if (spe.getName().equals(filterValue)) {
                             patients.add(patient);
                             break;
                         }
@@ -239,17 +249,18 @@ public class PatientServiceImp implements IPatientService {
             }
         }
     }
-    private List<Integer> setArrayOfMonths(int startIn , int repetition){
+
+    private List<Integer> setArrayOfMonths(int startIn, int repetition) {
         List<Integer> months = new ArrayList<>();
         months.add(startIn);
         int temp = startIn;
-        while (temp<12){
-            temp+=repetition;
+        while (temp < 12) {
+            temp += repetition;
             months.add(temp);
         }
-        temp=startIn;
-        while (temp>1){
-            temp-=repetition;
+        temp = startIn;
+        while (temp > 1) {
+            temp -= repetition;
             months.add(temp);
         }
         return months;
