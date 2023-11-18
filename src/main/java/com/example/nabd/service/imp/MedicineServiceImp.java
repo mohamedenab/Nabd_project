@@ -102,6 +102,7 @@ public class MedicineServiceImp implements IMedicineService {
             if (!cheakHaveTheSameMedicine(patientMedicine.getPatient(),second)){
                 patientMedicine.setMedicine(second);
                 second.setNumberOfPatientTakeIt(second.getNumberOfPatientTakeIt()+1);
+                fist.setNumberOfPatientTakeIt(fist.getNumberOfPatientTakeIt()-1);
                 patientMedicineRepo.save(patientMedicine);
             }else {
                 fist.setNumberOfPatientTakeIt(fist.getNumberOfPatientTakeIt()-1);
