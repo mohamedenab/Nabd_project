@@ -87,7 +87,10 @@ public class MedicineServiceImp implements IMedicineService {
         Medicine medicine = medicineRepo.findById(id).orElseThrow(
                 ()-> new ResourceNotFoundException("Medicine","Id",id));
         MedicineDto medicineDto = MedicineDto.builder().id(id).nameInEng(medicine.getNameInEng())
-                .nameInArb(medicine.getNameInArb()).build();
+                .nameInArb(medicine.getNameInArb()).medicineStatus(medicine.getMedicineStatus())
+                .activeSubstance(medicine.getActiveSubstance()).price(medicine.getPrice())
+                .numberOfPastilleInEachBox(medicine.getNumberOfPastilleInEachBox())
+                .numberOfPatientTakeIt(medicine.getNumberOfPatientTakeIt()).build();
         return basisResponseMapper.createBasisResponse(medicineDto);
     }
 

@@ -2,6 +2,7 @@ package com.example.nabd.dtos;
 
 import com.example.nabd.entity.Patient;
 import com.example.nabd.enums.MedicineStatus;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -15,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class MedicineDto {
     private Long id;
     @NotEmpty(message = "Medicine name in English can't be empty ")
