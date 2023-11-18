@@ -72,6 +72,11 @@ public class LocationController {
             @PathVariable(name = "from") Long from , @PathVariable(name = "to") Long to){
         return ResponseEntity.ok(locationsService.convertPatientLocationToAnother(from,to));
     }
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")
+    public ResponseEntity<BasisResponse> getLocationNameById(@PathVariable(name = "id") Long id){
+        return ResponseEntity.ok(locationsService.getLocationById(id));
+    }
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_SU')")
     public ResponseEntity<BasisResponse> updateLocation(

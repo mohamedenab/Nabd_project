@@ -71,6 +71,13 @@ public class LocationServiceImp implements ILocationsService {
     }
 
     @Override
+    public BasisResponse getLocationById(Long id) {
+        Locations locations = locationsRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Location","id",id));
+        LocationDto locationDto = LocationDto.builder().id(id).locationName(locations.getLocationName()).build();
+        return basisResponseMapper.createBasisResponse(locationDto);
+    }
+
+    @Override
     public String DeleteLocation(Long id) {
         Locations locations = locationsRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Location","id",id));
         if (locations.getPatient().size()>0){

@@ -6,6 +6,7 @@ import com.example.nabd.dtos.LocationDto;
 public interface ILocationsService {
     BasisResponse getLocations(int pageNo, int pageSize, String sortBy);
     BasisResponse createLocation(LocationDto locationDto);
+    BasisResponse getLocationById(Long id);
     String DeleteLocation(Long id);
     BasisResponse getPatientRelatedToLocation(Long id , int pageNo, int pageSize, String sortBy);
     BasisResponse updateLocation(Long id ,LocationDto locationDto);
