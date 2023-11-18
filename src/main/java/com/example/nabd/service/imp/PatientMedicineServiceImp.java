@@ -3,10 +3,12 @@ package com.example.nabd.service.imp;
 import com.example.nabd.dtos.AddMedicineDto;
 import com.example.nabd.dtos.BasisResponse;
 import com.example.nabd.dtos.PatientMedicineDto;
+import com.example.nabd.entity.Patient;
 import com.example.nabd.entity.Patient_Medicine;
 import com.example.nabd.entity.Specialization;
 import com.example.nabd.exception.ResourceNotFoundException;
 import com.example.nabd.mapper.BasisResponseMapper;
+import com.example.nabd.repository.PatientRepo;
 import com.example.nabd.repository.Patient_MedicineRepo;
 import com.example.nabd.repository.SpecializationRepo;
 import com.example.nabd.service.IPatientMedicineService;
@@ -17,11 +19,13 @@ import java.util.List;
 @Service
 public class PatientMedicineServiceImp implements IPatientMedicineService {
     private final Patient_MedicineRepo patientMedicineRepo;
+    private final PatientRepo patientRepo;
     private final BasisResponseMapper basisResponseMapper = new BasisResponseMapper();
     private final SpecializationRepo specializationRepo;
 
-    public PatientMedicineServiceImp(Patient_MedicineRepo patientMedicineRepo, SpecializationRepo specializationRepo) {
+    public PatientMedicineServiceImp(Patient_MedicineRepo patientMedicineRepo, PatientRepo patientRepo, SpecializationRepo specializationRepo) {
         this.patientMedicineRepo = patientMedicineRepo;
+        this.patientRepo = patientRepo;
         this.specializationRepo = specializationRepo;
     }
 
@@ -44,6 +48,18 @@ public class PatientMedicineServiceImp implements IPatientMedicineService {
                 .medicineName(savedPatientMedicine.getMedicine().getNameInEng()).specializationName(specialization.getName())
                 .id(savedPatientMedicine.getId()).arrayOfMonths(savedPatientMedicine.getMonth()).build();
         return basisResponseMapper.createBasisResponse(patientMedicineDto);
+    }
+
+    @Override
+    public BasisResponse deleteMedicineBySpecialization(Long patientId, Long specializationId) {
+        Patient patient = patientRepo.findById(patientId).orElseThrow(
+                ()->new ResourceNotFoundException("specialization" , "id",patientId));
+        List<Patient_Medicine> patientMedicines = patientMedicineRepo.findByPatientAndSpecialization(patient,specializationId);
+        for (Patient_Medicine p:
+                patientMedicines) {
+            patientMedicineRepo.delete(p);
+        }
+        return basisResponseMapper.createBasisResponse("Deleted successfully");
     }
 
     @Override

@@ -170,6 +170,13 @@ public class PatientController {
     public ResponseEntity<BasisResponse> deleteMedicineToPatient(@PathVariable(name = "id") Long id){
         return ResponseEntity.ok(patientMedicineService.delete(id));
     }
+    @DeleteMapping("/{patientId}/specialization/{specializationId}")
+    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU')")
+    public ResponseEntity<BasisResponse> deleteMedicineOfSpecializationPatient(
+            @PathVariable(name = "patientId") Long patientId,
+            @PathVariable(name = "specializationId") Long specializationId ){
+        return ResponseEntity.ok(patientMedicineService.deleteMedicineBySpecialization(patientId,specializationId));
+    }
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_SU')")
     @Operation(
