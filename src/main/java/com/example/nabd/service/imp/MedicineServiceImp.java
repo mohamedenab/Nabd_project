@@ -20,6 +20,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,8 +33,8 @@ public class MedicineServiceImp implements IMedicineService {
     private final PatientMapper patientMapper;
     private final BasisResponseMapper basisResponseMapper = new BasisResponseMapper();
 
-
-    public MedicineServiceImp(MedicineRepo medicineRepo, PatientRepo patientRepo, Patient_MedicineRepo patientMedicineRepo, PatientMapper patientMapper) {
+    public MedicineServiceImp(MedicineRepo medicineRepo, PatientRepo patientRepo,
+            Patient_MedicineRepo patientMedicineRepo, PatientMapper patientMapper) {
         this.medicineRepo = medicineRepo;
         this.patientRepo = patientRepo;
         this.patientMedicineRepo = patientMedicineRepo;
@@ -44,48 +45,55 @@ public class MedicineServiceImp implements IMedicineService {
     public BasisResponse create(MedicineDto medicineDto) {
         Medicine medicine = Medicine.builder().medicineStatus(MedicineStatus.UPDATED)
                 .price(medicineDto.getPrice()).nameInEng(medicineDto.getNameInEng())
-                .nameInArb(medicineDto.getNameInArb()).numberOfPastilleInEachBox(medicineDto.getNumberOfPastilleInEachBox())
+                .nameInArb(medicineDto.getNameInArb())
+                .numberOfPastilleInEachBox(medicineDto.getNumberOfPastilleInEachBox())
                 .activeSubstance(medicineDto.getActiveSubstance()).build();
         Medicine savedMedicine = medicineRepo.save(medicine);
-        MedicineDto medicineDto1 =MedicineDto.builder().medicineStatus(MedicineStatus.UPDATED)
+        MedicineDto medicineDto1 = MedicineDto.builder().medicineStatus(MedicineStatus.UPDATED)
                 .price(savedMedicine.getPrice()).nameInEng(savedMedicine.getNameInEng())
-                .nameInArb(savedMedicine.getNameInArb()).numberOfPastilleInEachBox(savedMedicine.getNumberOfPastilleInEachBox())
+                .nameInArb(savedMedicine.getNameInArb())
+                .numberOfPastilleInEachBox(savedMedicine.getNumberOfPastilleInEachBox())
                 .activeSubstance(savedMedicine.getActiveSubstance()).build();
         return basisResponseMapper.createBasisResponse(medicineDto1);
     }
 
     @Override
     public BasisResponse getMedicine(int pageNo, int pageSize, String sortBy, String filter) {
-        if (filter!=null){
+        if (filter != null) {
             System.out.println(filter);
-            List<Medicine>medicineslist = medicineRepo.findAll();
-            List<Medicine> medicineFilterList = medicineslist.stream().filter(medicine ->
-                    medicine.getNameInEng().contains(filter)).toList();
-            List<MedicineDto> medicineDtoList = medicineFilterList.stream().map(medicine -> MedicineDto.builder().id(medicine.getId())
-                    .price(medicine.getPrice()).nameInEng(medicine.getNameInEng())
-                    .nameInArb(medicine.getNameInArb()).numberOfPastilleInEachBox(medicine.getNumberOfPastilleInEachBox())
-                    .activeSubstance(medicine.getActiveSubstance())
-                    .numberOfPatientTakeIt(medicine.getNumberOfPatientTakeIt()).medicineStatus(medicine.getMedicineStatus())
-                    .build()).toList();
+            List<Medicine> medicineslist = medicineRepo.findAll();
+            List<Medicine> medicineFilterList = medicineslist.stream()
+                    .filter(medicine -> medicine.getNameInEng().contains(filter)).toList();
+            List<MedicineDto> medicineDtoList = medicineFilterList.stream()
+                    .map(medicine -> MedicineDto.builder().id(medicine.getId())
+                            .price(medicine.getPrice()).nameInEng(medicine.getNameInEng())
+                            .nameInArb(medicine.getNameInArb())
+                            .numberOfPastilleInEachBox(medicine.getNumberOfPastilleInEachBox())
+                            .activeSubstance(medicine.getActiveSubstance())
+                            .numberOfPatientTakeIt(medicine.getNumberOfPatientTakeIt())
+                            .medicineStatus(medicine.getMedicineStatus())
+                            .build())
+                    .toList();
             return basisResponseMapper.createBasisResponse(medicineDtoList);
         }
         Sort sort = Sort.by(sortBy);
-        Pageable pageable = PageRequest.of(pageNo,pageSize,sort);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
         Page<Medicine> medicines = medicineRepo.findAll(pageable);
         List<Medicine> medicineslist = medicines.getContent();
-        List<MedicineDto> medicineDtoList = medicineslist.stream().map(medicine -> MedicineDto.builder().id(medicine.getId())
+        List<MedicineDto> medicineDtoList = medicineslist.stream().map(medicine -> MedicineDto.builder()
+                .id(medicine.getId())
                 .price(medicine.getPrice()).nameInEng(medicine.getNameInEng())
                 .nameInArb(medicine.getNameInArb()).numberOfPastilleInEachBox(medicine.getNumberOfPastilleInEachBox())
                 .activeSubstance(medicine.getActiveSubstance())
                 .numberOfPatientTakeIt(medicine.getNumberOfPatientTakeIt()).medicineStatus(medicine.getMedicineStatus())
                 .build()).toList();
-        return basisResponseMapper.createBasisResponseForMedicine(medicineDtoList,pageNo,medicines);
+        return basisResponseMapper.createBasisResponseForMedicine(medicineDtoList, pageNo, medicines);
     }
 
     @Override
     public BasisResponse getMedicineNameById(Long id) {
         Medicine medicine = medicineRepo.findById(id).orElseThrow(
-                ()-> new ResourceNotFoundException("Medicine","Id",id));
+                () -> new ResourceNotFoundException("Medicine", "Id", id));
         MedicineDto medicineDto = MedicineDto.builder().id(id).nameInEng(medicine.getNameInEng())
                 .nameInArb(medicine.getNameInArb()).medicineStatus(medicine.getMedicineStatus())
                 .activeSubstance(medicine.getActiveSubstance()).price(medicine.getPrice())
@@ -97,7 +105,7 @@ public class MedicineServiceImp implements IMedicineService {
     @Override
     public BasisResponse getPatientMedicine(Long id) {
         Medicine fist = medicineRepo.findById(id).orElseThrow(
-                ()-> new ResourceNotFoundException("Medicine","Id",id));
+                () -> new ResourceNotFoundException("Medicine", "Id", id));
         List<Patient> patients = fist.getPatientMedicines().stream().map(Patient_Medicine::getPatient).toList();
         List<PatientDto> patientDtoList = patients.stream().map(patient -> PatientDto.builder()
                 .name(patient.getName()).mobileNumbers(patient.getMobileNumbers())
@@ -108,25 +116,23 @@ public class MedicineServiceImp implements IMedicineService {
     @Override
     public BasisResponse replaceMedicineWithAnother(Long firstId, Long secondId) {
         Medicine fist = medicineRepo.findById(firstId).orElseThrow(
-                ()-> new ResourceNotFoundException("Medicine","Id",firstId));
+                () -> new ResourceNotFoundException("Medicine", "Id", firstId));
         Medicine second = medicineRepo.findById(secondId).orElseThrow(
-                ()-> new ResourceNotFoundException("Medicine","Id",secondId));
-        for (Patient_Medicine patientMedicine :
-                fist.getPatientMedicines()) {
-            if (!cheakHaveTheSameMedicine(patientMedicine.getPatient(),second)){
+                () -> new ResourceNotFoundException("Medicine", "Id", secondId));
+        for (Patient_Medicine patientMedicine : fist.getPatientMedicines()) {
+            if (!cheakHaveTheSameMedicine(patientMedicine.getPatient(), second)) {
                 patientMedicine.setMedicine(second);
-                second.setNumberOfPatientTakeIt(second.getNumberOfPatientTakeIt()+1);
-                fist.setNumberOfPatientTakeIt(fist.getNumberOfPatientTakeIt()-1);
+                second.setNumberOfPatientTakeIt(second.getNumberOfPatientTakeIt() + 1);
+                fist.setNumberOfPatientTakeIt(fist.getNumberOfPatientTakeIt() - 1);
                 patientMedicineRepo.save(patientMedicine);
-            }else {
-                fist.setNumberOfPatientTakeIt(fist.getNumberOfPatientTakeIt()-1);
+            } else {
+                fist.setNumberOfPatientTakeIt(fist.getNumberOfPatientTakeIt() - 1);
                 patientMedicineRepo.delete(patientMedicine);
             }
         }
         medicineRepo.save(fist);
         medicineRepo.save(second);
-        MedicineDto medicineDto=MedicineDto.builder().
-                price(second.getPrice()).nameInEng(second.getNameInEng())
+        MedicineDto medicineDto = MedicineDto.builder().price(second.getPrice()).nameInEng(second.getNameInEng())
                 .nameInArb(second.getNameInArb()).numberOfPastilleInEachBox(second.getNumberOfPastilleInEachBox())
                 .activeSubstance(second.getActiveSubstance())
                 .numberOfPatientTakeIt(second.getNumberOfPatientTakeIt()).medicineStatus(second.getMedicineStatus())
@@ -137,29 +143,30 @@ public class MedicineServiceImp implements IMedicineService {
     @Override
     public String removeMedicineFromPatient(Long medicineId, Long patientId) {
         Patient patient = patientRepo.findById(patientId).orElseThrow(
-                ()-> new ResourceNotFoundException("Patient" , "id",patientId));
+                () -> new ResourceNotFoundException("Patient", "id", patientId));
         Medicine medicine = medicineRepo.findById(medicineId).orElseThrow(
-                ()-> new ResourceNotFoundException("Medicine" , "id",medicineId));
-        Patient_Medicine patientMedicineCheck= patientMedicineRepo.findByPatientAndMedicine(patient,medicine);
+                () -> new ResourceNotFoundException("Medicine", "id", medicineId));
+        Patient_Medicine patientMedicineCheck = patientMedicineRepo.findByPatientAndMedicine(patient, medicine);
         patientMedicineRepo.delete(patientMedicineCheck);
         return "Medicine deleted form patient successfully";
     }
 
     @Override
-    public String delete(Long id) {
+    public ResponseEntity<Object> delete(Long id) {
         Medicine medicine = medicineRepo.findById(id).orElseThrow(
-                ()-> new ResourceNotFoundException("Medicine","Id",id));
-        if (medicine==null)
-            throw  new NabdAPIExeption("no medicine with this name" , HttpStatus.BAD_REQUEST);
-        if (medicine.getPatientMedicines().size()>0)
-            throw  new NabdAPIExeption("There are patients who take this medicine" , HttpStatus.BAD_REQUEST);
+                () -> new ResourceNotFoundException("Medicine", "Id", id));
+        if (medicine == null)
+            throw new NabdAPIExeption("no medicine with this name", HttpStatus.BAD_REQUEST);
+        if (medicine.getPatientMedicines().size() > 0)
+            throw new NabdAPIExeption("There are patients who take this medicine", HttpStatus.BAD_REQUEST);
         medicineRepo.delete(medicine);
-        return "medicine delete successfully";
+        return new ResponseEntity<>(HttpStatus.OK);
     }
-    private boolean cheakHaveTheSameMedicine(Patient patient, Medicine medicine){
-        for (Patient_Medicine p:
-             patient.getPatientMedicines()) {
-            if (p.getMedicine().getNameInEng().equals(medicine.getNameInEng())) return true;
+
+    private boolean cheakHaveTheSameMedicine(Patient patient, Medicine medicine) {
+        for (Patient_Medicine p : patient.getPatientMedicines()) {
+            if (p.getMedicine().getNameInEng().equals(medicine.getNameInEng()))
+                return true;
         }
         return false;
     }
