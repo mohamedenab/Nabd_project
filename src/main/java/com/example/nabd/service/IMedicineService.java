@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 public interface IMedicineService {
     BasisResponse create(MedicineDto medicineDto);
     BasisResponse getMedicine(int pageNo, int pageSize, String sortBy,  String filter);
+    BasisResponse getMedicineNameById(Long id);
     BasisResponse getPatientMedicine(Long id);
     BasisResponse replaceMedicineWithAnother(Long firstId , Long secondId );
     String removeMedicineFromPatient(Long medicineId , Long patentId);

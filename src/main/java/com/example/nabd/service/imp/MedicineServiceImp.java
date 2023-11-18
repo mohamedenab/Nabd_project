@@ -83,6 +83,15 @@ public class MedicineServiceImp implements IMedicineService {
     }
 
     @Override
+    public BasisResponse getMedicineNameById(Long id) {
+        Medicine medicine = medicineRepo.findById(id).orElseThrow(
+                ()-> new ResourceNotFoundException("Medicine","Id",id));
+        MedicineDto medicineDto = MedicineDto.builder().id(id).nameInEng(medicine.getNameInEng())
+                .nameInArb(medicine.getNameInArb()).build();
+        return basisResponseMapper.createBasisResponse(medicineDto);
+    }
+
+    @Override
     public BasisResponse getPatientMedicine(Long id) {
         Medicine fist = medicineRepo.findById(id).orElseThrow(
                 ()-> new ResourceNotFoundException("Medicine","Id",id));
