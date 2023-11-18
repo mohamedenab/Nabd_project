@@ -87,7 +87,9 @@ public class MedicineServiceImp implements IMedicineService {
         Medicine fist = medicineRepo.findById(id).orElseThrow(
                 ()-> new ResourceNotFoundException("Medicine","Id",id));
         List<Patient> patients = fist.getPatientMedicines().stream().map(Patient_Medicine::getPatient).toList();
-        List<PatientDto> patientDtoList = patients.stream().map(patientMapper::EntityToDto).toList();
+        List<PatientDto> patientDtoList = patients.stream().map(patient -> PatientDto.builder()
+                .name(patient.getName()).mobileNumbers(patient.getMobileNumbers())
+                .id(patient.getId()).build()).toList();
         return basisResponseMapper.createBasisResponse(patientDtoList);
     }
 
