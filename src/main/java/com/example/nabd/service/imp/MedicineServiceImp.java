@@ -108,6 +108,8 @@ public class MedicineServiceImp implements IMedicineService {
                 patientMedicineRepo.delete(patientMedicine);
             }
         }
+        medicineRepo.save(fist);
+        medicineRepo.save(second);
         MedicineDto medicineDto=MedicineDto.builder().
                 price(second.getPrice()).nameInEng(second.getNameInEng())
                 .nameInArb(second.getNameInArb()).numberOfPastilleInEachBox(second.getNumberOfPastilleInEachBox())
