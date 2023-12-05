@@ -22,6 +22,8 @@ public class AddMedicineDto {
     @NotNull(message = "Repetition is empty")
     int repetition;
 //    @NotNull(message = "startIn is empty")
-    Date startIn;
+//    Date startIn;
+    int year;
+    int month;
     String notes;
 }

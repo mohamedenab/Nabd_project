@@ -38,7 +38,7 @@ public class PatientMedicineServiceImp implements IPatientMedicineService {
         patientMedicine.setNumberPastille(addMedicineDto.getNumberPastille());
         patientMedicine.setRepetition(addMedicineDto.getRepetition());
         patientMedicine.setSpecialization(addMedicineDto.getSpecialization());
-        patientMedicine.setMonth(setArrayOfMonths(patientMedicine.getStartIn().getMonth(),addMedicineDto.getRepetition()));
+        patientMedicine.setMonth(setArrayOfMonths(patientMedicine.getStartIn().getMonth().getValue(),addMedicineDto.getRepetition()));
         Patient_Medicine savedPatientMedicine= patientMedicineRepo.save(patientMedicine);
         Specialization specialization = specializationRepo.findById(savedPatientMedicine.getSpecialization())
                 .orElseThrow(()-> new ResourceNotFoundException("specialization" , "id",id));

@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,7 +29,7 @@ public class PatientMedicineDto {
     @NotNull(message = "Repetition is empty")
     int Repetition;
     @NotNull(message = "startIn is empty")
-    Date startIn;
+    LocalDate startIn;
     String note;
     String specializationName;
     List<Integer> arrayOfMonths = new ArrayList<>();

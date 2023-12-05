@@ -31,6 +31,6 @@ public class Patient_Medicine {
     int numberBox;
     int numberPastille;
     int Repetition;
-    Date startIn;
+    LocalDate startIn;
     String notes;
 }
