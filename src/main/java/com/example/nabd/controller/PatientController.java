@@ -129,6 +129,7 @@ public class PatientController {
             @PathVariable(name = "patientID") Long patientId,
             @PathVariable(name = "medicineId") Long medicineId,
             @Valid @RequestBody AddMedicineDto addMedicineDto){
+        System.out.println(addMedicineDto.getStartIn());
         return ResponseEntity.ok(patientService.addMedicine(medicineId,patientId,addMedicineDto));
 
     }

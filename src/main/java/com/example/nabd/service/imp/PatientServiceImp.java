@@ -16,7 +16,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -72,11 +71,11 @@ public class PatientServiceImp implements IPatientService {
     @Override
     public BasisResponse getPatientMedicine(Long id) {
         Patient patient = patientRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Patient" , "id",id));
-        LocalDate date = LocalDate.now();
+        Date date = new Date();
         List<PatientMedicineDto> patientMedicinesDtos = new ArrayList<>();
         for (Patient_Medicine patientMedicine:
                 patient.getPatientMedicines()) {
-            if (patientMedicine.getMonth().contains(date.getMonth())&&patientMedicine.getStartIn().isBefore(date)){
+            if (patientMedicine.getMonth().contains(date.getMonth()+1)&&patientMedicine.getStartIn().before(date)){
                 Specialization specialization = specializationRepo.findById(patientMedicine.getSpecialization())
                         .orElseThrow(()-> new ResourceNotFoundException("Specialization" , "id",id));
                 PatientMedicineDto patientMedicineDto = PatientMedicineDto.builder().startIn(patientMedicine.getStartIn())
@@ -172,14 +171,14 @@ public class PatientServiceImp implements IPatientService {
         if (patientMedicineCheck!=null){
             throw new NabdAPIExeption("Medicine is already exist" , HttpStatus.BAD_REQUEST);
         }
+        System.out.println(addMedicineDto.getStartIn().getMonth());
         medicine.setNumberOfPatientTakeIt(medicine.getNumberOfPatientTakeIt()+1);
         medicineRepo.save(medicine);
-        LocalDate date = LocalDate.of(addMedicineDto.getYear(), addMedicineDto.getMonth(),1);
         Patient_Medicine patientMedicine = Patient_Medicine.builder().medicine(medicine)
                 .patient(patient).numberPastille(addMedicineDto.getNumberPastille())
-                .startIn(date).specialization(addMedicineDto.getSpecialization())
+                .startIn(addMedicineDto.getStartIn()).specialization(addMedicineDto.getSpecialization())
                 .numberBox(addMedicineDto.getNumberBox())
-                .month(setArrayOfMonths(addMedicineDto.getMonth(),addMedicineDto.getRepetition()))
+                .month(setArrayOfMonths(addMedicineDto.getStartIn().getMonth()+1,addMedicineDto.getRepetition()))
                 .notes(addMedicineDto.getNotes()).Repetition(addMedicineDto.getRepetition()).build();
         patientMedicineRepo.save(patientMedicine);
         PatientMedicineDto patientMedicineDto = PatientMedicineDto.builder()
