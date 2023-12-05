@@ -1,7 +1,5 @@
 package com.example.nabd.service;
 
-import org.springframework.http.ResponseEntity;
-
 import com.example.nabd.dtos.AddMedicineDto;
 import com.example.nabd.dtos.BasisResponse;
 import com.example.nabd.dtos.PatientDto;
@@ -27,5 +25,5 @@ public interface IPatientService {
 
     String deletePatient(Long id);
 
-    ResponseEntity<Object> deactivatePatient(Long id);
+    String deactivatePatient(Long id);
 }

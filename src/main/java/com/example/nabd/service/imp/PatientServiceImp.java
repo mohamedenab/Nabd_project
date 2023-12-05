@@ -16,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -71,14 +72,14 @@ public class PatientServiceImp implements IPatientService {
     @Override
     public BasisResponse getPatientMedicine(Long id) {
         Patient patient = patientRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Patient" , "id",id));
-        Date date = new Date();
+        LocalDate date = LocalDate.now();
         List<PatientMedicineDto> patientMedicinesDtos = new ArrayList<>();
         for (Patient_Medicine patientMedicine:
                 patient.getPatientMedicines()) {
-            if (patientMedicine.getMonth().contains(date.getMonth()+1)&&patientMedicine.getStartIn().before(date)){
+            if (patientMedicine.getMonth().contains(date.getMonth().getValue())&&patientMedicine.getStartIn().isBefore(date)){
                 Specialization specialization = specializationRepo.findById(patientMedicine.getSpecialization())
                         .orElseThrow(()-> new ResourceNotFoundException("Specialization" , "id",id));
-                PatientMedicineDto patientMedicineDto = PatientMedicineDto.builder().startIn(patientMedicine.getStartIn())
+                PatientMedicineDto patientMedicineDto = PatientMedicineDto.builder().startIn(patientMedicine.getStartIn().toString())
                         .Repetition(patientMedicine.getRepetition()).note(patientMedicine.getNotes())
                         .numberPastille(patientMedicine.getNumberPastille()).numberBox(patientMedicine.getNumberBox())
                         .medicineName(patientMedicine.getMedicine().getNameInEng()).specializationName(specialization.getName())
@@ -125,7 +126,7 @@ public class PatientServiceImp implements IPatientService {
                 patient.getPatientMedicines()) {
             Specialization specialization = specializationRepo.findById(patientMedicine.getSpecialization())
                     .orElseThrow(()-> new ResourceNotFoundException("specialization" , "id",id));
-            PatientMedicineDto patientMedicineDto = PatientMedicineDto.builder().startIn(patientMedicine.getStartIn())
+            PatientMedicineDto patientMedicineDto = PatientMedicineDto.builder().startIn(patientMedicine.getStartIn().toString())
                     .Repetition(patientMedicine.getRepetition()).note(patientMedicine.getNotes())
                     .numberPastille(patientMedicine.getNumberPastille()).numberBox(patientMedicine.getNumberBox())
                     .medicineName(patientMedicine.getMedicine().getNameInEng()).specializationName(specialization.getName())
@@ -171,14 +172,14 @@ public class PatientServiceImp implements IPatientService {
         if (patientMedicineCheck!=null){
             throw new NabdAPIExeption("Medicine is already exist" , HttpStatus.BAD_REQUEST);
         }
-        System.out.println(addMedicineDto.getStartIn().getMonth());
         medicine.setNumberOfPatientTakeIt(medicine.getNumberOfPatientTakeIt()+1);
         medicineRepo.save(medicine);
+        LocalDate localDate = LocalDate.of(addMedicineDto.getYear(), addMedicineDto.getMonth(),1);
         Patient_Medicine patientMedicine = Patient_Medicine.builder().medicine(medicine)
                 .patient(patient).numberPastille(addMedicineDto.getNumberPastille())
-                .startIn(addMedicineDto.getStartIn()).specialization(addMedicineDto.getSpecialization())
+                .startIn(localDate).specialization(addMedicineDto.getSpecialization())
                 .numberBox(addMedicineDto.getNumberBox())
-                .month(setArrayOfMonths(addMedicineDto.getStartIn().getMonth()+1,addMedicineDto.getRepetition()))
+                .month(setArrayOfMonths(addMedicineDto.getMonth(),addMedicineDto.getRepetition()))
                 .notes(addMedicineDto.getNotes()).Repetition(addMedicineDto.getRepetition()).build();
         patientMedicineRepo.save(patientMedicine);
         PatientMedicineDto patientMedicineDto = PatientMedicineDto.builder()

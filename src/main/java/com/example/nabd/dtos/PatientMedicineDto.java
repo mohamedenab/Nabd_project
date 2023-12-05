@@ -29,7 +29,7 @@ public class PatientMedicineDto {
     @NotNull(message = "Repetition is empty")
     int Repetition;
     @NotNull(message = "startIn is empty")
-    LocalDate startIn;
+    String startIn;
     String note;
     String specializationName;
     List<Integer> arrayOfMonths = new ArrayList<>();

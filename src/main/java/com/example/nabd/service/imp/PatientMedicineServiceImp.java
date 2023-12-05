@@ -42,7 +42,7 @@ public class PatientMedicineServiceImp implements IPatientMedicineService {
         Patient_Medicine savedPatientMedicine= patientMedicineRepo.save(patientMedicine);
         Specialization specialization = specializationRepo.findById(savedPatientMedicine.getSpecialization())
                 .orElseThrow(()-> new ResourceNotFoundException("specialization" , "id",id));
-        PatientMedicineDto patientMedicineDto = PatientMedicineDto.builder().startIn(savedPatientMedicine.getStartIn())
+        PatientMedicineDto patientMedicineDto = PatientMedicineDto.builder().startIn(savedPatientMedicine.getStartIn().toString())
                 .Repetition(savedPatientMedicine.getRepetition()).note(savedPatientMedicine.getNotes())
                 .numberPastille(savedPatientMedicine.getNumberPastille()).numberBox(savedPatientMedicine.getNumberBox())
                 .medicineName(savedPatientMedicine.getMedicine().getNameInEng()).specializationName(specialization.getName())
