@@ -25,6 +25,7 @@ public class History {
     @Column(nullable = false)
     private LocalDate updatedAt;
     @Lob
+    @Column(columnDefinition = "TEXT")
     private String comment;
     private String link;
     @Column(nullable = false)

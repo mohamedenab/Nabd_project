@@ -32,7 +32,7 @@ public class Patient {
     @CollectionTable(name = "patient_phone_numbers", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "phone_number" ,nullable = false)
     private List<String> mobileNumbers;
-    @Column(nullable = false)
+    @Column(nullable = false ,columnDefinition = "TEXT")
     @Lob
     private String address;
     private String addressLink;
@@ -42,6 +42,7 @@ public class Patient {
     private String dateOfBeginningOfDecision;
     private String dateOfHelp;
     @Lob
+    @Column(columnDefinition = "TEXT")
     private String discoveryDetailsWithImageLink;
     private boolean active = true;
     @Enumerated(EnumType.STRING)
