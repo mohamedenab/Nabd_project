@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/report")
 @Tag(
-        name = "report api  "
+        name = " report api "
 )
 public class ReportController {
     private final IReportService reportService;
@@ -19,7 +19,7 @@ public class ReportController {
         this.reportService = reportService;
     }
 
-    @GetMapping
+    @PostMapping
     @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU')")
     ResponseEntity<BasisResponse> createReport(@RequestParam(name = "year") int year,
                                                @RequestParam(name = "month") int month){
