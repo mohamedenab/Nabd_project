@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/report")
 @Tag(
-        name = " report api "
+        name = "report api"
 )
 public class ReportController {
     private final IReportService reportService;
@@ -25,4 +25,6 @@ public class ReportController {
                                                @RequestParam(name = "month") int month){
         return ResponseEntity.ok(reportService.createReport(year, month));
     }
+//    @GetMapping
+
 }

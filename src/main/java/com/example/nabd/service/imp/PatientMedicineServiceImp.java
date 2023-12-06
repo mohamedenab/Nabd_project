@@ -8,6 +8,7 @@ import com.example.nabd.entity.Patient_Medicine;
 import com.example.nabd.entity.Specialization;
 import com.example.nabd.exception.ResourceNotFoundException;
 import com.example.nabd.mapper.BasisResponseMapper;
+import com.example.nabd.repository.MedicineRepo;
 import com.example.nabd.repository.PatientRepo;
 import com.example.nabd.repository.Patient_MedicineRepo;
 import com.example.nabd.repository.SpecializationRepo;
@@ -20,12 +21,14 @@ import java.util.List;
 public class PatientMedicineServiceImp implements IPatientMedicineService {
     private final Patient_MedicineRepo patientMedicineRepo;
     private final PatientRepo patientRepo;
+    private final MedicineRepo medicineRepo;
     private final BasisResponseMapper basisResponseMapper = new BasisResponseMapper();
     private final SpecializationRepo specializationRepo;
 
-    public PatientMedicineServiceImp(Patient_MedicineRepo patientMedicineRepo, PatientRepo patientRepo, SpecializationRepo specializationRepo) {
+    public PatientMedicineServiceImp(Patient_MedicineRepo patientMedicineRepo, PatientRepo patientRepo, MedicineRepo medicineRepo, SpecializationRepo specializationRepo) {
         this.patientMedicineRepo = patientMedicineRepo;
         this.patientRepo = patientRepo;
+        this.medicineRepo = medicineRepo;
         this.specializationRepo = specializationRepo;
     }
 
@@ -57,6 +60,8 @@ public class PatientMedicineServiceImp implements IPatientMedicineService {
         List<Patient_Medicine> patientMedicines = patientMedicineRepo.findByPatientAndSpecialization(patient,specializationId);
         for (Patient_Medicine p:
                 patientMedicines) {
+            p.getMedicine().setNumberOfPatientTakeIt(p.getMedicine().getNumberOfPatientTakeIt()-1);
+            medicineRepo.save(p.getMedicine());
             patientMedicineRepo.delete(p);
         }
         return basisResponseMapper.createBasisResponse("Deleted successfully");
@@ -66,6 +71,8 @@ public class PatientMedicineServiceImp implements IPatientMedicineService {
     public BasisResponse delete(Long id) {
         Patient_Medicine patientMedicine = patientMedicineRepo.findById(id)
                 .orElseThrow(()-> new ResourceNotFoundException("patientMedicine" , "id",id));
+        patientMedicine.getMedicine().setNumberOfPatientTakeIt(patientMedicine.getMedicine().getNumberOfPatientTakeIt()-1);
+        medicineRepo.save(patientMedicine.getMedicine());
         patientMedicineRepo.delete(patientMedicine);
         return basisResponseMapper.createBasisResponse("Deleted successfully");
     }
