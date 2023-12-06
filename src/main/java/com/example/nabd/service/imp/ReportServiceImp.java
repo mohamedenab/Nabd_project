@@ -13,7 +13,7 @@ import com.example.nabd.repository.ReportRepo;
 import com.example.nabd.service.IReportService;
 import org.springframework.stereotype.Service;
 
-import java.time.Month;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -32,14 +32,15 @@ public class ReportServiceImp implements IReportService {
     }
 
     @Override
-    public BasisResponse createReport(int year, int month) {
+    public BasisResponse createReport() {
         List<Patient_Medicine> patient_medicines = patientMedicineRepo.findAll();
         Set<Medicine> medicines = new HashSet<>();
         List<Patient_Medicine> patientMedicinesToReport=new ArrayList<>();
+        LocalDate localDate = LocalDate.now();
         for (Patient_Medicine p : patient_medicines){
             System.out.println(p.getStartIn().getYear());
             System.out.println(p.getStartIn().getMonth());
-            if (p.getStartIn().getYear()==year&&p.getStartIn().getMonth()==Month.of(month)){
+            if (p.getStartIn().getYear()==localDate.getYear()&&p.getStartIn().getMonth()==localDate.getMonth()){
                 medicines.add(p.getMedicine());
                 patientMedicinesToReport.add(p);
             }
@@ -67,6 +68,7 @@ public class ReportServiceImp implements IReportService {
         }
         Report report = new Report();
         report.setReportMedicines(reportMedicines);
+        reportRepo.deleteAll();
         Report saved = reportRepo.save(report);
         List<Report_Medicine> reportMedicinesSaved = saved.getReportMedicines();
         List<ReportMedicineDto> reportMedicineDtos = reportMedicinesSaved.stream().map(reportMedicine ->

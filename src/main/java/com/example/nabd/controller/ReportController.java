@@ -21,9 +21,8 @@ public class ReportController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU')")
-    ResponseEntity<BasisResponse> createReport(@RequestParam(name = "year") int year,
-                                               @RequestParam(name = "month") int month){
-        return ResponseEntity.ok(reportService.createReport(year, month));
+    ResponseEntity<BasisResponse> createReport(){
+        return ResponseEntity.ok(reportService.createReport());
     }
 //    @GetMapping
 
