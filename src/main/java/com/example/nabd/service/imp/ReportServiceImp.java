@@ -69,6 +69,7 @@ public class ReportServiceImp implements IReportService {
     @Override
     public BasisResponse getReport() {
         List<Report> saved = reportRepo.findAll();
+        if (saved.isEmpty())  return basisResponseMapper.createBasisResponse(saved);
         System.out.println(saved.get(0).getReportMedicines());
         List<Report_Medicine> reportMedicinesSaved = saved.get(0).getReportMedicines();
         List<ReportMedicineDto> reportMedicineDtos = reportMedicinesSaved.stream().map(reportMedicine ->
