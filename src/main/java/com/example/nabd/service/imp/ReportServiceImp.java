@@ -92,4 +92,11 @@ public class ReportServiceImp implements IReportService {
         ReportDto reportDto = ReportDto.builder().reportMedicineDto(reportMedicineDtos).id(saved.get(0).getId()).build();
         return basisResponseMapper.createBasisResponse(reportDto);
     }
+
+    @Override
+    public BasisResponse deleteReport() {
+        reportRepo.deleteAll();
+        String res = "Report deleted successfully";
+        return basisResponseMapper.createBasisResponse(res);
+    }
 }

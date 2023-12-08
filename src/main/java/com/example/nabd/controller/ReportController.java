@@ -29,4 +29,9 @@ public class ReportController {
     ResponseEntity<BasisResponse> getReport(){
         return ResponseEntity.ok(reportService.getReport());
     }
+    @DeleteMapping
+    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU')")
+    ResponseEntity<BasisResponse> DeleteReport(){
+        return ResponseEntity.ok(reportService.deleteReport());
+    }
 }
