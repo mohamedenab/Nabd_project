@@ -38,9 +38,9 @@ public class ReportServiceImp implements IReportService {
         List<Patient_Medicine> patientMedicinesToReport=new ArrayList<>();
         LocalDate localDate = LocalDate.now();
         for (Patient_Medicine p : patient_medicines){
-            System.out.println(p.getStartIn().getYear());
-            System.out.println(p.getStartIn().getMonth());
-            if (p.getStartIn().getYear()==localDate.getYear()&&p.getStartIn().getMonth()==localDate.getMonth()){
+            if (p.getStartIn().getYear()==localDate.getYear()
+                    &&p.getStartIn().getMonth()==localDate.getMonth()
+                    &&p.getPatient().isActive()){
                 medicines.add(p.getMedicine());
                 patientMedicinesToReport.add(p);
             }
@@ -77,6 +77,19 @@ public class ReportServiceImp implements IReportService {
                         .totalPrice(reportMedicine.getTotalPrice()).id(reportMedicine.getId()).build()
         ).toList();
         ReportDto reportDto = ReportDto.builder().reportMedicineDto(reportMedicineDtos).id(saved.getId()).build();
+        return basisResponseMapper.createBasisResponse(reportDto);
+    }
+
+    @Override
+    public BasisResponse getReport() {
+        List<Report> saved = reportRepo.findAll();
+        List<Report_Medicine> reportMedicinesSaved = saved.get(0).getReportMedicines();
+        List<ReportMedicineDto> reportMedicineDtos = reportMedicinesSaved.stream().map(reportMedicine ->
+                ReportMedicineDto.builder().medicineId(reportMedicine.getMedicineId()).medicine(reportMedicine.getMedicine())
+                        .numberBox(reportMedicine.getNumberBox()).numberPastille(reportMedicine.getNumberPastille())
+                        .totalPrice(reportMedicine.getTotalPrice()).id(reportMedicine.getId()).build()
+        ).toList();
+        ReportDto reportDto = ReportDto.builder().reportMedicineDto(reportMedicineDtos).id(saved.get(0).getId()).build();
         return basisResponseMapper.createBasisResponse(reportDto);
     }
 }

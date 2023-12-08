@@ -25,5 +25,6 @@ public interface IPatientService {
 
     String deletePatient(Long id);
 
-    String deactivatePatient(Long id);
+    BasisResponse deactivatePatient(Long id);
+    BasisResponse activatePatient(Long id);
 }

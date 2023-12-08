@@ -197,11 +197,21 @@ public class PatientServiceImp implements IPatientService {
     }
 
     @Override
-    public String deactivatePatient(Long id) {
+    public BasisResponse deactivatePatient(Long id) {
         Patient patient = patientRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Patient" , "id",id));
         patient.setActive(false);
-        patientRepo.save(patient);
-        return "Patient deactivated successfully";
+        Patient saved = patientRepo.save(patient);
+        PatientDto patientDto= patientMapper.EntityToDto(saved);
+        return basisResponseMapper.createBasisResponse(patientDto);
+    }
+
+    @Override
+    public BasisResponse activatePatient(Long id) {
+        Patient patient = patientRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Patient" , "id",id));
+        patient.setActive(true);
+        Patient saved = patientRepo.save(patient);
+        PatientDto patientDto= patientMapper.EntityToDto(saved);
+        return basisResponseMapper.createBasisResponse(patientDto);
     }
 
     private List<PatientDto> getPatientFilter( String filterType , String filterValue , List<Patient> patientList){

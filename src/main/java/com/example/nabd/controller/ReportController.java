@@ -24,6 +24,9 @@ public class ReportController {
     ResponseEntity<BasisResponse> createReport(){
         return ResponseEntity.ok(reportService.createReport());
     }
-//    @GetMapping
-
+    @PostMapping
+    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU')")
+    ResponseEntity<BasisResponse> getReport(){
+        return ResponseEntity.ok(reportService.getReport());
+    }
 }

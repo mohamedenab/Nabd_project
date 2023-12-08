@@ -161,8 +161,20 @@ public class PatientController {
             responseCode = "200",
             description = "Http status 200 Create"
     )
-    public ResponseEntity<String> deactivatePatient(@PathVariable(name = "id") Long id){
+    public ResponseEntity<BasisResponse> deactivatePatient(@PathVariable(name = "id") Long id){
         return ResponseEntity.ok(patientService.deactivatePatient(id));
+    }
+    @PutMapping("/activate/{id}")
+    @PreAuthorize("hasRole('ROLE_SU')")
+    @Operation(
+            summary = "deactivate patient"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Http status 200 Create"
+    )
+    public ResponseEntity<BasisResponse> activatePatient(@PathVariable(name = "id") Long id){
+        return ResponseEntity.ok(patientService.activatePatient(id));
     }
     @DeleteMapping("/medicine/{id}")
     @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU')")
