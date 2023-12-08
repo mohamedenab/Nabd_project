@@ -2,6 +2,7 @@ package com.example.nabd.controller;
 
 import com.example.nabd.dtos.BasisResponse;
 import com.example.nabd.service.IReportService;
+import com.example.nabd.utility.AppConstants;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,8 +27,10 @@ public class ReportController {
     }
     @GetMapping
     @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU')")
-    ResponseEntity<BasisResponse> getReport(){
-        return ResponseEntity.ok(reportService.getReport());
+    ResponseEntity<BasisResponse> getReport( @RequestParam(value = "pageNo",defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,required = false) int pageNo,
+                                             @RequestParam(value = "pageSize",defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+                                             @RequestParam(value = "sortBy" ,defaultValue = "medicine", required = false) String sortBy){
+        return ResponseEntity.ok(reportService.getReport(pageNo,pageSize,sortBy));
     }
     @DeleteMapping
     @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU')")

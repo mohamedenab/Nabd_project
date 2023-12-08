@@ -3,15 +3,16 @@ package com.example.nabd.service.imp;
 import com.example.nabd.dtos.BasisResponse;
 import com.example.nabd.dtos.ReportDto;
 import com.example.nabd.dtos.ReportMedicineDto;
-import com.example.nabd.entity.Medicine;
-import com.example.nabd.entity.Patient_Medicine;
-import com.example.nabd.entity.Report;
-import com.example.nabd.entity.Report_Medicine;
+import com.example.nabd.entity.*;
 import com.example.nabd.mapper.BasisResponseMapper;
 import com.example.nabd.repository.Patient_MedicineRepo;
 import com.example.nabd.repository.ReportRepo;
 import com.example.nabd.repository.Report_MedicineRepo;
 import com.example.nabd.service.IReportService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -67,17 +68,18 @@ public class ReportServiceImp implements IReportService {
     }
 
     @Override
-    public BasisResponse getReport() {
-        List<Report> saved = reportRepo.findAll();
-        if (saved.isEmpty())  return basisResponseMapper.createBasisResponse(saved);
-        System.out.println(saved.get(0).getReportMedicines());
-        List<Report_Medicine> reportMedicinesSaved = saved.get(0).getReportMedicines();
+    public BasisResponse getReport(int pageNo,int pageSize,String sortBy) {
+        Sort sort = Sort.by(sortBy);
+        Pageable pageable = PageRequest.of(pageNo,pageSize,sort);
+        Page<Report_Medicine> reportMedicines = reportMedicineRepo.findAll(pageable);
+//        List<Report_Medicine> reportMedicineList = reportMedicines.getContent();
+        List<Report_Medicine> reportMedicinesSaved = reportMedicines.getContent();
         List<ReportMedicineDto> reportMedicineDtos = reportMedicinesSaved.stream().map(reportMedicine ->
                 ReportMedicineDto.builder().medicineId(reportMedicine.getMedicineId()).medicine(reportMedicine.getMedicine())
                         .numberBox(reportMedicine.getNumberBox()).numberPastille(reportMedicine.getNumberPastille())
                         .totalPrice(reportMedicine.getTotalPrice()).id(reportMedicine.getId()).build()
         ).toList();
-        ReportDto reportDto = ReportDto.builder().reportMedicineDto(reportMedicineDtos).id(saved.get(0).getId()).build();
+        ReportDto reportDto = ReportDto.builder().reportMedicineDto(reportMedicineDtos).build();
         return basisResponseMapper.createBasisResponse(reportDto);
     }
 
