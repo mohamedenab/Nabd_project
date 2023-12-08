@@ -45,27 +45,7 @@ public class ReportServiceImp implements IReportService {
                 patientMedicinesToReport.add(p);
             }
         }
-        List<Report_Medicine> reportMedicines = new ArrayList<>();
-        for (Medicine m:
-                medicines
-             ) {
-            int numberBox = 0;
-            int numberPastille = 0;
-            double totalPrice = 0;
-            for (Patient_Medicine p: patientMedicinesToReport
-                 ) {
-                if (p.getMedicine().getNameInEng().equals(m.getNameInEng())){
-                    numberBox = p.getNumberBox();
-                    numberPastille = p.getNumberPastille();
-                }
-            }
-            numberBox += numberPastille / m.getNumberOfPastilleInEachBox();
-            numberPastille = numberPastille % m.getNumberOfPastilleInEachBox();
-            totalPrice = (numberBox*m.getPrice())+ (((double) numberPastille /m.getNumberOfPastilleInEachBox())*m.getPrice());
-            Report_Medicine reportMedicine = Report_Medicine.builder().medicine(m.getNameInEng()).medicineId(m.getId())
-                    .numberBox(numberBox).numberPastille(numberPastille).totalPrice(totalPrice).build();
-            reportMedicines.add(reportMedicine);
-        }
+        List<Report_Medicine> reportMedicines = createReportMedicine(medicines,patientMedicinesToReport);
         Report report = new Report();
         report.setReportMedicines(reportMedicines);
         reportRepo.deleteAll();
@@ -98,5 +78,29 @@ public class ReportServiceImp implements IReportService {
         reportRepo.deleteAll();
         String res = "Report deleted successfully";
         return basisResponseMapper.createBasisResponse(res);
+    }
+    private List<Report_Medicine> createReportMedicine(Set<Medicine> medicines, List<Patient_Medicine> patientMedicinesToReport){
+        List<Report_Medicine> reportMedicines = new ArrayList<>();
+        for (Medicine m:
+                medicines
+        ) {
+            int numberBox = 0;
+            int numberPastille = 0;
+            double totalPrice = 0;
+            for (Patient_Medicine p: patientMedicinesToReport
+            ) {
+                if (p.getMedicine().getNameInEng().equals(m.getNameInEng())){
+                    numberBox = p.getNumberBox();
+                    numberPastille = p.getNumberPastille();
+                }
+            }
+            numberBox += numberPastille / m.getNumberOfPastilleInEachBox();
+            numberPastille = numberPastille % m.getNumberOfPastilleInEachBox();
+            totalPrice = (numberBox*m.getPrice())+ (((double) numberPastille /m.getNumberOfPastilleInEachBox())*m.getPrice());
+            Report_Medicine reportMedicine = Report_Medicine.builder().medicine(m.getNameInEng()).medicineId(m.getId())
+                    .numberBox(numberBox).numberPastille(numberPastille).totalPrice(totalPrice).build();
+            reportMedicines.add(reportMedicine);
+        }
+        return reportMedicines;
     }
 }
