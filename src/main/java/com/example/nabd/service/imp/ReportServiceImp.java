@@ -80,7 +80,7 @@ public class ReportServiceImp implements IReportService {
                         .totalPrice(reportMedicine.getTotalPrice()).id(reportMedicine.getId()).build()
         ).toList();
         ReportDto reportDto = ReportDto.builder().reportMedicineDto(reportMedicineDtos).build();
-        return basisResponseMapper.createBasisResponse(reportDto);
+        return basisResponseMapper.createBasisResponseForReport(reportDto,pageNo,reportMedicines);
     }
 
     @Override
