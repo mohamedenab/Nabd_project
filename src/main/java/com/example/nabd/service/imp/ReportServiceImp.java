@@ -2,9 +2,12 @@ package com.example.nabd.service.imp;
 
 import com.example.nabd.dtos.BasisResponse;
 import com.example.nabd.dtos.ReportDto;
+import com.example.nabd.dtos.ReportMedicineAmountDto;
 import com.example.nabd.dtos.ReportMedicineDto;
 import com.example.nabd.entity.*;
+import com.example.nabd.exception.ResourceNotFoundException;
 import com.example.nabd.mapper.BasisResponseMapper;
+import com.example.nabd.repository.MedicineRepo;
 import com.example.nabd.repository.Patient_MedicineRepo;
 import com.example.nabd.repository.ReportRepo;
 import com.example.nabd.repository.Report_MedicineRepo;
@@ -23,13 +26,15 @@ public class ReportServiceImp implements IReportService {
     private final Patient_MedicineRepo patientMedicineRepo;
     private final ReportRepo reportRepo;
     private final Report_MedicineRepo reportMedicineRepo;
+    private final MedicineRepo medicineRepo;
     private final BasisResponseMapper basisResponseMapper = new BasisResponseMapper();
 
 
-    public ReportServiceImp(Patient_MedicineRepo patientMedicineRepo, ReportRepo reportRepo, Report_MedicineRepo reportMedicineRepo) {
+    public ReportServiceImp(Patient_MedicineRepo patientMedicineRepo, ReportRepo reportRepo, Report_MedicineRepo reportMedicineRepo, MedicineRepo medicineRepo) {
         this.patientMedicineRepo = patientMedicineRepo;
         this.reportRepo = reportRepo;
         this.reportMedicineRepo = reportMedicineRepo;
+        this.medicineRepo = medicineRepo;
     }
 
     @Override
@@ -78,6 +83,35 @@ public class ReportServiceImp implements IReportService {
         ).toList();
         ReportDto reportDto = ReportDto.builder().reportMedicineDto(reportMedicineDtos).build();
         return basisResponseMapper.createBasisResponseForReport(reportDto,pageNo,reportMedicines);
+    }
+
+    @Override
+    public BasisResponse editeMedicineAmount(Long id, ReportMedicineAmountDto reportMedicineAmountDto) {
+        List<Report> report = reportRepo.findAll();
+        Medicine m = medicineRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Medicine","id",id));
+        Report_Medicine reportMedicine =new Report_Medicine();
+        for (Report_Medicine r:
+                report.get(0).getReportMedicines()
+             ) {
+            if (Objects.equals(r.getMedicineId(), id)){
+                int numberBox = r.getNumberBox()+reportMedicineAmountDto.getNumberBox();
+                int numberPastille = r.getNumberPastille()+reportMedicineAmountDto.getNumberPastille();
+                double totalPrice = 0;
+                numberBox += numberPastille / m.getNumberOfPastilleInEachBox();
+                numberPastille = numberPastille % m.getNumberOfPastilleInEachBox();
+                totalPrice = (numberBox*m.getPrice())+ (((double) numberPastille /m.getNumberOfPastilleInEachBox())*m.getPrice());
+                r.setNumberBox(numberBox);
+                r.setNumberPastille(numberPastille);
+                r.setTotalPrice(totalPrice);
+                reportMedicine = r;
+                reportRepo.save(report.get(0));
+                break;
+            }
+        }
+        ReportMedicineDto reportMedicineDto = ReportMedicineDto.builder().numberPastille(reportMedicine.getNumberPastille())
+                .medicineId(reportMedicine.getMedicineId()).medicine(m.getNameInEng()).numberBox(reportMedicineAmountDto.getNumberBox())
+                .totalPrice(reportMedicine.getTotalPrice()).id(reportMedicine.getId()).build();
+        return basisResponseMapper.createBasisResponse(reportMedicineDto);
     }
 
     @Override

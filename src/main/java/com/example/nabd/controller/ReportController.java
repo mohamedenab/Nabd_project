@@ -1,6 +1,7 @@
 package com.example.nabd.controller;
 
 import com.example.nabd.dtos.BasisResponse;
+import com.example.nabd.dtos.ReportMedicineAmountDto;
 import com.example.nabd.service.IReportService;
 import com.example.nabd.utility.AppConstants;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,7 +33,12 @@ public class ReportController {
                                              @RequestParam(value = "sortBy" ,defaultValue = "medicine", required = false) String sortBy){
         return ResponseEntity.ok(reportService.getReport(pageNo,pageSize,sortBy));
     }
-
+    @PutMapping("/medicine/amount/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU')")
+    ResponseEntity<BasisResponse> editeAmount(@PathVariable(name = "id") Long id,
+                                              @RequestBody ReportMedicineAmountDto reportMedicineAmountDto){
+        return ResponseEntity.ok(reportService.editeMedicineAmount(id,reportMedicineAmountDto));
+    }
     @DeleteMapping("/{medicine/{id}")
     @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU')")
     ResponseEntity<BasisResponse> deleteMedicine(@PathVariable(name = "id") Long id){
