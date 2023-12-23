@@ -86,6 +86,32 @@ public class ReportServiceImp implements IReportService {
     }
 
     @Override
+    public BasisResponse editeMedicine(Long id, Long newId) {
+
+        List<Report> report = reportRepo.findAll();
+        Medicine oldMedicine = medicineRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Medicine","id",id));
+        Medicine newMedicine = medicineRepo.findById(newId).orElseThrow(()-> new ResourceNotFoundException("Medicine","id",newId));
+        Report_Medicine reportMedicine =new Report_Medicine();
+        for (Report_Medicine r:
+                report.get(0).getReportMedicines()
+        ) {
+            if (Objects.equals(r.getMedicineId(), id)) {
+                r.setMedicine(newMedicine.getNameInEng());
+                r.setMedicineId(newMedicine.getId());
+                double totalPrice = (r.getNumberBox()*newMedicine.getPrice())+
+                        (((double) r.getNumberPastille()/oldMedicine.getNumberOfPastilleInEachBox()*newMedicine.getPrice()));
+                reportMedicine = r;
+                reportRepo.save(report.get(0));
+                break;
+            }
+        }
+        ReportMedicineDto reportMedicineDto = ReportMedicineDto.builder().numberPastille(reportMedicine.getNumberPastille())
+                .medicineId(reportMedicine.getMedicineId()).medicine(newMedicine.getNameInEng()).numberBox(reportMedicine.getNumberBox())
+                .totalPrice(reportMedicine.getTotalPrice()).id(reportMedicine.getId()).build();
+        return basisResponseMapper.createBasisResponse(reportMedicineDto);
+    }
+
+    @Override
     public BasisResponse editeMedicineAmount(Long id, ReportMedicineAmountDto reportMedicineAmountDto) {
         List<Report> report = reportRepo.findAll();
         Medicine m = medicineRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Medicine","id",id));

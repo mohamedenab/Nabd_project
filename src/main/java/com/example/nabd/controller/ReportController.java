@@ -39,7 +39,13 @@ public class ReportController {
                                               @RequestBody ReportMedicineAmountDto reportMedicineAmountDto){
         return ResponseEntity.ok(reportService.editeMedicineAmount(id,reportMedicineAmountDto));
     }
-    @DeleteMapping("/{medicine/{id}")
+    @PutMapping("/medicine/{id}/newmedicine/{new_id}")
+    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU')")
+    ResponseEntity<BasisResponse> editeMedicine(@PathVariable(name = "id") Long id,
+                                              @PathVariable(name = "new_id") Long newId){
+        return ResponseEntity.ok(reportService.editeMedicine(id,newId));
+    }
+    @DeleteMapping("/medicine/{id}")
     @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU')")
     ResponseEntity<BasisResponse> deleteMedicine(@PathVariable(name = "id") Long id){
         return ResponseEntity.ok(reportService.deleteMedicine(id));
