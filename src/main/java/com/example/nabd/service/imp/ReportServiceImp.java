@@ -16,10 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class ReportServiceImp implements IReportService {
@@ -81,6 +78,14 @@ public class ReportServiceImp implements IReportService {
         ).toList();
         ReportDto reportDto = ReportDto.builder().reportMedicineDto(reportMedicineDtos).build();
         return basisResponseMapper.createBasisResponseForReport(reportDto,pageNo,reportMedicines);
+    }
+
+    @Override
+    public BasisResponse deleteMedicine(Long id) {
+        List<Report> report = reportRepo.findAll();
+        report.get(0).getReportMedicines().removeIf(r -> Objects.equals(r.getMedicineId(), id));
+        reportRepo.save(report.get(0));
+        return basisResponseMapper.createBasisResponse("Medicine Deleted successfully");
     }
 
     @Override

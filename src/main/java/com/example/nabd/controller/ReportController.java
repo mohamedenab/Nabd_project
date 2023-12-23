@@ -32,6 +32,12 @@ public class ReportController {
                                              @RequestParam(value = "sortBy" ,defaultValue = "medicine", required = false) String sortBy){
         return ResponseEntity.ok(reportService.getReport(pageNo,pageSize,sortBy));
     }
+
+    @DeleteMapping("/{medicine/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU')")
+    ResponseEntity<BasisResponse> deleteMedicine(@PathVariable(name = "id") Long id){
+        return ResponseEntity.ok(reportService.deleteMedicine(id));
+    }
     @DeleteMapping
     @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU')")
     ResponseEntity<BasisResponse> DeleteReport(){
