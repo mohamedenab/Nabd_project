@@ -87,65 +87,63 @@ public class ReportServiceImp implements IReportService {
 
     @Override
     public BasisResponse editeMedicine(Long id, Long newId) {
-
-        List<Report> report = reportRepo.findAll();
-        Medicine oldMedicine = medicineRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Medicine","id",id));
         Medicine newMedicine = medicineRepo.findById(newId).orElseThrow(()-> new ResourceNotFoundException("Medicine","id",newId));
-        Report_Medicine reportMedicine =new Report_Medicine();
-        for (Report_Medicine r:
-                report.get(0).getReportMedicines()
-        ) {
-            if (Objects.equals(r.getMedicineId(), id)) {
-                r.setMedicine(newMedicine.getNameInEng());
-                r.setMedicineId(newMedicine.getId());
-                double totalPrice = (r.getNumberBox()*newMedicine.getPrice())+
-                        (((double) r.getNumberPastille()/oldMedicine.getNumberOfPastilleInEachBox()*newMedicine.getPrice()));
-                reportMedicine = r;
-                reportRepo.save(report.get(0));
-                break;
-            }
+        Medicine oldMedicine = medicineRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Medicine","id",id));
+        Report_Medicine reportMedicineOld = reportMedicineRepo.findByMedicineId(id);
+        if (reportMedicineOld!=null){
+            double totalPrice = (reportMedicineOld.getNumberBox()*newMedicine.getPrice())+
+                    (((double) reportMedicineOld.getNumberPastille()/oldMedicine.getNumberOfPastilleInEachBox()*newMedicine.getPrice()));
+            Report_Medicine reportMedicine =new Report_Medicine();
+            reportMedicineOld.setMedicine(newMedicine.getNameInEng());
+            reportMedicineOld.setMedicineId(newMedicine.getId());
+            reportMedicineOld.setTotalPrice(totalPrice);
+            reportMedicine = reportMedicineRepo.save(reportMedicineOld);
+            ReportMedicineDto reportMedicineDto = ReportMedicineDto.builder().numberPastille(reportMedicine.getNumberPastille())
+                    .medicineId(reportMedicine.getMedicineId()).medicine(newMedicine.getNameInEng()).numberBox(reportMedicine.getNumberBox())
+                    .totalPrice(reportMedicine.getTotalPrice()).id(reportMedicine.getId()).build();
+            return basisResponseMapper.createBasisResponse(reportMedicineDto);
+        }else {
+            throw  new ResourceNotFoundException("Report_Medicine" ,"id" ,id);
         }
-        ReportMedicineDto reportMedicineDto = ReportMedicineDto.builder().numberPastille(reportMedicine.getNumberPastille())
-                .medicineId(reportMedicine.getMedicineId()).medicine(newMedicine.getNameInEng()).numberBox(reportMedicine.getNumberBox())
-                .totalPrice(reportMedicine.getTotalPrice()).id(reportMedicine.getId()).build();
-        return basisResponseMapper.createBasisResponse(reportMedicineDto);
+
     }
 
     @Override
     public BasisResponse editeMedicineAmount(Long id, ReportMedicineAmountDto reportMedicineAmountDto) {
-        List<Report> report = reportRepo.findAll();
-        Medicine m = medicineRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Medicine","id",id));
+        Medicine oldMedicine = medicineRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Medicine","id",id));
+        Report_Medicine reportMedicineOld = reportMedicineRepo.findByMedicineId(id);
         Report_Medicine reportMedicine =new Report_Medicine();
-        for (Report_Medicine r:
-                report.get(0).getReportMedicines()
-             ) {
-            if (Objects.equals(r.getMedicineId(), id)){
-                int numberBox = r.getNumberBox()+reportMedicineAmountDto.getNumberBox();
-                int numberPastille = r.getNumberPastille()+reportMedicineAmountDto.getNumberPastille();
-                double totalPrice = 0;
-                numberBox += numberPastille / m.getNumberOfPastilleInEachBox();
-                numberPastille = numberPastille % m.getNumberOfPastilleInEachBox();
-                totalPrice = (numberBox*m.getPrice())+ (((double) numberPastille /m.getNumberOfPastilleInEachBox())*m.getPrice());
-                r.setNumberBox(numberBox);
-                r.setNumberPastille(numberPastille);
-                r.setTotalPrice(totalPrice);
-                reportMedicine = r;
-                reportRepo.save(report.get(0));
-                break;
-            }
+        if (reportMedicineOld!=null){
+            int numberBox = reportMedicineAmountDto.getNumberBox();
+            int numberPastille = reportMedicineAmountDto.getNumberPastille();
+            double totalPrice = 0;
+            numberBox += numberPastille / oldMedicine.getNumberOfPastilleInEachBox();
+            numberPastille = numberPastille % oldMedicine.getNumberOfPastilleInEachBox();
+            totalPrice = (numberBox*oldMedicine.getPrice())+ (((double) numberPastille /oldMedicine.getNumberOfPastilleInEachBox())*oldMedicine.getPrice());
+            reportMedicineOld.setNumberBox(numberBox);
+            reportMedicineOld.setNumberPastille(numberPastille);
+            reportMedicineOld.setTotalPrice(totalPrice);
+            reportMedicine = reportMedicineRepo.save(reportMedicineOld);
+            ReportMedicineDto reportMedicineDto = ReportMedicineDto.builder().numberPastille(reportMedicine.getNumberPastille())
+                    .medicineId(reportMedicine.getMedicineId()).medicine(oldMedicine.getNameInEng()).numberBox(reportMedicine.getNumberBox())
+                    .totalPrice(reportMedicine.getTotalPrice()).id(reportMedicine.getId()).build();
+            return basisResponseMapper.createBasisResponse(reportMedicineDto);
+        }else {
+            throw  new ResourceNotFoundException("Report_Medicine" ,"id" ,id);
         }
-        ReportMedicineDto reportMedicineDto = ReportMedicineDto.builder().numberPastille(reportMedicine.getNumberPastille())
-                .medicineId(reportMedicine.getMedicineId()).medicine(m.getNameInEng()).numberBox(reportMedicineAmountDto.getNumberBox())
-                .totalPrice(reportMedicine.getTotalPrice()).id(reportMedicine.getId()).build();
-        return basisResponseMapper.createBasisResponse(reportMedicineDto);
     }
 
     @Override
     public BasisResponse deleteMedicine(Long id) {
-        List<Report> report = reportRepo.findAll();
-        report.get(0).getReportMedicines().removeIf(r -> Objects.equals(r.getMedicineId(), id));
-        reportRepo.save(report.get(0));
-        return basisResponseMapper.createBasisResponse("Medicine Deleted successfully");
+        Report_Medicine reportMedicineOld = reportMedicineRepo.findByMedicineId(id);
+        Report_Medicine reportMedicine =new Report_Medicine();
+        if (reportMedicineOld!=null){
+            reportMedicineRepo.delete(reportMedicineOld);
+            return basisResponseMapper.createBasisResponse("Medicine Deleted successfully");
+        }else {
+            throw  new ResourceNotFoundException("Report_Medicine" ,"id" ,id);
+        }
+
     }
 
     @Override
