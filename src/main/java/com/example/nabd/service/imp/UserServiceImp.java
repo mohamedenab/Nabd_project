@@ -1,6 +1,7 @@
 package com.example.nabd.service.imp;
 
 import com.example.nabd.dtos.BasisResponse;
+import com.example.nabd.dtos.LocationDto;
 import com.example.nabd.dtos.RegisterDto;
 import com.example.nabd.dtos.UserDto;
 import com.example.nabd.entity.Locations;
@@ -47,13 +48,17 @@ public class UserServiceImp implements IUserService {
             List<UserDto> userDtolist = userFilterList.stream().map(user -> UserDto.builder()
                     .name(user.getName()).phoneNumber(user.getPhoneNumber())
                     .email(user.getEmail()).id(user.getId()).roles(user.getRoles())
-                    .locationsList(user.getLocations()).build()).toList();
+                    .locationsList(user.getLocations().stream().map(locations ->
+                            LocationDto.builder().id(locations.getId()).locationName(locations.getLocationName()).build()).toList()
+                    ).build()).toList();
             return basisResponseMapper.createBasisResponseForUser(userDtolist,pageNo,users);
         }
         List<UserDto> userDtolist = userList.stream().map(user -> UserDto.builder()
                 .name(user.getName()).phoneNumber(user.getPhoneNumber())
                 .email(user.getEmail()).id(user.getId()).roles(user.getRoles())
-                .locationsList(user.getLocations()).build()).toList();
+                .locationsList(user.getLocations().stream().map(locations ->
+                        LocationDto.builder().id(locations.getId()).locationName(locations.getLocationName()).build()).toList()
+                ).build()).toList();
         return basisResponseMapper.createBasisResponseForUser(userDtolist,pageNo,users);
     }
 
@@ -62,15 +67,20 @@ public class UserServiceImp implements IUserService {
         User user = userRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("user" , "id" , id));
         user.setEmail(registerDto.getEmail());
         user.setName(registerDto.getName());
+        List<LocationDto> locationsDtoArrayList= new ArrayList<>();
         List<Locations> locationsArrayList= new ArrayList<>();
         for (Long locationId:registerDto.getLocationListId()) {
             Locations location= locationsRepo.findById(locationId).orElseThrow(()-> new ResourceNotFoundException("location" , "id",locationId));
+            LocationDto locationDto = LocationDto.builder().locationName(location.getLocationName()).id(locationId).build();
+            locationsDtoArrayList.add(locationDto);
             locationsArrayList.add(location);
         }
         user.setLocations(locationsArrayList);
         user.setPhoneNumber(registerDto.getPhoneNumber());
         user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
-        UserDto userDto = UserDto.builder().id(user.getId()).locationsList(user.getLocations())
+        UserDto userDto = UserDto.builder().id(user.getId()).locationsList(user.getLocations().stream().map(locations ->
+                        LocationDto.builder().id(locations.getId()).locationName(locations.getLocationName()).build()).toList()
+                )
                 .email(user.getEmail()).name(user.getName()).phoneNumber(user.getPhoneNumber()).build();
         return basisResponseMapper.createBasisResponse(userDto);
     }

@@ -24,5 +24,5 @@ public class UserDto {
     private String email;
     String phoneNumber;
     Roles roles;
-    List<Locations> locationsList;
+    List<LocationDto> locationsList;
 }
