@@ -1,7 +1,7 @@
 spring:
   datasource:
     password: ${MYSQL_PASSWORD:admin}
-    url: jdbc:mysql://${MYSQL_HOST:172.30.152.55}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:nabd}
+    url: jdbc:mysql://${MYSQL_HOST:172.30.121.217}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:nabd}?useSSL=false
     username: root
   jpa:
     hibernate:
