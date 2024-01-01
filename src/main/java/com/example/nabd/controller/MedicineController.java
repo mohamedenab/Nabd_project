@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin()
 @RequestMapping("/api/v1/medicine")
 @Tag(name = "Medicine service apis ")
 public class MedicineController {
