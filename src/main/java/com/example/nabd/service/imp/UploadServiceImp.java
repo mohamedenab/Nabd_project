@@ -61,6 +61,7 @@ public class UploadServiceImp implements UploadService {
                 Double price = Double.valueOf(row.get(2));
                 Double numberOfPastilleInEachBox = Double.valueOf(row.get(3));
                 String activeSubstance = row.size()<5 ? "null" : row.get(4);
+                if (activeSubstance.length()>255) activeSubstance.substring(0,255);
                 if (nameInEng==null||price<0||numberOfPastilleInEachBox<0){
                     throw new NabdAPIExeption("format error"+" in row "+i,HttpStatus.BAD_REQUEST);
                 }
@@ -82,7 +83,7 @@ public class UploadServiceImp implements UploadService {
             }
             medicineRepo.saveAll(medicines);
 //            medicineRepo.saveAll(medicines);
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
