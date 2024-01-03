@@ -29,7 +29,7 @@ public class MedicineController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")
+    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU')")
     public ResponseEntity<BasisResponse> getMedicines(
             @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
             @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
@@ -39,13 +39,13 @@ public class MedicineController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")
+    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU')")
     public ResponseEntity<BasisResponse> getMedicineName(@PathVariable(name = "id") Long id) {
         return ResponseEntity.ok(medicineService.getMedicineNameById(id));
     }
 
     @GetMapping("/patient/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")
+    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU')")
     public ResponseEntity<BasisResponse> getPatientOfThisMedicine(@PathVariable(name = "id") Long id) {
         return ResponseEntity.ok(medicineService.getPatientMedicine(id));
     }
@@ -59,7 +59,7 @@ public class MedicineController {
     }
 
     @DeleteMapping("/{medicineId}/patient/{patientId}")
-    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU')")
+    @PreAuthorize("hasRole('ROLE_SU')")
     public ResponseEntity<String> deleteMedicineFromPatient(
             @PathVariable(name = "medicineId") Long medicineId,
             @PathVariable(name = "patientId") Long patientId) {

@@ -30,7 +30,7 @@ public class PatientController {
         this.patientMedicineService = patientMedicineService;
     }
     @PostMapping
-    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")
+    @PreAuthorize("hasRole('ROLE_SU')")
     @Operation(
             summary = "create Patient "
     )
@@ -154,7 +154,7 @@ public class PatientController {
         return  ResponseEntity.ok(patientService.updatePatient(id,patientDto));
     }
     @PutMapping("/deactivate/{id}")
-    @PreAuthorize("hasRole('ROLE_SU')")
+    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")
     @Operation(
             summary = "deactivate patient"
     )
@@ -166,7 +166,7 @@ public class PatientController {
         return ResponseEntity.ok(patientService.deactivatePatient(id));
     }
     @PutMapping("/activate/{id}")
-    @PreAuthorize("hasRole('ROLE_SU')")
+    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")
     @Operation(
             summary = "deactivate patient"
     )

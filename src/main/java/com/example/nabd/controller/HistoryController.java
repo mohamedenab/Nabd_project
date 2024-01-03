@@ -36,13 +36,13 @@ public class HistoryController {
         return ResponseEntity.ok(historyService.getHistoryById(id));
     }
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU')")
+    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")
     public ResponseEntity<BasisResponse> updateHistory(
             @PathVariable(name = "id") Long id, @Valid @RequestBody HistoryDto historyDto){
         return ResponseEntity.ok(historyService.updateHistory(historyDto,id));
     }
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU')")
+    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")
     public ResponseEntity<BasisResponse> deleteHistory(
             @PathVariable(name = "id") Long id){
         return ResponseEntity.ok(historyService.deleteHistory(id));

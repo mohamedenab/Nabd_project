@@ -20,23 +20,24 @@ public class SpecializationController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_SU')")
     public ResponseEntity<BasisResponse> createSpecialization(@Valid  @RequestBody SpecializationDto specializationDto){
         return new ResponseEntity<>(specializationService.createSpecialization(specializationDto) , HttpStatus.CREATED);
     }
     @GetMapping
-    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")
+    @PreAuthorize("hasRole('ROLE_SU')")
     public ResponseEntity<BasisResponse> getAllSpecialization(){
         return new ResponseEntity<>(specializationService.getSpecializations() , HttpStatus.OK);
     }
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU')")
+    @PreAuthorize("hasRole('ROLE_SU')")
     public ResponseEntity<BasisResponse> updateSpecialization(
             @PathVariable(name = "id") Long id ,
             @RequestBody SpecializationDto specializationDto){
         return new ResponseEntity<>(specializationService.updateSpecialization(id,specializationDto), HttpStatus.OK);
     }
     @DeleteMapping("/{specializationId}/medicine/{medicineId}")
-    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU')")
+    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")
     public ResponseEntity<String> removeMedicineByspecializationId(
             @PathVariable(name = "specializationId") Long specializationId,
             @PathVariable(name = "medicineId") Long medicineId
@@ -44,7 +45,7 @@ public class SpecializationController {
         return ResponseEntity.ok(specializationService.deleteMedicineBySpecialization(medicineId,specializationId));
     }
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_SU')")
+    @PreAuthorize("hasRole('ROLE_SU')")
     public ResponseEntity<String> deleteSpecialization(@PathVariable(name = "id") Long id) {
         return new ResponseEntity<>(specializationService.deleteSpecialization(id), HttpStatus.OK);
     }

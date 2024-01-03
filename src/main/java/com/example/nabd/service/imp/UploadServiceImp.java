@@ -13,9 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+
 @Service
 public class UploadServiceImp implements UploadService {
     private final MedicineRepo medicineRepo;
@@ -25,12 +24,13 @@ public class UploadServiceImp implements UploadService {
     }
     @Override
     public ResponseEntity<Object> uploadDataFromExcelFile(MultipartFile file) {
-        makeAllMedicineNotUpdated();
+        MedicineStatus medicineStatus = MedicineStatus.NOT_UPDATED;
+        medicineRepo.updateMedicineByMedicineStatus(medicineStatus);
         List<List<String>> rows = new ArrayList<>();
         try (Workbook workbook = new XSSFWorkbook(file.getInputStream())) {
             Sheet sheet = workbook.getSheetAt(0);
             Iterator<Row> rowIterator = sheet.iterator();
-            List<Medicine> medicines = new ArrayList<>();
+            Set<Medicine> medicines = new TreeSet<>();
             int ii=0;
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
@@ -66,22 +66,23 @@ public class UploadServiceImp implements UploadService {
                 }
                 Medicine medicine = medicineRepo.findByNameInEng(nameInEng);
                 if (medicine!=null){
-                    medicine.setNameInEng(nameInEng);
                     medicine.setPrice(price);
+                    medicine.setNumberOfPastilleInEachBox(numberOfPastilleInEachBox.intValue());
                     medicine.setMedicineStatus(MedicineStatus.UPDATED);
-                    medicineRepo.save(medicine);
+//                    medicineRepo.save(medicine);
                     medicines.add(medicine);
                 }else {
                     medicine = Medicine.builder().medicineStatus(MedicineStatus.UPDATED)
                             .activeSubstance(activeSubstance).price(price)
                             .nameInEng(nameInEng).nameInArb(nameInArabic)
                             .numberOfPastilleInEachBox(numberOfPastilleInEachBox.intValue()).build();
-                    medicineRepo.save(medicine);
+//                    medicineRepo.save(medicine);
                     medicines.add(medicine);
                 }
             }
+            medicineRepo.saveAll(medicines);
 //            medicineRepo.saveAll(medicines);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -111,8 +112,9 @@ public class UploadServiceImp implements UploadService {
         List<Medicine> medicines = medicineRepo.findAll();
         for (Medicine medicine:medicines) {
             medicine.setMedicineStatus(MedicineStatus.NOT_UPDATED);
-            medicineRepo.save(medicine);
+//            medicineRepo.save(medicine);
         }
+        medicineRepo.saveAll(medicines);
     }
 }
 

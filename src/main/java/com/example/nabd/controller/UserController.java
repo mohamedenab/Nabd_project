@@ -35,7 +35,7 @@ public class UserController {
             description = "Http status 200 OK"
     )
     @GetMapping
-    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")
+    @PreAuthorize("hasRole('ROLE_SU')")
     public ResponseEntity<BasisResponse> getUsers(
             @RequestParam(value = "pageNo",defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,required = false) int pageNo,
             @RequestParam(value = "pageSize",defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,

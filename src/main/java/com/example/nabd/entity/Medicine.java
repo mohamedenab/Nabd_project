@@ -12,18 +12,18 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Medicine {
+public class Medicine implements Comparable<Medicine> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true ,nullable = false)
+    @Column(unique = true, nullable = false)
     private String nameInEng;
     private String nameInArb;
     @Column(nullable = false)
     private  double price;
     @Column(nullable = false)
     private int numberOfPastilleInEachBox;
-    @Column(nullable = false)
+    @Column(columnDefinition = "VARCHAR(500)",nullable = false)
     private String activeSubstance;
     @Column(nullable = false)
     private int numberOfPatientTakeIt;
@@ -34,4 +34,9 @@ public class Medicine {
 //    private List<Patient> patients = new ArrayList<>();
     @OneToMany(mappedBy = "medicine",fetch = FetchType.LAZY)
     private List<Patient_Medicine> patientMedicines;
+
+    @Override
+    public int compareTo(Medicine o) {
+        return this.nameInEng.compareTo(o.nameInEng);
+    }
 }

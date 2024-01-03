@@ -60,7 +60,6 @@ public class MedicineServiceImp implements IMedicineService {
     @Override
     public BasisResponse getMedicine(int pageNo, int pageSize, String sortBy, String filter) {
         if (filter != null) {
-            System.out.println(filter);
             List<Medicine> medicineslist = medicineRepo.findAll();
             List<Medicine> medicineFilterList = medicineslist.stream()
                     .filter(medicine -> medicine.getNameInEng().contains(filter)).toList();

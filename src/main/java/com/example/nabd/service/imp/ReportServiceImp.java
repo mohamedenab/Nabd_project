@@ -1,9 +1,6 @@
 package com.example.nabd.service.imp;
 
-import com.example.nabd.dtos.BasisResponse;
-import com.example.nabd.dtos.ReportDto;
-import com.example.nabd.dtos.ReportMedicineAmountDto;
-import com.example.nabd.dtos.ReportMedicineDto;
+import com.example.nabd.dtos.*;
 import com.example.nabd.entity.*;
 import com.example.nabd.exception.ResourceNotFoundException;
 import com.example.nabd.mapper.BasisResponseMapper;
@@ -83,6 +80,19 @@ public class ReportServiceImp implements IReportService {
         ).toList();
         ReportDto reportDto = ReportDto.builder().reportMedicineDto(reportMedicineDtos).build();
         return basisResponseMapper.createBasisResponseForReport(reportDto,pageNo,reportMedicines);
+    }
+
+    @Override
+    public BasisResponse getMedicine(String filter) {
+        List<Report_Medicine> reportMedicines = reportMedicineRepo.findAll();
+        List<Report_Medicine> medicineFilterList = reportMedicines.stream()
+                .filter(medicine -> medicine.getMedicine().contains(filter)).toList();
+        List<ReportMedicineDto> reportMedicineDtos = medicineFilterList.stream().map(reportMedicine ->
+                ReportMedicineDto.builder().medicineId(reportMedicine.getMedicineId()).medicine(reportMedicine.getMedicine())
+                        .numberBox(reportMedicine.getNumberBox()).numberPastille(reportMedicine.getNumberPastille())
+                        .totalPrice(reportMedicine.getTotalPrice()).id(reportMedicine.getId()).build()
+        ).toList();
+        return basisResponseMapper.createBasisResponse(reportMedicineDtos);
     }
 
     @Override

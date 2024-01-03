@@ -44,7 +44,7 @@ public class LocationController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ROLE_SU')")
+    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")
     @Operation(
             summary = "create location ",
             description = "Create locations by locationName and only super admin " +
