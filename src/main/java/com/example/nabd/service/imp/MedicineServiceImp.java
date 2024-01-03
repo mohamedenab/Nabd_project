@@ -59,34 +59,31 @@ public class MedicineServiceImp implements IMedicineService {
 
     @Override
     public BasisResponse getMedicine(int pageNo, int pageSize, String sortBy, String filter) {
+        // Create a PageRequest for pagination
+        PageRequest pageRequest = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+
+        Page<Medicine> medicinePage;
+
         if (filter != null) {
-            List<Medicine> medicineslist = medicineRepo.findAll();
-            List<Medicine> medicineFilterList = medicineslist.stream()
-                    .filter(medicine -> medicine.getNameInEng().contains(filter)).toList();
-            List<MedicineDto> medicineDtoList = medicineFilterList.stream()
-                    .map(medicine -> MedicineDto.builder().id(medicine.getId())
-                            .price(medicine.getPrice()).nameInEng(medicine.getNameInEng())
-                            .nameInArb(medicine.getNameInArb())
-                            .numberOfPastilleInEachBox(medicine.getNumberOfPastilleInEachBox())
-                            .activeSubstance(medicine.getActiveSubstance())
-                            .numberOfPatientTakeIt(medicine.getNumberOfPatientTakeIt())
-                            .medicineStatus(medicine.getMedicineStatus())
-                            .build())
-                    .toList();
-            return basisResponseMapper.createBasisResponse(medicineDtoList);
+            // Apply pagination and filtering
+            medicinePage = medicineRepo.findByNameInEngContaining(filter, pageRequest);
+        } else {
+            // Apply pagination without filtering
+            medicinePage = medicineRepo.findAll(pageRequest);
         }
-        Sort sort = Sort.by(sortBy);
-        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
-        Page<Medicine> medicines = medicineRepo.findAll(pageable);
-        List<Medicine> medicineslist = medicines.getContent();
-        List<MedicineDto> medicineDtoList = medicineslist.stream().map(medicine -> MedicineDto.builder()
-                .id(medicine.getId())
-                .price(medicine.getPrice()).nameInEng(medicine.getNameInEng())
-                .nameInArb(medicine.getNameInArb()).numberOfPastilleInEachBox(medicine.getNumberOfPastilleInEachBox())
-                .activeSubstance(medicine.getActiveSubstance())
-                .numberOfPatientTakeIt(medicine.getNumberOfPatientTakeIt()).medicineStatus(medicine.getMedicineStatus())
-                .build()).toList();
-        return basisResponseMapper.createBasisResponseForMedicine(medicineDtoList, pageNo, medicines);
+
+        List<MedicineDto> medicineDtoList = medicinePage.getContent().stream()
+                .map(medicine -> MedicineDto.builder().id(medicine.getId())
+                        .price(medicine.getPrice()).nameInEng(medicine.getNameInEng())
+                        .nameInArb(medicine.getNameInArb())
+                        .numberOfPastilleInEachBox(medicine.getNumberOfPastilleInEachBox())
+                        .activeSubstance(medicine.getActiveSubstance())
+                        .numberOfPatientTakeIt(medicine.getNumberOfPatientTakeIt())
+                        .medicineStatus(medicine.getMedicineStatus())
+                        .build())
+                .toList();
+
+        return basisResponseMapper.createBasisResponseForMedicine(medicineDtoList, pageNo, medicinePage);
     }
 
     @Override
