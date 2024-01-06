@@ -1,8 +1,8 @@
 spring:
   datasource:
-    password: ${MYSQL_PASSWORD:admin}
-    url: jdbc:mysql://${MYSQL_HOST:172.30.121.217}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:nabd}
-    username: root
+    password: ${MYSQL_PASSWORD:AVNS_-uyTR63D5iPKbE_HuKK}
+    url: jdbc:mysql://${MYSQL_HOST:db-mysql-nyc3-11183-do-user-15523531-0.c.db.ondigitalocean.com}:${MYSQL_PORT:25060}/${MYSQL_DATABASE:nabd}
+    username: doadmin
   jpa:
     hibernate:
       ddl-auto: update
