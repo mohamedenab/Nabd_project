@@ -25,7 +25,7 @@ public class SpecializationController {
         return new ResponseEntity<>(specializationService.createSpecialization(specializationDto) , HttpStatus.CREATED);
     }
     @GetMapping
-    @PreAuthorize("hasRole('ROLE_SU')")
+    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")
     public ResponseEntity<BasisResponse> getAllSpecialization(){
         return new ResponseEntity<>(specializationService.getSpecializations() , HttpStatus.OK);
     }
