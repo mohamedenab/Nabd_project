@@ -27,10 +27,11 @@ public class Patient_Medicine {
     @CollectionTable(name = "Patient_Medicine_List_month", joinColumns = @JoinColumn(name = "Patient_Medicine_id"))
     @Column(name = "month" ,nullable = false)
     private List<Integer> month;
-    Long specialization;
-    int numberBox;
-    int numberPastille;
-    int Repetition;
-    LocalDate startIn;
-    String notes;
+    private Long specialization;
+    private int numberBox;
+    private int numberPastille;
+    private int Repetition;
+    private LocalDate startIn;
+    private String notes;
+    private boolean active;
 }

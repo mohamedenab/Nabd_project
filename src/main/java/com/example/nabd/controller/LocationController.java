@@ -87,7 +87,7 @@ public class LocationController {
     }
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_SU')")
-    public ResponseEntity<String> deleteLocation(@PathVariable(name = "id") Long id){
+    public ResponseEntity<BasisResponse> deleteLocation(@PathVariable(name = "id") Long id){
         return ResponseEntity.ok(locationsService.DeleteLocation(id));
     }
 }

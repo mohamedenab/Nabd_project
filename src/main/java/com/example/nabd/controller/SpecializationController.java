@@ -36,6 +36,20 @@ public class SpecializationController {
             @RequestBody SpecializationDto specializationDto){
         return new ResponseEntity<>(specializationService.updateSpecialization(id,specializationDto), HttpStatus.OK);
     }
+    @PutMapping("/{specializationId}/patient/{patientId}/deactivate")
+    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")
+    public ResponseEntity<BasisResponse> deactivatemedicine(
+            @PathVariable(name = "specializationId") Long specializationId,
+            @PathVariable(name = "patientId") Long patientId){
+        return ResponseEntity.ok(specializationService.deactivatemedicine(specializationId,patientId));
+    }
+    @PutMapping("/{specializationId}/patient/{patientId}/activate")
+    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")
+    public ResponseEntity<BasisResponse> activatemedicine(
+            @PathVariable(name = "specializationId") Long specializationId,
+            @PathVariable(name = "patientId") Long patientId){
+        return ResponseEntity.ok(specializationService.activatemedicine(specializationId,patientId));
+    }
     @DeleteMapping("/{specializationId}/medicine/{medicineId}")
     @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")
     public ResponseEntity<String> removeMedicineByspecializationId(

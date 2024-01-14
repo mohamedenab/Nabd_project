@@ -27,6 +27,13 @@ public class MedicineController {
     public ResponseEntity<BasisResponse> addNewMedicine(@Valid @RequestBody MedicineDto medicineDto) {
         return new ResponseEntity<>(medicineService.create(medicineDto), HttpStatus.CREATED);
     }
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU')")
+    public ResponseEntity<BasisResponse> updateMedicine(
+            @PathVariable(name = "id")Long id,
+            @Valid @RequestBody MedicineDto medicineDto) {
+        return new ResponseEntity<>(medicineService.update(id,medicineDto), HttpStatus.OK);
+    }
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU')")
@@ -49,7 +56,20 @@ public class MedicineController {
     public ResponseEntity<BasisResponse> getPatientOfThisMedicine(@PathVariable(name = "id") Long id) {
         return ResponseEntity.ok(medicineService.getPatientMedicine(id));
     }
-
+    @PutMapping("/{medicineId}/patient/{patientId}/deactivate")
+    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")
+    public ResponseEntity<BasisResponse> deactivatemedicine(
+            @PathVariable(name = "medicineId") Long medicineId,
+            @PathVariable(name = "patientId") Long patientId){
+        return ResponseEntity.ok(medicineService.deactivatemedicine(medicineId,patientId));
+    }
+    @PutMapping("/{medicineId}/patient/{patientId}/activate")
+    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")
+    public ResponseEntity<BasisResponse> activatemedicine(
+            @PathVariable(name = "medicineId") Long medicineId,
+            @PathVariable(name = "patientId") Long patientId){
+        return ResponseEntity.ok(medicineService.activatemedicine(medicineId,patientId));
+    }
     @GetMapping("/{firstId}/{secondId}")
     @PreAuthorize("hasRole('ROLE_SU')")
     public ResponseEntity<BasisResponse> replaceMedicineWithAnother(
@@ -60,7 +80,7 @@ public class MedicineController {
 
     @DeleteMapping("/{medicineId}/patient/{patientId}")
     @PreAuthorize("hasRole('ROLE_SU')")
-    public ResponseEntity<String> deleteMedicineFromPatient(
+    public ResponseEntity<BasisResponse> deleteMedicineFromPatient(
             @PathVariable(name = "medicineId") Long medicineId,
             @PathVariable(name = "patientId") Long patientId) {
         return ResponseEntity.ok(medicineService.removeMedicineFromPatient(medicineId, patientId));

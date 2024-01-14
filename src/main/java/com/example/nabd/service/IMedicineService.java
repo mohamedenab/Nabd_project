@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface IMedicineService {
     BasisResponse create(MedicineDto medicineDto);
+    BasisResponse update(Long id, MedicineDto medicineDto);
 
     BasisResponse getMedicine(int pageNo, int pageSize, String sortBy, String filter);
 
@@ -17,7 +18,11 @@ public interface IMedicineService {
 
     BasisResponse replaceMedicineWithAnother(Long firstId, Long secondId);
 
-    String removeMedicineFromPatient(Long medicineId, Long patentId);
+    BasisResponse removeMedicineFromPatient(Long medicineId, Long patentId);
 
     ResponseEntity<Object> delete(Long name);
+
+    BasisResponse deactivatemedicine(Long medicineId, Long patientId);
+    BasisResponse activatemedicine(Long medicineId, Long patientId);
+
 }

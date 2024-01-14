@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 @Repository
 public interface Patient_MedicineRepo extends JpaRepository<Patient_Medicine,Long> {
-    Patient_Medicine findByPatientAndMedicine(Patient patient , Medicine medicine);
+    List<Patient_Medicine> findByPatientAndMedicine(Patient patient , Medicine medicine);
     List<Patient_Medicine> findByMedicineAndSpecialization(Medicine medicine , Long specialization);
     List<Patient_Medicine> findByPatientAndSpecialization(Patient patient , Long specialization);
 

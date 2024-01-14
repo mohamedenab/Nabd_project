@@ -10,4 +10,8 @@ public interface ISpecializationService {
     BasisResponse updateSpecialization(Long id , SpecializationDto specializationDto);
     String deleteMedicineBySpecialization(Long medicineId , Long specializationId);
     String deleteSpecialization(Long id);
+    BasisResponse deactivatemedicine(Long specializationId, Long patientId);
+    BasisResponse activatemedicine(Long specializationId, Long patientId);
+
+
 }

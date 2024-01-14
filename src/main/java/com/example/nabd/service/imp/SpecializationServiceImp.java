@@ -3,14 +3,18 @@ package com.example.nabd.service.imp;
 import com.example.nabd.dtos.BasisResponse;
 import com.example.nabd.dtos.SpecializationDto;
 import com.example.nabd.entity.Medicine;
+import com.example.nabd.entity.Patient;
 import com.example.nabd.entity.Patient_Medicine;
 import com.example.nabd.entity.Specialization;
+import com.example.nabd.exception.NabdAPIExeption;
 import com.example.nabd.exception.ResourceNotFoundException;
 import com.example.nabd.mapper.BasisResponseMapper;
 import com.example.nabd.repository.MedicineRepo;
+import com.example.nabd.repository.PatientRepo;
 import com.example.nabd.repository.Patient_MedicineRepo;
 import com.example.nabd.repository.SpecializationRepo;
 import com.example.nabd.service.ISpecializationService;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,13 +22,15 @@ import java.util.List;
 @Service
 public class SpecializationServiceImp implements ISpecializationService {
     private final SpecializationRepo specializationRepo;
+    private final PatientRepo patientRepo;
     private final MedicineRepo medicineRepo;
     private final Patient_MedicineRepo patientMedicineRepo;
     private final BasisResponseMapper basisResponseMapper = new BasisResponseMapper();
 
 
-    public SpecializationServiceImp(SpecializationRepo specializationRepo, MedicineRepo medicineRepo, Patient_MedicineRepo patientMedicineRepo) {
+    public SpecializationServiceImp(SpecializationRepo specializationRepo, PatientRepo patientRepo, MedicineRepo medicineRepo, Patient_MedicineRepo patientMedicineRepo) {
         this.specializationRepo = specializationRepo;
+        this.patientRepo = patientRepo;
         this.medicineRepo = medicineRepo;
         this.patientMedicineRepo = patientMedicineRepo;
     }
@@ -74,5 +80,33 @@ public class SpecializationServiceImp implements ISpecializationService {
                 () -> new ResourceNotFoundException("Specialization","id",id));
         specializationRepo.delete(specialization);
         return "Specialization delete successfully";
+    }
+
+    @Override
+    public BasisResponse deactivatemedicine(Long specializationId, Long patientId) {
+        Patient patient =  patientRepo.findById(patientId).orElseThrow(()-> new ResourceNotFoundException("patient","id",patientId));
+        List<Patient_Medicine> patient_medicines = patientMedicineRepo.findByPatientAndSpecialization(patient,specializationId);
+        if (patient_medicines.isEmpty()){
+            throw new NabdAPIExeption("No Medicine exist to this patient" , HttpStatus.BAD_REQUEST);
+        }
+        for (Patient_Medicine p : patient_medicines){
+            p.setActive(false);
+        }
+        patientMedicineRepo.saveAll(patient_medicines);
+        return basisResponseMapper.createBasisResponse("Medicine deactivate");
+    }
+
+    @Override
+    public BasisResponse activatemedicine(Long specializationId, Long patientId) {
+        Patient patient =  patientRepo.findById(patientId).orElseThrow(()-> new ResourceNotFoundException("patient","id",patientId));
+        List<Patient_Medicine> patient_medicines = patientMedicineRepo.findByPatientAndSpecialization(patient,specializationId);
+        if (patient_medicines.isEmpty()){
+            throw new NabdAPIExeption("No Medicine exist to this patient" , HttpStatus.BAD_REQUEST);
+        }
+        for (Patient_Medicine p : patient_medicines){
+            p.setActive(true);
+        }
+        patientMedicineRepo.saveAll(patient_medicines);
+        return basisResponseMapper.createBasisResponse("Medicine activate");
     }
 }

@@ -168,10 +168,10 @@ public class PatientServiceImp implements IPatientService {
                 ()-> new ResourceNotFoundException("Patient" , "id",patientId));
         Medicine medicine = medicineRepo.findById(medicineId).orElseThrow(
                 ()-> new ResourceNotFoundException("Medicine" , "id",medicineId));
-        Patient_Medicine patientMedicineCheck= patientMedicineRepo.findByPatientAndMedicine(patient,medicine);
-        if (patientMedicineCheck!=null){
-            throw new NabdAPIExeption("Medicine is already exist" , HttpStatus.BAD_REQUEST);
-        }
+//        Patient_Medicine patientMedicineCheck= patientMedicineRepo.findByPatientAndMedicine(patient,medicine);
+//        if (patientMedicineCheck!=null){
+//            throw new NabdAPIExeption("Medicine is already exist" , HttpStatus.BAD_REQUEST);
+//        }
         medicine.setNumberOfPatientTakeIt(medicine.getNumberOfPatientTakeIt()+1);
         medicineRepo.save(medicine);
         LocalDate localDate = LocalDate.of(addMedicineDto.getYear(), addMedicineDto.getMonth(),1);
@@ -180,7 +180,7 @@ public class PatientServiceImp implements IPatientService {
                 .startIn(localDate).specialization(addMedicineDto.getSpecialization())
                 .numberBox(addMedicineDto.getNumberBox())
                 .month(setArrayOfMonths(addMedicineDto.getMonth(),addMedicineDto.getRepetition()))
-                .notes(addMedicineDto.getNotes()).Repetition(addMedicineDto.getRepetition()).build();
+                .notes(addMedicineDto.getNotes()).Repetition(addMedicineDto.getRepetition()).active(true).build();
         patientMedicineRepo.save(patientMedicine);
         PatientMedicineDto patientMedicineDto = PatientMedicineDto.builder()
                 .arrayOfMonths(patientMedicine.getMonth()).numberBox(patientMedicine.getNumberBox())
@@ -256,11 +256,13 @@ public class PatientServiceImp implements IPatientService {
         int temp = startIn;
         while (temp<12){
             temp+=repetition;
+            if (temp>12) break;
             months.add(temp);
         }
         temp=startIn;
         while (temp>1){
             temp-=repetition;
+            if (temp<1) break;
             months.add(temp);
         }
         return months;

@@ -58,6 +58,26 @@ public class MedicineServiceImp implements IMedicineService {
     }
 
     @Override
+    public BasisResponse update(Long id, MedicineDto medicineDto) {
+        Medicine medicine = medicineRepo.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Medicine", "Id", id));
+        String activeSubstance = medicineDto.getActiveSubstance()==null ? "null" : medicineDto.getActiveSubstance();
+        medicine.setMedicineStatus(MedicineStatus.UPDATED);
+        medicine.setPrice(medicineDto.getPrice());
+        medicine.setNameInEng(medicineDto.getNameInEng());
+        medicine.setNameInArb(medicine.getNameInArb());
+        medicine.setNumberOfPastilleInEachBox(medicineDto.getNumberOfPastilleInEachBox());
+        medicine.setActiveSubstance(activeSubstance);
+        Medicine savedMedicine = medicineRepo.save(medicine);
+        MedicineDto medicineDto1 = MedicineDto.builder().medicineStatus(MedicineStatus.UPDATED)
+                .price(savedMedicine.getPrice()).nameInEng(savedMedicine.getNameInEng())
+                .nameInArb(savedMedicine.getNameInArb())
+                .numberOfPastilleInEachBox(savedMedicine.getNumberOfPastilleInEachBox())
+                .activeSubstance(savedMedicine.getActiveSubstance()).build();
+        return basisResponseMapper.createBasisResponse(medicineDto1);
+    }
+
+    @Override
     public BasisResponse getMedicine(int pageNo, int pageSize, String sortBy, String filter) {
         // Create a PageRequest for pagination
         PageRequest pageRequest = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
@@ -137,14 +157,14 @@ public class MedicineServiceImp implements IMedicineService {
     }
 
     @Override
-    public String removeMedicineFromPatient(Long medicineId, Long patientId) {
+    public BasisResponse removeMedicineFromPatient(Long medicineId, Long patientId) {
         Patient patient = patientRepo.findById(patientId).orElseThrow(
                 () -> new ResourceNotFoundException("Patient", "id", patientId));
         Medicine medicine = medicineRepo.findById(medicineId).orElseThrow(
                 () -> new ResourceNotFoundException("Medicine", "id", medicineId));
-        Patient_Medicine patientMedicineCheck = patientMedicineRepo.findByPatientAndMedicine(patient, medicine);
-        patientMedicineRepo.delete(patientMedicineCheck);
-        return "Medicine deleted form patient successfully";
+        List<Patient_Medicine> patientMedicineCheck = patientMedicineRepo.findByPatientAndMedicine(patient, medicine);
+        patientMedicineRepo.deleteAll(patientMedicineCheck);
+        return basisResponseMapper.createBasisResponse("Medicine deleted form patient successfully");
     }
 
     @Override
@@ -157,6 +177,40 @@ public class MedicineServiceImp implements IMedicineService {
             throw new NabdAPIExeption("There are patients who take this medicine", HttpStatus.BAD_REQUEST);
         medicineRepo.delete(medicine);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Override
+    public BasisResponse deactivatemedicine(Long medicineId, Long patientId) {
+        Patient patient = patientRepo.findById(patientId).orElseThrow(
+                ()-> new ResourceNotFoundException("Patient" , "id",patientId));
+        Medicine medicine = medicineRepo.findById(medicineId).orElseThrow(
+                ()-> new ResourceNotFoundException("Medicine" , "id",medicineId));
+        List<Patient_Medicine> patientMedicineCheck= patientMedicineRepo.findByPatientAndMedicine(patient,medicine);
+        if (patientMedicineCheck.isEmpty()){
+            throw new NabdAPIExeption("No Medicine exist to this patient" , HttpStatus.BAD_REQUEST);
+        }
+        for (Patient_Medicine p : patientMedicineCheck){
+            p.setActive(false);
+        }
+        patientMedicineRepo.saveAll(patientMedicineCheck);
+        return basisResponseMapper.createBasisResponse("Medicine deactivate");
+    }
+
+    @Override
+    public BasisResponse activatemedicine(Long medicineId, Long patientId) {
+        Patient patient = patientRepo.findById(patientId).orElseThrow(
+                ()-> new ResourceNotFoundException("Patient" , "id",patientId));
+        Medicine medicine = medicineRepo.findById(medicineId).orElseThrow(
+                ()-> new ResourceNotFoundException("Medicine" , "id",medicineId));
+        List<Patient_Medicine> patientMedicineCheck= patientMedicineRepo.findByPatientAndMedicine(patient,medicine);
+        if (patientMedicineCheck.isEmpty()){
+            throw new NabdAPIExeption("No Medicine exist to this patient" , HttpStatus.BAD_REQUEST);
+        }
+        for (Patient_Medicine p : patientMedicineCheck){
+            p.setActive(true);
+        }
+        patientMedicineRepo.saveAll(patientMedicineCheck);
+        return basisResponseMapper.createBasisResponse("Medicine activate");
     }
 
     private boolean cheakHaveTheSameMedicine(Patient patient, Medicine medicine) {

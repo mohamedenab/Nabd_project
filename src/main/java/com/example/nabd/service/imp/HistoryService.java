@@ -44,14 +44,13 @@ public class HistoryService implements IHistoryService {
 
     @Override
     public BasisResponse updateHistory(HistoryDto historyDto , Long historyId) {
-        Date date = new Date();
-        LocalDate newDate = LocalDate.of(date.getYear(),date.getMonth(),1);
+        LocalDate localDate= LocalDate.now();
         History history = historyRepo.findById(historyId).orElseThrow(
                 ()-> new ResourceNotFoundException("History" , "id",historyId));
         history.setHistoryType(historyDto.getHistoryType());
         history.setComment(historyDto.getComment());
         history.setLink(historyDto.getLink());
-        history.setUpdatedAt(newDate);
+        history.setUpdatedAt(localDate);
         History historySaved = historyRepo.save(history);
         HistoryDto historyDtoToSend = HistoryDto.builder().patientDto(patientMapper.EntityToDto(historySaved.getPatientH()))
                 .id(historySaved.getId()).comment(historySaved.getComment())
