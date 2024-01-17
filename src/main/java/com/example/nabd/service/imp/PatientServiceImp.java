@@ -1,8 +1,10 @@
 package com.example.nabd.service.imp;
 
 import com.example.nabd.dtos.*;
+import com.example.nabd.dtos.medicineDtos.AddMedicineDto;
+import com.example.nabd.dtos.patientDtos.PatientDto;
+import com.example.nabd.dtos.patientDtos.PatientMedicineDto;
 import com.example.nabd.entity.*;
-import com.example.nabd.exception.NabdAPIExeption;
 import com.example.nabd.exception.ResourceNotFoundException;
 import com.example.nabd.mapper.BasisResponseMapper;
 import com.example.nabd.mapper.PatientMapper;
@@ -13,7 +15,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

@@ -1,4 +1,4 @@
-package com.example.nabd.dtos;
+package com.example.nabd.dtos.authDtos;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;

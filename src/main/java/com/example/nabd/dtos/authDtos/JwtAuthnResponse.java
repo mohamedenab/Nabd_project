@@ -1,4 +1,4 @@
-package com.example.nabd.dtos;
+package com.example.nabd.dtos.authDtos;
 
 import com.example.nabd.enums.Roles;
 import lombok.*;

@@ -1,4 +1,4 @@
-package com.example.nabd.dtos;
+package com.example.nabd.dtos.medicineDtos;
 
 import com.example.nabd.entity.Patient;
 import com.example.nabd.enums.MedicineStatus;

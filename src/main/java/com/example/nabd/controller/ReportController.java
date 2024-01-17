@@ -1,7 +1,7 @@
 package com.example.nabd.controller;
 
 import com.example.nabd.dtos.BasisResponse;
-import com.example.nabd.dtos.ReportMedicineAmountDto;
+import com.example.nabd.dtos.reportDtos.ReportMedicineAmountDto;
 import com.example.nabd.service.IReportService;
 import com.example.nabd.utility.AppConstants;
 import io.swagger.v3.oas.annotations.tags.Tag;

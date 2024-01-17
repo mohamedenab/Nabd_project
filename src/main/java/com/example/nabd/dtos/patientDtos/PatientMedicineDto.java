@@ -1,4 +1,4 @@
-package com.example.nabd.dtos;
+package com.example.nabd.dtos.patientDtos;
 
 import com.example.nabd.enums.MedicineStatus;
 import jakarta.persistence.EnumType;

@@ -1,7 +1,7 @@
 package com.example.nabd.controller;
 
 import com.example.nabd.dtos.BasisResponse;
-import com.example.nabd.dtos.RegisterDto;
+import com.example.nabd.dtos.authDtos.RegisterDto;
 import com.example.nabd.service.IUserService;
 import com.example.nabd.utility.AppConstants;
 import io.swagger.v3.oas.annotations.Operation;

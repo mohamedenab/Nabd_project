@@ -1,6 +1,7 @@
-package com.example.nabd.dtos;
+package com.example.nabd.dtos.authDtos;
 
 
+import com.example.nabd.dtos.LocationDto;
 import com.example.nabd.entity.Locations;
 import com.example.nabd.enums.Roles;
 import jakarta.validation.constraints.Email;

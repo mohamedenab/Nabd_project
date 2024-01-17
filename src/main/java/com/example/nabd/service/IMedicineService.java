@@ -1,10 +1,10 @@
 package com.example.nabd.service;
 
 import com.example.nabd.dtos.BasisResponse;
-import com.example.nabd.dtos.MedicineDto;
+import com.example.nabd.dtos.medicineDtos.MedicineDto;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.multipart.MultipartFile;
+
 
 public interface IMedicineService {
     BasisResponse create(MedicineDto medicineDto);

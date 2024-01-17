@@ -1,5 +1,7 @@
-package com.example.nabd.dtos;
+package com.example.nabd.dtos.patientDtos;
 
+import com.example.nabd.dtos.LocationDto;
+import com.example.nabd.dtos.SpecializationDto;
 import com.example.nabd.entity.Locations;
 import com.example.nabd.enums.Insurance;
 import com.example.nabd.enums.MaritalStatus;

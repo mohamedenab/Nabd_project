@@ -1,8 +1,8 @@
 package com.example.nabd.service;
 
-import com.example.nabd.dtos.AddMedicineDto;
+import com.example.nabd.dtos.medicineDtos.AddMedicineDto;
 import com.example.nabd.dtos.BasisResponse;
-import com.example.nabd.dtos.PatientDto;
+import com.example.nabd.dtos.patientDtos.PatientDto;
 
 public interface IPatientService {
     BasisResponse createPatient(PatientDto patientDto);

@@ -2,8 +2,8 @@ package com.example.nabd.service.imp;
 
 import com.example.nabd.dtos.BasisResponse;
 import com.example.nabd.dtos.LocationDto;
-import com.example.nabd.dtos.PatientDto;
-import com.example.nabd.dtos.UserDto;
+import com.example.nabd.dtos.patientDtos.PatientDto;
+import com.example.nabd.dtos.authDtos.UserDto;
 import com.example.nabd.entity.Locations;
 import com.example.nabd.entity.Patient;
 import com.example.nabd.entity.User;

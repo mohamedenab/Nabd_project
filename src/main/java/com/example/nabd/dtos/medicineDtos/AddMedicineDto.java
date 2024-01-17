@@ -1,12 +1,8 @@
-package com.example.nabd.dtos;
+package com.example.nabd.dtos.medicineDtos;
 
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import javax.xml.crypto.Data;
-import java.time.LocalDate;
-import java.util.Date;
 @Getter
 @Setter
 @AllArgsConstructor

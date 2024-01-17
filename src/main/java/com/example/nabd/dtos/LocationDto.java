@@ -1,5 +1,6 @@
 package com.example.nabd.dtos;
 
+import com.example.nabd.dtos.authDtos.UserDto;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 

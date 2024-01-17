@@ -1,4 +1,4 @@
-package com.example.nabd.dtos;
+package com.example.nabd.dtos.printDtos;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -8,7 +8,10 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ReportMedicineAmountDto {
+public class MedicinePrintDto {
+    private String medicineName;
     int numberBox;
     int numberPastille;
+    int repetition;
+
 }

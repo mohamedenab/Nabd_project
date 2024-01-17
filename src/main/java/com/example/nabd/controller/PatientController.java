@@ -1,8 +1,8 @@
 package com.example.nabd.controller;
 
-import com.example.nabd.dtos.AddMedicineDto;
+import com.example.nabd.dtos.medicineDtos.AddMedicineDto;
 import com.example.nabd.dtos.BasisResponse;
-import com.example.nabd.dtos.PatientDto;
+import com.example.nabd.dtos.patientDtos.PatientDto;
 import com.example.nabd.service.IPatientMedicineService;
 import com.example.nabd.service.IPatientService;
 import com.example.nabd.utility.AppConstants;

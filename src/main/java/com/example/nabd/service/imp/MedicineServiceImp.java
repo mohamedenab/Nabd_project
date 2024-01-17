@@ -1,8 +1,8 @@
 package com.example.nabd.service.imp;
 
 import com.example.nabd.dtos.BasisResponse;
-import com.example.nabd.dtos.MedicineDto;
-import com.example.nabd.dtos.PatientDto;
+import com.example.nabd.dtos.medicineDtos.MedicineDto;
+import com.example.nabd.dtos.patientDtos.PatientDto;
 import com.example.nabd.entity.Medicine;
 import com.example.nabd.entity.Patient;
 import com.example.nabd.entity.Patient_Medicine;
@@ -17,7 +17,6 @@ import com.example.nabd.repository.Patient_MedicineRepo;
 import com.example.nabd.service.IMedicineService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

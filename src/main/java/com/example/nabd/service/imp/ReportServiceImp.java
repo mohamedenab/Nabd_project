@@ -1,6 +1,9 @@
 package com.example.nabd.service.imp;
 
 import com.example.nabd.dtos.*;
+import com.example.nabd.dtos.reportDtos.ReportDto;
+import com.example.nabd.dtos.reportDtos.ReportMedicineAmountDto;
+import com.example.nabd.dtos.reportDtos.ReportMedicineDto;
 import com.example.nabd.entity.*;
 import com.example.nabd.exception.ResourceNotFoundException;
 import com.example.nabd.mapper.BasisResponseMapper;

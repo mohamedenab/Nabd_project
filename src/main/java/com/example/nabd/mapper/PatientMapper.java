@@ -1,7 +1,7 @@
 package com.example.nabd.mapper;
 
 import com.example.nabd.dtos.LocationDto;
-import com.example.nabd.dtos.PatientDto;
+import com.example.nabd.dtos.patientDtos.PatientDto;
 import com.example.nabd.dtos.SpecializationDto;
 import com.example.nabd.entity.Locations;
 import com.example.nabd.entity.Patient;
@@ -9,8 +9,6 @@ import com.example.nabd.entity.Specialization;
 import com.example.nabd.exception.ResourceNotFoundException;
 import com.example.nabd.repository.LocationsRepo;
 import com.example.nabd.repository.SpecializationRepo;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

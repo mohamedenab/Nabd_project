@@ -1,7 +1,7 @@
 package com.example.nabd.service;
 
 import com.example.nabd.dtos.BasisResponse;
-import com.example.nabd.dtos.ReportMedicineAmountDto;
+import com.example.nabd.dtos.reportDtos.ReportMedicineAmountDto;
 
 public interface IReportService {
     BasisResponse createReport();

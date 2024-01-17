@@ -1,8 +1,8 @@
 package com.example.nabd.service.imp;
 
-import com.example.nabd.dtos.AddMedicineDto;
+import com.example.nabd.dtos.medicineDtos.AddMedicineDto;
 import com.example.nabd.dtos.BasisResponse;
-import com.example.nabd.dtos.PatientMedicineDto;
+import com.example.nabd.dtos.patientDtos.PatientMedicineDto;
 import com.example.nabd.entity.Patient;
 import com.example.nabd.entity.Patient_Medicine;
 import com.example.nabd.entity.Specialization;

@@ -1,8 +1,8 @@
 package com.example.nabd.controller;
 
 import com.example.nabd.dtos.BasisResponse;
-import com.example.nabd.dtos.LoginDto;
-import com.example.nabd.dtos.RegisterDto;
+import com.example.nabd.dtos.authDtos.LoginDto;
+import com.example.nabd.dtos.authDtos.RegisterDto;
 import com.example.nabd.service.IAuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
