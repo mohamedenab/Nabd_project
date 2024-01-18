@@ -10,8 +10,9 @@ import lombok.*;
 @Builder
 public class MedicinePrintDto {
     private String medicineName;
-    int numberBox;
-    int numberPastille;
-    int repetition;
+    private int numberBox;
+    private int numberPastille;
+    private int repetition;
+    private String notes;
 
 }

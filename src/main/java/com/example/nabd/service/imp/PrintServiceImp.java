@@ -75,6 +75,6 @@ public class PrintServiceImp implements IPrintService {
         return patient.getPatientMedicines().stream().map(
                 patientMedicine -> MedicinePrintDto.builder().medicineName(patientMedicine.getMedicine().getNameInEng())
                         .numberPastille(patientMedicine.getNumberPastille()).numberBox(patientMedicine.getNumberBox())
-                        .repetition(patientMedicine.getRepetition()).build()).toList();
+                        .repetition(patientMedicine.getRepetition()).notes(patientMedicine.getNotes()).build()).toList();
     }
 }
