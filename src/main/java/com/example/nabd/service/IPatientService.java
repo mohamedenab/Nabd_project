@@ -23,7 +23,7 @@ public interface IPatientService {
 
     BasisResponse addMedicine(Long medicineId, Long patientId, AddMedicineDto addMedicineDto);
 
-    String deletePatient(Long id);
+    BasisResponse deletePatient(Long id);
 
     BasisResponse deactivatePatient(Long id);
     BasisResponse activatePatient(Long id);

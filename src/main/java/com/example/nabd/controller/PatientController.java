@@ -198,7 +198,7 @@ public class PatientController {
             responseCode = "200",
             description = "Http status 200 Create"
     )
-    public ResponseEntity<String> deletePatient(@PathVariable(name = "id") Long id){
+    public ResponseEntity<BasisResponse> deletePatient(@PathVariable(name = "id") Long id){
         return  ResponseEntity.ok(patientService.deletePatient(id));
     }
 }

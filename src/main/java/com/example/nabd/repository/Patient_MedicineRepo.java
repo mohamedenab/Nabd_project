@@ -12,6 +12,8 @@ public interface Patient_MedicineRepo extends JpaRepository<Patient_Medicine,Lon
     List<Patient_Medicine> findByPatientAndMedicine(Patient patient , Medicine medicine);
     List<Patient_Medicine> findByMedicineAndSpecialization(Medicine medicine , Long specialization);
     List<Patient_Medicine> findByPatientAndSpecialization(Patient patient , Long specialization);
+    List<Patient_Medicine> findByPatient(Patient patient);
+
 
 
 }

@@ -44,23 +44,23 @@ public class JwtTokenProvider {
         String email = claims.getSubject();
         return email;
     }
-    public boolean validateToken(String token){
-        try{
+    public boolean validateToken(String token) {
+        try {
             Jwts.parserBuilder()
                     .setSigningKey(key())
                     .build()
                     .parse(token);
             return true;
-        }catch (MalformedJwtException exception){
-            throw  new NabdAPIExeption("Invalid JWT token.", HttpStatus.BAD_REQUEST);
-        }catch (ExpiredJwtException exception){
-            throw new NabdAPIExeption("Expired JWT token." , HttpStatus.BAD_REQUEST);
-        }catch (UnsupportedJwtException exception){
-            throw new NabdAPIExeption("Unsupported JWT token." , HttpStatus.BAD_REQUEST);
-        }catch (IllegalArgumentException exception){
-            throw new NabdAPIExeption("JWT claims string is empty." , HttpStatus.BAD_REQUEST);
+        } catch (SignatureException exception) {
+            throw new NabdAPIExeption("Invalid JWT token.", HttpStatus.BAD_REQUEST);
+        } catch (ExpiredJwtException exception) {
+            throw new NabdAPIExeption("Expired JWT token.", HttpStatus.BAD_REQUEST);
+        } catch (UnsupportedJwtException exception) {
+            throw new NabdAPIExeption("Unsupported JWT token.", HttpStatus.BAD_REQUEST);
+        } catch (IllegalArgumentException exception) {
+            throw new NabdAPIExeption("JWT claims string is empty.", HttpStatus.BAD_REQUEST);
         }
-
     }
+
 
 }

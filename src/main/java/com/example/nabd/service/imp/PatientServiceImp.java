@@ -191,10 +191,12 @@ public class PatientServiceImp implements IPatientService {
     }
 
     @Override
-    public String deletePatient(Long id) {
+    public BasisResponse deletePatient(Long id) {
         Patient patient = patientRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Patient" , "id",id));
+        List<Patient_Medicine> patientMedicine = patientMedicineRepo.findByPatient(patient);
+        patientMedicineRepo.deleteAll(patientMedicine);
         patientRepo.delete(patient);
-        return "Patient deleted successfully";
+        return basisResponseMapper.createBasisResponse("Patient deleted successfully");
     }
 
     @Override
