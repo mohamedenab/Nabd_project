@@ -51,7 +51,7 @@ public class JwtTokenProvider {
                     .build()
                     .parse(token);
             return true;
-        } catch (SignatureException exception) {
+        } catch (SignatureException | MalformedJwtException exception) {
             throw new NabdAPIExeption("Invalid JWT token.", HttpStatus.BAD_REQUEST);
         } catch (ExpiredJwtException exception) {
             throw new NabdAPIExeption("Expired JWT token.", HttpStatus.BAD_REQUEST);

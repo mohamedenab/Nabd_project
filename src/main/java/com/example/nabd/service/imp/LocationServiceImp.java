@@ -80,11 +80,18 @@ public class LocationServiceImp implements ILocationsService {
     @Override
     public BasisResponse DeleteLocation(Long id) {
         Locations locations = locationsRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Location","id",id));
-        if (locations.getPatient().size()>0){
+        if (!locations.getPatient().isEmpty()){
             throw new NabdAPIExeption("Location have patient", HttpStatus.BAD_REQUEST);
+        }else {
+        List<User> users = userRepo.findByLocations(locations);
+        System.out.println(users);
+        for (User u : users){
+            u.getLocations().remove(locations);
+            userRepo.save(u);
         }
         locationsRepo.delete(locations);
         return basisResponseMapper.createBasisResponse("Location deleted successfully");
+        }
     }
 
     @Override

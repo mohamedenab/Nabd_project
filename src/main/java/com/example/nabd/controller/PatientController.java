@@ -30,7 +30,7 @@ public class PatientController {
         this.patientMedicineService = patientMedicineService;
     }
     @PostMapping
-    @PreAuthorize("hasRole('ROLE_SU')")
+    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU')")
     @Operation(
             summary = "create Patient "
     )
