@@ -17,7 +17,7 @@ import java.util.Date;
 public class JwtTokenProvider {
 //    @Value("$JWT_SECRET_KEY")
     private String jwtSecret =  "931949128c37ce0092f6eb8fc450f6e844f19103c6c626683437e76cef3bd855";
-    private int jwtExpiratioData = 604800000;
+    private int jwtExpiratioData = 86400000;
     public String generateToken(String email){
         Date currentDate = new Date();
         Date expireDate = new Date(currentDate.getTime()+jwtExpiratioData);
