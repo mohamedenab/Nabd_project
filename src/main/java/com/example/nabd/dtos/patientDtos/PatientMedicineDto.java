@@ -21,7 +21,7 @@ public class PatientMedicineDto {
     Long id;
     String medicineName;
     @NotNull
-    Long specialization;
+    Long specializationId;
     @NotNull(message = "numberBox is empty")
     int numberBox;
     @NotNull(message = "numberPastille is empty")
