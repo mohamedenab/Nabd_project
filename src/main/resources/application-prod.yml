@@ -1,7 +1,7 @@
 spring:
   datasource:
-    password: ${MYSQL_PASSWORD:AVNS_-uyTR63D5iPKbE_HuKK}
-    url: jdbc:mysql://${MYSQL_HOST:db-mysql-nyc3-11183-do-user-15523531-0.c.db.ondigitalocean.com}:${MYSQL_PORT:25060}/${MYSQL_DATABASE:nabd}
+    password: ${MYSQL_PASSWORD:AVNS_5GWHdTOJYYtGPhYHza9}
+    url: jdbc:mysql://${MYSQL_HOST:db-mysql-nyc3-18222-do-user-15957682-0.c.db.ondigitalocean.com}:${MYSQL_PORT:25060}/${MYSQL_DATABASE:nabd}
     username: doadmin
   jpa:
     hibernate:
