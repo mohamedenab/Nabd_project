@@ -133,6 +133,7 @@ public class PatientServiceImp implements IPatientService {
                     .medicineId(patientMedicine.getMedicine().getId()).build();
             patientMedicinesDtos.add(patientMedicineDto);
 
+
         }
         return basisResponseMapper.createBasisResponse(patientMedicinesDtos);
     }
