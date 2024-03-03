@@ -30,8 +30,8 @@ public class HistoryService implements IHistoryService {
 
     @Override
     public BasisResponse addHistory(HistoryDto historyDto, Long patientId, int year, int month) {
-        Date date = new Date();
-        LocalDate newDate = LocalDate.of(year,month,date.getDay());
+        LocalDate date = LocalDate.now();
+        LocalDate newDate = LocalDate.of(year,month,date.getDayOfMonth());
         Patient patient = patientRepo.findById(patientId).orElseThrow(
                 ()-> new ResourceNotFoundException("Patient" , "id",patientId));
         History history = History.builder().comment(historyDto.getComment()).startDate(newDate).updatedAt(newDate)
