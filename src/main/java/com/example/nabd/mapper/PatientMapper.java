@@ -59,7 +59,7 @@ public class PatientMapper {
                 .dateOfHelp(patient.getDateOfHelp()).discoveryDetailsWithImageLink(patient.getDiscoveryDetailsWithImageLink())
                 .active(patient.isActive()).thereInsurance(patient.getThereInsurance())
                 .locationsId(patient.getLocationId().getId()).specializations(specializationsList)
-                .locationDto(locationDto).specializationDto(specializationDtoList).build();
+                .locationDto(locationDto).specializationDto(specializationDtoList).id(patient.getId()).build();
 
     }
 }

@@ -84,7 +84,8 @@ public class PatientServiceImp implements IPatientService {
                         .Repetition(patientMedicine.getRepetition()).note(patientMedicine.getNotes())
                         .numberPastille(patientMedicine.getNumberPastille()).numberBox(patientMedicine.getNumberBox())
                         .medicineName(patientMedicine.getMedicine().getNameInEng()).specializationName(specialization.getName())
-                        .id(patientMedicine.getId()).specializationId(specialization.getId()).build();
+                        .id(patientMedicine.getId()).arrayOfMonths(patientMedicine.getMonth()).patientId(patient.getId())
+                        .medicineId(patientMedicine.getMedicine().getId()).build();
                 patientMedicinesDtos.add(patientMedicineDto);
             }
         }
@@ -104,10 +105,7 @@ public class PatientServiceImp implements IPatientService {
                     HistoryDto historyDto = HistoryDto.builder().historyType(history.getHistoryType()).comment(history.getComment())
                             .link(history.getLink()).id(history.getId()).startAt(history.getStartDate().toString())
                             .updatedAt(history.getUpdatedAt().toString()).build();
-                    System.out.println(historyDto.getStartAt());
-                    System.out.println(historyDto.getUpdatedAt());
                     historyDtos.add(historyDto);
-                    System.out.println(historyDtos.get(0));
                 }
             }
             return basisResponseMapper.createBasisResponse(historyDtos);
@@ -131,7 +129,8 @@ public class PatientServiceImp implements IPatientService {
                     .Repetition(patientMedicine.getRepetition()).note(patientMedicine.getNotes())
                     .numberPastille(patientMedicine.getNumberPastille()).numberBox(patientMedicine.getNumberBox())
                     .medicineName(patientMedicine.getMedicine().getNameInEng()).specializationName(specialization.getName())
-                    .id(patientMedicine.getId()).arrayOfMonths(patientMedicine.getMonth()).build();
+                    .id(patientMedicine.getId()).arrayOfMonths(patientMedicine.getMonth()).patientId(patient.getId())
+                    .medicineId(patientMedicine.getMedicine().getId()).build();
             patientMedicinesDtos.add(patientMedicineDto);
 
         }

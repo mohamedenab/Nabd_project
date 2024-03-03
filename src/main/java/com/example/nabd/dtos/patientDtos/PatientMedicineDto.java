@@ -30,6 +30,8 @@ public class PatientMedicineDto {
     int Repetition;
     @NotNull(message = "startIn is empty")
     String startIn;
+    Long medicineId;
+    Long patientId;
     String note;
     String specializationName;
     List<Integer> arrayOfMonths = new ArrayList<>();
