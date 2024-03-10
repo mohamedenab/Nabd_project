@@ -140,7 +140,8 @@ public class PatientController {
         return ResponseEntity.ok(patientMedicineService.update(id,addMedicineDto));
     }
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_SU')")
+    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU')")
+
     @Operation(
             summary = "update Patient"
     )
