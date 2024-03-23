@@ -79,7 +79,7 @@ public class MedicineController {
     }
 
     @DeleteMapping("/{medicineId}/patient/{patientId}")
-    @PreAuthorize("hasRole('ROLE_SU')")
+    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")
     public ResponseEntity<BasisResponse> deleteMedicineFromPatient(
             @PathVariable(name = "medicineId") Long medicineId,
             @PathVariable(name = "patientId") Long patientId) {
