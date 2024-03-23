@@ -179,7 +179,7 @@ public class PatientController {
         return ResponseEntity.ok(patientService.activatePatient(id));
     }
     @DeleteMapping("/medicine/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU')")
+    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")
     public ResponseEntity<BasisResponse> deleteMedicineToPatient(@PathVariable(name = "id") Long id){
         return ResponseEntity.ok(patientMedicineService.delete(id));
     }

@@ -15,6 +15,7 @@ import com.example.nabd.repository.SpecializationRepo;
 import com.example.nabd.service.IPatientMedicineService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 @Service
@@ -36,11 +37,13 @@ public class PatientMedicineServiceImp implements IPatientMedicineService {
     public BasisResponse update(Long id, AddMedicineDto addMedicineDto) {
         Patient_Medicine patientMedicine = patientMedicineRepo.findById(id)
                 .orElseThrow(()-> new ResourceNotFoundException("patientMedicine" , "id",id));
+        LocalDate localDate = LocalDate.of(addMedicineDto.getYear(),addMedicineDto.getMonth(),1);
         patientMedicine.setNotes(addMedicineDto.getNotes());
         patientMedicine.setNumberBox(addMedicineDto.getNumberBox());
         patientMedicine.setNumberPastille(addMedicineDto.getNumberPastille());
         patientMedicine.setRepetition(addMedicineDto.getRepetition());
         patientMedicine.setSpecialization(addMedicineDto.getSpecialization());
+        patientMedicine.setStartIn(localDate);
         patientMedicine.setMonth(setArrayOfMonths(patientMedicine.getStartIn().getMonth().getValue(),addMedicineDto.getRepetition()));
         Patient_Medicine savedPatientMedicine= patientMedicineRepo.save(patientMedicine);
         Specialization specialization = specializationRepo.findById(savedPatientMedicine.getSpecialization())
