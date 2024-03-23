@@ -85,7 +85,7 @@ public class PatientServiceImp implements IPatientService {
                         .numberPastille(patientMedicine.getNumberPastille()).numberBox(patientMedicine.getNumberBox())
                         .medicineName(patientMedicine.getMedicine().getNameInEng()).specializationName(specialization.getName())
                         .id(patientMedicine.getId()).arrayOfMonths(patientMedicine.getMonth()).patientId(patient.getId())
-                        .medicineId(patientMedicine.getMedicine().getId()).build();
+                        .medicineId(patientMedicine.getMedicine().getId()).specializationId(specialization.getId()).build();
                 patientMedicinesDtos.add(patientMedicineDto);
             }
         }
@@ -130,7 +130,7 @@ public class PatientServiceImp implements IPatientService {
                     .numberPastille(patientMedicine.getNumberPastille()).numberBox(patientMedicine.getNumberBox())
                     .medicineName(patientMedicine.getMedicine().getNameInEng()).specializationName(specialization.getName())
                     .id(patientMedicine.getId()).arrayOfMonths(patientMedicine.getMonth()).patientId(patient.getId())
-                    .medicineId(patientMedicine.getMedicine().getId()).build();
+                    .medicineId(patientMedicine.getMedicine().getId()).specializationId(specialization.getId()).build();
             patientMedicinesDtos.add(patientMedicineDto);
 
 
