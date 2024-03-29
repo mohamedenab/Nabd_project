@@ -40,6 +40,7 @@ public class PatientDto {
     private String dateOfBeginningOfDecision;
     private String dateOfHelp;
     private String discoveryDetailsWithImageLink;
+    private String PatientDiagnosis;
     private Insurance thereInsurance;
     private Long locationsId;
     private List<Long> specializations = new ArrayList<>();

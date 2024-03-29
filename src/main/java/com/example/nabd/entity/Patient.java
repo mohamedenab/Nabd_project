@@ -44,6 +44,9 @@ public class Patient {
     @Lob
     @Column(columnDefinition = "TEXT")
     private String discoveryDetailsWithImageLink;
+    @Lob
+    @Column(columnDefinition = "TEXT")
+    private String PatientDiagnosis;
     private boolean active = true;
     @Enumerated(EnumType.STRING)
     private Insurance thereInsurance;
