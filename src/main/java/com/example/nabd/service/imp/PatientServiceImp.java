@@ -45,6 +45,7 @@ public class PatientServiceImp implements IPatientService {
     @Override
     public BasisResponse createPatient(PatientDto patientDto) {
         Patient patient = patientMapper.DtoToEntity(patientDto);
+        patient.setActive(true);
         Patient savedPatient= patientRepo.save(patient);
         return basisResponseMapper.createBasisResponse(patientMapper.EntityToDto(savedPatient));
     }
