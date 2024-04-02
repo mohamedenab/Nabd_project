@@ -159,6 +159,7 @@ public class PatientServiceImp implements IPatientService {
     public BasisResponse updatePatient(Long id, PatientDto patientDto) {
         Patient patient = patientRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Patient" , "id",id));
         Patient toSave = patientMapper.DtoToEntity(patientDto);
+        toSave.setActive(patient.isActive());
         toSave.setId(patient.getId());
         patientRepo.save(toSave);
         return basisResponseMapper.createBasisResponse(patientMapper.EntityToDto(toSave));
