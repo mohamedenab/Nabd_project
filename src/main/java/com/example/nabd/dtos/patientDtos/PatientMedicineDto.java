@@ -34,5 +34,6 @@ public class PatientMedicineDto {
     Long patientId;
     String note;
     String specializationName;
+    boolean isActive;
     List<Integer> arrayOfMonths = new ArrayList<>();
 }
