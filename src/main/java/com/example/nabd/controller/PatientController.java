@@ -191,7 +191,7 @@ public class PatientController {
         return ResponseEntity.ok(patientMedicineService.deleteMedicineBySpecialization(patientId,specializationId));
     }
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_SU')")
+    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU')")
     @Operation(
             summary = "delete Patient"
     )
