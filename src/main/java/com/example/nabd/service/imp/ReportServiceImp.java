@@ -44,8 +44,15 @@ public class ReportServiceImp implements IReportService {
         List<Patient_Medicine> patientMedicinesToReport=new ArrayList<>();
         LocalDate localDate = LocalDate.now();
         for (Patient_Medicine p : patient_medicines){
-            if (p.getStartIn().getYear()==localDate.getYear()
-                    &&p.getStartIn().getMonth()==localDate.getMonth()
+//            if (p.getStartIn().getYear()==localDate.getYear()
+//                    &&p.getStartIn().getMonth()==localDate.getMonth()
+//                    &&p.getPatient().isActive()&& p.isActive()){
+//                medicines.add(p.getMedicine());
+//                patientMedicinesToReport.add(p);
+//            }
+            if (p.getStartIn().getYear()<=localDate.getYear()
+                    &&p.getMonth().contains(localDate.getMonth().getValue())
+                    &&p.getStartIn().getMonth().getValue()<=localDate.getMonth().getValue()
                     &&p.getPatient().isActive()&& p.isActive()){
                 medicines.add(p.getMedicine());
                 patientMedicinesToReport.add(p);
