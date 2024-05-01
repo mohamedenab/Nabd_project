@@ -75,6 +75,7 @@ public class PatientServiceImp implements IPatientService {
     public BasisResponse getPatientMedicine(Long id) {
         Patient patient = patientRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Patient" , "id",id));
         LocalDate date = LocalDate.now();
+
         List<PatientMedicineDto> patientMedicinesDtos = new ArrayList<>();
         for (Patient_Medicine patientMedicine:
                 patient.getPatientMedicines()) {
