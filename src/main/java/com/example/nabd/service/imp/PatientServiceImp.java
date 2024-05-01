@@ -78,7 +78,9 @@ public class PatientServiceImp implements IPatientService {
         List<PatientMedicineDto> patientMedicinesDtos = new ArrayList<>();
         for (Patient_Medicine patientMedicine:
                 patient.getPatientMedicines()) {
-            if (patientMedicine.getMonth().contains(date.getMonth().getValue())&&patientMedicine.getStartIn().isBefore(date)){
+            if (patientMedicine.getMonth().contains(date.getMonth().getValue())
+                    &&patientMedicine.getStartIn().getYear()<=date.getYear()
+                    &&patientMedicine.getStartIn().getMonth().getValue()<=date.getMonth().getValue()){
                 Specialization specialization = specializationRepo.findById(patientMedicine.getSpecialization())
                         .orElseThrow(()-> new ResourceNotFoundException("Specialization" , "id",id));
                 PatientMedicineDto patientMedicineDto = PatientMedicineDto.builder().startIn(patientMedicine.getStartIn().toString())
