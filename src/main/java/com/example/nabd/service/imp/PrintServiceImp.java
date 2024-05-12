@@ -7,6 +7,7 @@ import com.example.nabd.dtos.printDtos.PatientPrintDto;
 import com.example.nabd.entity.Locations;
 
 import com.example.nabd.entity.Patient;
+import com.example.nabd.entity.Patient_Medicine;
 import com.example.nabd.exception.ResourceNotFoundException;
 import com.example.nabd.mapper.BasisResponseMapper;
 import com.example.nabd.repository.LocationsRepo;
@@ -14,6 +15,7 @@ import com.example.nabd.repository.PatientRepo;
 import com.example.nabd.service.IPrintService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,7 +74,17 @@ public class PrintServiceImp implements IPrintService {
         return patientPrintDtos;
     }
     private List<MedicinePrintDto> getMedicineFromPatient(Patient patient){
-        return patient.getPatientMedicines().stream().map(
+        List<Patient_Medicine> patientPrintDtos = new ArrayList<>();
+        LocalDate localDate = LocalDate.now();
+        for (Patient_Medicine p : patient.getPatientMedicines()){
+            if (p.getStartIn().getYear()<=localDate.getYear()
+                    &&p.getMonth().contains(localDate.getMonth().getValue())
+                    &&p.getStartIn().getMonth().getValue()<=localDate.getMonth().getValue()
+                    &&p.getPatient().isActive()&& p.isActive()){
+                patientPrintDtos.add(p);
+            }
+        }
+        return patientPrintDtos.stream().map(
                 patientMedicine -> MedicinePrintDto.builder().medicineName(patientMedicine.getMedicine().getNameInEng())
                         .numberPastille(patientMedicine.getNumberPastille()).numberBox(patientMedicine.getNumberBox())
                         .repetition(patientMedicine.getRepetition()).notes(patientMedicine.getNotes()).build()).toList();
