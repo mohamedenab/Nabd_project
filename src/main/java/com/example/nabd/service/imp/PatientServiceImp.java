@@ -56,11 +56,17 @@ public class PatientServiceImp implements IPatientService {
         Pageable pageable = PageRequest.of(pageNo,pageSize,sort);
         Page<Patient> patients = patientRepo.findAll(pageable);
         List<Patient> patientList = patients.getContent();
-        if (filterType!=null){
-            return basisResponseMapper.createBasisResponseForPatient(
-                    getPatientFilter(filterType,filterValue,patientList),pageNo,patients);
+        Page<Patient> patientPage;
+        if (filterValue != null) {
+            patientPage = patientRepo.findByNameContaining(filterValue, pageable);
+        } else {
+            patientPage = patientRepo.findAll(pageable);
         }
-        List<PatientDto> patientDtoList = patientList.stream().map(patientMapper::EntityToDto).toList();
+//        if (filterType!=null){
+//            return basisResponseMapper.createBasisResponseForPatient(
+//                    getPatientFilter(filterType,filterValue,patientList),pageNo,patients);
+//        }
+        List<PatientDto> patientDtoList = patientPage.getContent().stream().map(patientMapper::EntityToDto).toList();
         return basisResponseMapper.createBasisResponseForPatient(patientDtoList,pageNo,patients);
     }
 
