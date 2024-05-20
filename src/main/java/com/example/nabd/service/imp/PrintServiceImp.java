@@ -39,8 +39,14 @@ public class PrintServiceImp implements IPrintService {
         for (Locations locations1 : locations){
             String locationName = locations1.getLocationName();
             List<PatientPrintDto> patientPrintDtos =getPatientFromLocation(locations1);
+            List<PatientPrintDto> patientPrintDtos1 = new ArrayList<>();
+            for (PatientPrintDto p : patientPrintDtos){
+                if (!p.getMedicinePrintDtos().isEmpty()){
+                    patientPrintDtos1.add(p);
+                }
+            }
             LocationPrintDto locationPrintDto = LocationPrintDto.builder().locationName(locationName)
-                    .patientPrintDtos(patientPrintDtos).build();
+                    .patientPrintDtos(patientPrintDtos1).build();
             locationPrintDtos.add(locationPrintDto);
         }
         return basisResponseMapper.createBasisResponse(locationPrintDtos);
@@ -50,8 +56,14 @@ public class PrintServiceImp implements IPrintService {
     public BasisResponse printLocation(Long id) {
         Locations locations = locationsRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Location","id",id));
         List<PatientPrintDto> patientPrintDtos =getPatientFromLocation(locations);
+        List<PatientPrintDto> patientPrintDtos1 = new ArrayList<>();
+        for (PatientPrintDto p : patientPrintDtos){
+            if (!p.getMedicinePrintDtos().isEmpty()){
+                patientPrintDtos1.add(p);
+            }
+        }
         LocationPrintDto locationPrintDto = LocationPrintDto.builder().locationName(locations.getLocationName())
-                .patientPrintDtos(patientPrintDtos).build();
+                .patientPrintDtos(patientPrintDtos1).build();
         return basisResponseMapper.createBasisResponse(locationPrintDto);
     }
 
