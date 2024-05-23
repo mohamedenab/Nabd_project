@@ -124,7 +124,7 @@ public class MedicineServiceImp implements IMedicineService {
         List<Patient> patients = fist.getPatientMedicines().stream().map(Patient_Medicine::getPatient).toList();
         List<PatientDto> patientDtoList = patients.stream().map(patient -> PatientDto.builder()
                 .name(patient.getName()).mobileNumbers(patient.getMobileNumbers())
-                .id(patient.getId()).build()).toList();
+                .id(patient.getId()).dateOfBeginningOfDecision(patient.getDateOfBeginningOfDecision()).build()).toList();
         return basisResponseMapper.createBasisResponse(patientDtoList);
     }
 

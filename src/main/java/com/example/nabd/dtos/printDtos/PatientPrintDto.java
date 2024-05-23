@@ -14,4 +14,5 @@ public class PatientPrintDto {
     private List<String> phoneNumber;
     private String volunteerName;
     private List<MedicinePrintDto> medicinePrintDtos;
+    private String dateOfBeginningOfDecision;
 }

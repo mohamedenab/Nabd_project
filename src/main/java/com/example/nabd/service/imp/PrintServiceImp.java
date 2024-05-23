@@ -72,7 +72,7 @@ public class PrintServiceImp implements IPrintService {
         Patient patient = patientRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Patient","id",id));
         List<MedicinePrintDto> medicinePrintDtos = getMedicineFromPatient(patient);
         PatientPrintDto patientPrintDto = PatientPrintDto.builder().medicinePrintDtos(medicinePrintDtos).name(patient.getName())
-                .phoneNumber(patient.getMobileNumbers()).build();
+                .phoneNumber(patient.getMobileNumbers()).dateOfBeginningOfDecision(patient.getDateOfBeginningOfDecision()).build();
         return basisResponseMapper.createBasisResponse(patientPrintDto);
     }
     private List<PatientPrintDto> getPatientFromLocation(Locations locations){
@@ -80,7 +80,8 @@ public class PrintServiceImp implements IPrintService {
         for (Patient patient : locations.getPatient()){
             List<MedicinePrintDto> medicinePrintDtos = getMedicineFromPatient(patient);
             PatientPrintDto patientPrintDto = PatientPrintDto.builder().medicinePrintDtos(medicinePrintDtos).name(patient.getName())
-                    .phoneNumber(patient.getMobileNumbers()).build();
+                    .phoneNumber(patient.getMobileNumbers()).dateOfBeginningOfDecision(patient.getDateOfBeginningOfDecision())
+                    .build();
             patientPrintDtos.add(patientPrintDto);
         }
         return patientPrintDtos;

@@ -103,7 +103,8 @@ public class LocationServiceImp implements ILocationsService {
         List<Patient> patients = patientList.getContent();
         List<PatientDto> patientDtoList = patients.stream().map(patient -> PatientDto.builder()
                 .name(patient.getName()).mobileNumbers(patient.getMobileNumbers())
-                .id(patient.getId()).active(patient.isActive()).build()).toList();
+                .id(patient.getId()).active(patient.isActive()).dateOfBeginningOfDecision(patient.getDateOfBeginningOfDecision())
+                .build()).toList();
         return basisResponseMapper.createBasisResponseForPatient(patientDtoList,pageNo,patientList);
     }
 
