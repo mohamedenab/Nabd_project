@@ -1,3 +1,6 @@
 spring:
   profiles:
     active: prod
+  security:
+    jwt:
+      secret-key: '931949128c37ce0092f6eb8fc450f6e844f19103c6c626683437e76cef3bd855'
