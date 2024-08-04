@@ -1,18 +1,18 @@
 version: "3"
 services:
-  mysqldb:
-    container_name: mySql
-    image: mysql
-    ports:
-      - "3307:3306"
-    environment:
-      MYSQL_DATABASE: nabd
-      MYSQL_ROOT_PASSWORD: root
+  # mysqldb:
+  #   container_name: mySql
+  #   image: mysql
+  #   ports:
+  #     - "3307:3306"
+  #   environment:
+  #     MYSQL_DATABASE: nabd
+  #     MYSQL_ROOT_PASSWORD: root
   springboot-app:
-    container_name: Nabd
-    image: springboot-app
-    depends_on:
-      - mysqldb
+    container_name: backend
+    image: back:nabdelhayah-latest
+    # depends_on:
+    #   - mysqldb
     restart: on-failure
     build : .
     ports:
