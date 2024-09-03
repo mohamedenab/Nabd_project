@@ -2,7 +2,7 @@ spring:
   datasource:
     password: ${MYSQL_PASSWORD:root}
     url: jdbc:mysql://${MYSQL_HOST:}:${MYSQL_PORT:}/${MYSQL_DATABASE:}
-    username: root
+    username: nabd
   jpa:
     hibernate:
       ddl-auto: update
