@@ -2,6 +2,7 @@ package com.example.nabd.controller;
 
 import com.example.nabd.dtos.medicineDtos.AddMedicineDto;
 import com.example.nabd.dtos.BasisResponse;
+import com.example.nabd.dtos.patientDtos.PatientDeactivateDto;
 import com.example.nabd.dtos.patientDtos.PatientDto;
 import com.example.nabd.service.IPatientMedicineService;
 import com.example.nabd.service.IPatientService;
@@ -163,8 +164,9 @@ public class PatientController {
             responseCode = "200",
             description = "Http status 200 Create"
     )
-    public ResponseEntity<BasisResponse> deactivatePatient(@PathVariable(name = "id") Long id){
-        return ResponseEntity.ok(patientService.deactivatePatient(id));
+    public ResponseEntity<BasisResponse> deactivatePatient(@PathVariable(name = "id") Long id,
+                                                           @RequestBody PatientDeactivateDto reasonForDeactivate ){
+        return ResponseEntity.ok(patientService.deactivatePatient(id,reasonForDeactivate.getReasonForDeactivate()));
     }
     @PutMapping("/activate/{id}")
     @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")

@@ -37,7 +37,7 @@ public class PatientMapper {
                 .dateOfHelp(patientDto.getDateOfHelp()).discoveryDetailsWithImageLink(patientDto.getDiscoveryDetailsWithImageLink())
                 .active(patientDto.isActive()).thereInsurance(patientDto.getThereInsurance())
                 .locationId(locations).specializations(specializations)
-                .PatientDiagnosis(patientDto.getPatientDiagnosis()).build();
+                .PatientDiagnosis(patientDto.getPatientDiagnosis()).reasonForDeactivate(patientDto.getReasonForDeactivate()).build();
     }
     public PatientDto EntityToDto(Patient patient){
         List<Long> specializationsList =new ArrayList<>();
@@ -60,7 +60,8 @@ public class PatientMapper {
                 .dateOfHelp(patient.getDateOfHelp()).discoveryDetailsWithImageLink(patient.getDiscoveryDetailsWithImageLink())
                 .active(patient.isActive()).thereInsurance(patient.getThereInsurance())
                 .locationsId(patient.getLocationId().getId()).specializations(specializationsList).PatientDiagnosis(patient.getPatientDiagnosis())
-                .locationDto(locationDto).specializationDto(specializationDtoList).id(patient.getId()).build();
+                .locationDto(locationDto).specializationDto(specializationDtoList).id(patient.getId())
+                .reasonForDeactivate(patient.getReasonForDeactivate()).build();
 
     }
 }

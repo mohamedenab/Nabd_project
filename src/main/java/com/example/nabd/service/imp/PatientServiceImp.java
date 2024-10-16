@@ -215,9 +215,10 @@ public class PatientServiceImp implements IPatientService {
     }
 
     @Override
-    public BasisResponse deactivatePatient(Long id) {
+    public BasisResponse deactivatePatient(Long id, String reasonForDeactivate) {
         Patient patient = patientRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Patient" , "id",id));
         patient.setActive(false);
+        patient.setReasonForDeactivate(reasonForDeactivate);
         Patient saved = patientRepo.save(patient);
         PatientDto patientDto= patientMapper.EntityToDto(saved);
         return basisResponseMapper.createBasisResponse(patientDto);

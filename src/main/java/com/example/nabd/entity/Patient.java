@@ -47,6 +47,9 @@ public class Patient {
     @Lob
     @Column(columnDefinition = "TEXT")
     private String PatientDiagnosis;
+    @Lob
+    @Column(columnDefinition = "TEXT")
+    private String reasonForDeactivate;
     private boolean active = true;
     @Enumerated(EnumType.STRING)
     private Insurance thereInsurance;

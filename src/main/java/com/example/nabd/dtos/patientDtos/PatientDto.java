@@ -41,6 +41,7 @@ public class PatientDto {
     private String dateOfHelp;
     private String discoveryDetailsWithImageLink;
     private String PatientDiagnosis;
+    private String reasonForDeactivate;
     private Insurance thereInsurance;
     private Long locationsId;
     private List<Long> specializations = new ArrayList<>();

@@ -172,7 +172,7 @@ public class MedicineServiceImp implements IMedicineService {
                 () -> new ResourceNotFoundException("Medicine", "Id", id));
         if (medicine == null)
             throw new NabdAPIExeption("no medicine with this name", HttpStatus.BAD_REQUEST);
-        if (medicine.getPatientMedicines().size() > 0)
+        if (!medicine.getPatientMedicines().isEmpty())
             throw new NabdAPIExeption("There are patients who take this medicine", HttpStatus.BAD_REQUEST);
         medicineRepo.delete(medicine);
         return new ResponseEntity<>(HttpStatus.OK);
