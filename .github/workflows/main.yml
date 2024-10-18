@@ -4,7 +4,8 @@ on:
   push:
     branches:
       - main
-
+env:
+  MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD  }}
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -19,4 +20,15 @@ jobs:
         port: ${{ secrets.SSH_PORT }}
         script: |
           cd /code/Nabd_project ; git pull
-          docker build -t back:nabdelhayah-latest .
+          docker build -t api:nabdelhayah-latest .
+          docker stop api || true
+          docker rm api || true
+          
+          docker run --rm --name api  -d \
+            -p 8081:8080 \
+            -e MYSQL_PASSWORD=${{ env.MYSQL_PASSWORD }} \
+            -e MYSQL_PORT=33006 \
+            -e MYSQL_DATABASE=nabd \
+            -e MYSQL_HOST=172.17.0.1 \
+            -e MYSQL_USER=nabd \
+            back:nabdelhayah-latest
