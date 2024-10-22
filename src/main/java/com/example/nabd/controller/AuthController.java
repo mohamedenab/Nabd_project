@@ -42,7 +42,7 @@ public class AuthController {
     }
     @GetMapping("/login/1")
     public ResponseEntity<String> loginFun2(){
-        return ResponseEntity.ok("tmam2");
+        return ResponseEntity.ok("tmam22");
     }
     @Operation(
             summary = "Add new User",
