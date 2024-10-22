@@ -20,7 +20,7 @@ jobs:
         port: ${{ secrets.SSH_PORT }}
         script: |
           cd /code/Nabd_project ; git pull
-          docker build -t api:nabdelhayah-latest .
+          docker build --no-cache -t api:nabdelhayah-latest .
           docker stop api || true
           docker rm api || true
           
@@ -31,4 +31,4 @@ jobs:
             -e MYSQL_DATABASE=nabd \
             -e MYSQL_HOST=172.17.0.1 \
             -e MYSQL_USER=nabd \
-            back:nabdelhayah-latest
+            api:nabdelhayah-latest
