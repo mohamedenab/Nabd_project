@@ -22,4 +22,5 @@ public class Locations {
     private List<User> users = new ArrayList<>();
     @OneToMany(mappedBy = "locationId", fetch = FetchType.LAZY)
     private List<Patient> patient = new ArrayList<>();
+    private boolean isDeleted;
 }

@@ -65,4 +65,5 @@ public class Patient {
     private List<Patient_Medicine> patientMedicines;
     @OneToMany(mappedBy = "patientH", fetch = FetchType.LAZY)
     private List<History> histories = new ArrayList<>();
+    private boolean isDeleted;
 }
