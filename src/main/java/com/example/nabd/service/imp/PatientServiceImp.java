@@ -59,10 +59,10 @@ public class PatientServiceImp implements IPatientService {
         Page<Patient> patientPage;
         if (filterValue != null) {
             patientPage = patientRepo.findByNameContaining(filterValue, pageable);
-        } else if  (filterType.equals("deactivated")) {
-            patientPage = patientRepo.findByActiveFalse(pageable);
-        } else {
+        }  else if (filterType == null ||!filterType.equals("deactivated") ){
             patientPage = patientRepo.findAll(pageable);
+        } else {
+            patientPage = patientRepo.findByActiveFalse(pageable);
         }
 //        if (filterType!=null){
 //            return basisResponseMapper.createBasisResponseForPatient(
