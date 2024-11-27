@@ -39,6 +39,11 @@ public class ReportController {
     ResponseEntity<BasisResponse> getMedicine(@RequestParam(value = "filter") String filter){
         return ResponseEntity.ok(reportService.getMedicine(filter));
     }
+    @GetMapping("/statistics")
+    @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU')")
+    ResponseEntity<BasisResponse> getStatistics(){
+        return ResponseEntity.ok(reportService.reportStatistics());
+    }
     @PutMapping("/medicine/amount/{id}")
     @PreAuthorize("hasRole('ROLE_SU')")
     ResponseEntity<BasisResponse> editeAmount(@PathVariable(name = "id") Long id,

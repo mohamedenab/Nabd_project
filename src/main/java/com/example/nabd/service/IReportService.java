@@ -11,5 +11,6 @@ public interface IReportService {
     BasisResponse editeMedicine(Long id,Long newId);
     BasisResponse editeMedicineAmount(Long id, ReportMedicineAmountDto reportMedicineAmountDto);
     BasisResponse deleteMedicine(Long id);
+    BasisResponse reportStatistics();
     BasisResponse deleteReport();
 }

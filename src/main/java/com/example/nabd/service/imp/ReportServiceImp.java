@@ -4,13 +4,11 @@ import com.example.nabd.dtos.*;
 import com.example.nabd.dtos.reportDtos.ReportDto;
 import com.example.nabd.dtos.reportDtos.ReportMedicineAmountDto;
 import com.example.nabd.dtos.reportDtos.ReportMedicineDto;
+import com.example.nabd.dtos.reportDtos.StatisticsDto;
 import com.example.nabd.entity.*;
 import com.example.nabd.exception.ResourceNotFoundException;
 import com.example.nabd.mapper.BasisResponseMapper;
-import com.example.nabd.repository.MedicineRepo;
-import com.example.nabd.repository.Patient_MedicineRepo;
-import com.example.nabd.repository.ReportRepo;
-import com.example.nabd.repository.Report_MedicineRepo;
+import com.example.nabd.repository.*;
 import com.example.nabd.service.IReportService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,20 +16,24 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.*;
 
 @Service
 public class ReportServiceImp implements IReportService {
     private final Patient_MedicineRepo patientMedicineRepo;
+    private final PatientRepo patientRepo;
     private final ReportRepo reportRepo;
     private final Report_MedicineRepo reportMedicineRepo;
     private final MedicineRepo medicineRepo;
     private final BasisResponseMapper basisResponseMapper = new BasisResponseMapper();
 
 
-    public ReportServiceImp(Patient_MedicineRepo patientMedicineRepo, ReportRepo reportRepo, Report_MedicineRepo reportMedicineRepo, MedicineRepo medicineRepo) {
+    public ReportServiceImp(Patient_MedicineRepo patientMedicineRepo, PatientRepo patientRepo, ReportRepo reportRepo, Report_MedicineRepo reportMedicineRepo, MedicineRepo medicineRepo) {
         this.patientMedicineRepo = patientMedicineRepo;
+        this.patientRepo = patientRepo;
         this.reportRepo = reportRepo;
         this.reportMedicineRepo = reportMedicineRepo;
         this.medicineRepo = medicineRepo;
@@ -166,6 +168,25 @@ public class ReportServiceImp implements IReportService {
 
     }
 
+    @Override
+    public BasisResponse reportStatistics() {
+        long numberOfPatient = patientRepo.countByActiveTrue();
+        long reportMedicinesCount = reportMedicineRepo.count();
+        double price = getRoundedTotalPriceSum();
+        StatisticsDto statisticsDto = StatisticsDto.builder().numberOfPatient(numberOfPatient).price(price)
+                .reportMedicinesCount(reportMedicinesCount).build();
+
+        return basisResponseMapper.createBasisResponse(statisticsDto);
+    }
+    public Double getRoundedTotalPriceSum() {
+        Double price = reportMedicineRepo.calculateTotalPriceSum();
+        if (price == null) {
+            price = 0.0;
+        }
+        return BigDecimal.valueOf(price)
+                .setScale(3, RoundingMode.HALF_UP)
+                .doubleValue();
+    }
     @Override
     public BasisResponse deleteReport() {
         reportMedicineRepo.deleteAll();
