@@ -52,9 +52,10 @@ public class ReportServiceImp implements IReportService {
 //                medicines.add(p.getMedicine());
 //                patientMedicinesToReport.add(p);
 //            }
+            System.out.println(localDate.getMonth() );System.out.println(localDate.getYear());
             if (p.getStartIn().getYear()<=localDate.getYear()
                     &&p.getMonth().contains(localDate.getMonth().getValue())
-                    &&p.getStartIn().getMonth().getValue()<=localDate.getMonth().getValue()
+                    &&p.getStartIn().isBefore(localDate)
                     &&p.getPatient().isActive()&& p.isActive()){
                 medicines.add(p.getMedicine());
                 patientMedicinesToReport.add(p);
