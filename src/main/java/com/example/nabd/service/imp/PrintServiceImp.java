@@ -92,7 +92,7 @@ public class PrintServiceImp implements IPrintService {
         for (Patient_Medicine p : patient.getPatientMedicines()){
             if (p.getStartIn().getYear()<=localDate.getYear()
                     &&p.getMonth().contains(localDate.getMonth().getValue())
-                    &&p.getStartIn().getMonth().getValue()<=localDate.getMonth().getValue()
+                    &&p.getStartIn().isBefore(localDate)
                     &&p.getPatient().isActive()&& p.isActive()){
                 patientPrintDtos.add(p);
             }
