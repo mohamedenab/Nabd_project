@@ -17,7 +17,7 @@ public interface IPatientService {
 
     BasisResponse getAllPatientMedicine(Long id);
 
-    BasisResponse getPatientDateHistory(Long id);
+    BasisResponse getPatientDateHistory(Long id, int year);
 
     BasisResponse updatePatient(Long id, PatientDto patientDto);
 
