@@ -115,8 +115,10 @@ public class PatientController {
     }
     @GetMapping("/{id}/history/dates")
     @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")
-    public ResponseEntity<BasisResponse> getPatientDateOfHHistories(@PathVariable(name = "id") Long id){
-        return ResponseEntity.ok(patientService.getPatientDateHistory(id));
+    public ResponseEntity<BasisResponse> getPatientDateOfHHistories(
+            @PathVariable(name = "id") Long id,
+            @RequestParam(name = "year") int year){
+        return ResponseEntity.ok(patientService.getPatientDateHistory(id, year));
     }
     @PostMapping("/{patientID}/medicine/{medicineId}")
     @PreAuthorize("hasAnyRole('ROLE_SU','ROLE_AU','ROLE_NU')")

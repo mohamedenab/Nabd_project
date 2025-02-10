@@ -36,7 +36,7 @@ public class PatientMapper {
                 .dateOfBeginningOfDecision(patientDto.getDateOfBeginningOfDecision())
                 .dateOfHelp(patientDto.getDateOfHelp()).discoveryDetailsWithImageLink(patientDto.getDiscoveryDetailsWithImageLink())
                 .active(patientDto.isActive()).thereInsurance(patientDto.getThereInsurance())
-                .locationId(locations).specializations(specializations)
+                .locationId(locations).specializations(specializations).likGovernmentExpense(patientDto.getLikGovernmentExpense())
                 .PatientDiagnosis(patientDto.getPatientDiagnosis()).reasonForDeactivate(patientDto.getReasonForDeactivate()).build();
     }
     public PatientDto EntityToDto(Patient patient){
@@ -61,7 +61,8 @@ public class PatientMapper {
                 .active(patient.isActive()).thereInsurance(patient.getThereInsurance())
                 .locationsId(patient.getLocationId().getId()).specializations(specializationsList).PatientDiagnosis(patient.getPatientDiagnosis())
                 .locationDto(locationDto).specializationDto(specializationDtoList).id(patient.getId())
-                .reasonForDeactivate(patient.getReasonForDeactivate()).build();
+                .reasonForDeactivate(patient.getReasonForDeactivate())
+                .likGovernmentExpense(patient.getLikGovernmentExpense()).build();
 
     }
 }

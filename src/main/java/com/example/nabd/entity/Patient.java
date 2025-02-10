@@ -41,6 +41,7 @@ public class Patient {
     private String periodOfDiscovery;
     private String dateOfBeginningOfDecision;
     private String dateOfHelp;
+    private String likGovernmentExpense;
     @Lob
     @Column(columnDefinition = "TEXT")
     private String discoveryDetailsWithImageLink;
